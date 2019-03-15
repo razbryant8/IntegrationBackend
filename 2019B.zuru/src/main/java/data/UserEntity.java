@@ -5,7 +5,7 @@ public class UserEntity {
 	private String userEmail;
 	private String username;
 	private String avatar;
-	private String UserRole;
+	private UserRole role;
 	private long points;
 	
 	public UserEntity() {
@@ -44,12 +44,14 @@ public class UserEntity {
 		this.avatar = avatar;
 	}
 
-	public String getUserRole() {
-		return UserRole;
+	
+
+	public UserRole getRole() {
+		return role;
 	}
 
-	public void setUserRole(String userRole) {
-		UserRole = userRole;
+	public void setRole(UserRole role) {
+		this.role = role;
 	}
 
 	public long getPoints() {
