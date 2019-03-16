@@ -3,7 +3,6 @@ package data;
 import java.util.Date;
 import java.util.Map;
 
-
 public class ActionEntity {
 
     private String actionSmartspace;
