@@ -7,7 +7,7 @@ public class UserEntity {
 	private String avatar;
 	private UserRole role;
 	private long points;
-	private String marktest;
+	
 	public UserEntity() {
 		
 	}
