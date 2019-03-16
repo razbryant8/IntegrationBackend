@@ -1,96 +1,96 @@
 package data;
+
 import java.util.Date;
 import java.util.Map;
 
 
 public class ActionEntity {
-	
-	private String actionSmartspace;
-	private String actionId;
-	private String elementSmartspace;
-	private String ElementId;
-	private String playerSmartspace;
-	private String playerEmail;
-	private String actionType;
-	private Date creationTimestamp;
-	private Map<String,Object> moreAttributes;
-	
-	public ActionEntity() {
-		
-	}
 
-	public String getActionSmartspace() {
-		return actionSmartspace;
-	}
+    private String actionSmartspace;
+    private String actionId;
+    private String elementSmartspace;
+    private String ElementId;
+    private String playerSmartspace;
+    private String playerEmail;
+    private String actionType;
+    private Date creationTimestamp;
+    private Map<String, Object> moreAttributes;
 
-	public void setActionSmartspace(String actionSmartspace) {
-		this.actionSmartspace = actionSmartspace;
-	}
+    public ActionEntity() {
 
-	public String getActionId() {
-		return actionId;
-	}
+    }
 
-	public void setActionId(String actionId) {
-		this.actionId = actionId;
-	}
+    public String getActionSmartspace() {
+        return actionSmartspace;
+    }
 
-	public String getElementSmartspace() {
-		return elementSmartspace;
-	}
+    public void setActionSmartspace(String actionSmartspace) {
+        this.actionSmartspace = actionSmartspace;
+    }
 
-	public void setElementSmartspace(String elementSmartspace) {
-		this.elementSmartspace = elementSmartspace;
-	}
+    public String getActionId() {
+        return actionId;
+    }
 
-	public String getElementId() {
-		return ElementId;
-	}
+    public void setActionId(String actionId) {
+        this.actionId = actionId;
+    }
 
-	public void setElementId(String elementId) {
-		ElementId = elementId;
-	}
+    public String getElementSmartspace() {
+        return elementSmartspace;
+    }
 
-	public String getPlayerSmartspace() {
-		return playerSmartspace;
-	}
+    public void setElementSmartspace(String elementSmartspace) {
+        this.elementSmartspace = elementSmartspace;
+    }
 
-	public void setPlayerSmartspace(String playerSmartspace) {
-		this.playerSmartspace = playerSmartspace;
-	}
+    public String getElementId() {
+        return ElementId;
+    }
 
-	public String getPlayerEmail() {
-		return playerEmail;
-	}
+    public void setElementId(String elementId) {
+        ElementId = elementId;
+    }
 
-	public void setPlayerEmail(String playerEmail) {
-		this.playerEmail = playerEmail;
-	}
+    public String getPlayerSmartspace() {
+        return playerSmartspace;
+    }
 
-	public String getActionType() {
-		return actionType;
-	}
+    public void setPlayerSmartspace(String playerSmartspace) {
+        this.playerSmartspace = playerSmartspace;
+    }
 
-	public void setActionType(String actionType) {
-		this.actionType = actionType;
-	}
+    public String getPlayerEmail() {
+        return playerEmail;
+    }
 
-	public Date getCreationTimestamp() {
-		return creationTimestamp;
-	}
+    public void setPlayerEmail(String playerEmail) {
+        this.playerEmail = playerEmail;
+    }
 
-	public void setCreationTimestamp(Date creationTimestamp) {
-		this.creationTimestamp = creationTimestamp;
-	}
+    public String getActionType() {
+        return actionType;
+    }
 
-	public Map<String, Object> getMoreAttributes() {
-		return moreAttributes;
-	}
+    public void setActionType(String actionType) {
+        this.actionType = actionType;
+    }
 
-	public void setMoreAttributes(Map<String, Object> moreAttributes) {
-		this.moreAttributes = moreAttributes;
-	}
-	
-	
+    public Date getCreationTimestamp() {
+        return creationTimestamp;
+    }
+
+    public void setCreationTimestamp(Date creationTimestamp) {
+        this.creationTimestamp = creationTimestamp;
+    }
+
+    public Map<String, Object> getMoreAttributes() {
+        return moreAttributes;
+    }
+
+    public void setMoreAttributes(Map<String, Object> moreAttributes) {
+        this.moreAttributes = moreAttributes;
+    }
+
 
 }
