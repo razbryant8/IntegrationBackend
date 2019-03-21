@@ -2,6 +2,13 @@ package data;
 import java.util.Date;
 import java.util.Map;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+@Entity
+@Table(name="ELEMENTS")
 public class ElementEntity {
 	
 	private String elementSmartspace;
@@ -18,7 +25,7 @@ public class ElementEntity {
 	public ElementEntity(){
 		
 	}
-
+	@Transient
 	public String getElementSmartspace() {
 		return elementSmartspace;
 	}
@@ -26,7 +33,7 @@ public class ElementEntity {
 	public void setElementSmartspace(String elementSmartspace) {
 		this.elementSmartspace = elementSmartspace;
 	}
-
+	@Id
 	public String getElementId() {
 		return elementId;
 	}
