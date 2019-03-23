@@ -18,7 +18,7 @@ public class ActionEntity {
 	private String playerEmail;
 	private String actionType;
 	private Date creationTimestamp;
-	private Map<String,Object> moreAttributes;
+	//private Map<String,Object> moreAttributes;
 	
 	public ActionEntity() {
 		
@@ -88,13 +88,13 @@ public class ActionEntity {
 		this.creationTimestamp = creationTimestamp;
 	}
 
-	public Map<String, Object> getMoreAttributes() {
-		return moreAttributes;
-	}
-
-	public void setMoreAttributes(Map<String, Object> moreAttributes) {
-		this.moreAttributes = moreAttributes;
-	}
+//	public Map<String, Object> getMoreAttributes() {
+//		return moreAttributes;
+//	}
+//
+//	public void setMoreAttributes(Map<String, Object> moreAttributes) {
+//		this.moreAttributes = moreAttributes;
+//	}
 	
 	
 

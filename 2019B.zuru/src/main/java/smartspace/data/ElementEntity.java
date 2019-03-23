@@ -2,10 +2,7 @@ package smartspace.data;
 import java.util.Date;
 import java.util.Map;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 
 @Entity
 @Table(name="ELEMENTS")
@@ -13,14 +10,14 @@ public class ElementEntity {
 	
 	private String elementSmartspace;
 	private String elementId;
-	private Location location;
+	//private Location location;
 	private String name;
 	private String type;
 	private Date creationTimestamp;
 	private boolean expired;
 	private String creatorSmartspace;
 	private String creatorEmail;
-	private Map<String,Object> moreAttributes;
+	//private Map<String,Object> moreAttributes;
 	
 	public ElementEntity(){
 		
@@ -42,13 +39,13 @@ public class ElementEntity {
 		this.elementId = elementId;
 	}
 
-	public Location getLocation() {
-		return location;
-	}
-
-	public void setLocation(Location location) {
-		this.location = location;
-	}
+//	public Location getLocation() {
+//		return location;
+//	}
+//
+//	public void setLocation(Location location) {
+//		this.location = location;
+//	}
 
 	public String getName() {
 		return name;
@@ -98,14 +95,12 @@ public class ElementEntity {
 		this.creatorEmail = creatorEmail;
 	}
 
-	public Map<String, Object> getMoreAttributes() {
-		return moreAttributes;
-	}
-
-	public void setMoreAttributes(Map<String, Object> moreAttributes) {
-		this.moreAttributes = moreAttributes;
-	}
-	
-	
+//	public Map<String, Object> getMoreAttributes() {
+//		return moreAttributes;
+//	}
+//
+//	public void setMoreAttributes(Map<String, Object> moreAttributes) {
+//		this.moreAttributes = moreAttributes;
+//	}
 
 }
