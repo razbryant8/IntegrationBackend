@@ -1,4 +1,4 @@
-package data;
+package smartspace.data;
 
 import org.junit.Before;
 import org.junit.Test;
