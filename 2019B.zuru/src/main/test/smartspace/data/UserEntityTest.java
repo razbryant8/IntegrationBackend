@@ -20,7 +20,6 @@ public class UserEntityTest {
     @Test
     public void testSetPoints(){
         userEntity.setPoints(20);
-
         assertEquals("Wrong points value" , 20 , userEntity.getPoints());
     }
 }

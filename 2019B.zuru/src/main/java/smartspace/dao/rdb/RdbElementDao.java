@@ -41,7 +41,7 @@ public class RdbElementDao implements ElementDao<String> {
 	@Transactional
 	public List<ElementEntity> readAll() {
 		List<ElementEntity> entityList = new ArrayList<>();
-		this.entityCrud.findAll().forEach(entity->entityList.add(entity));
+		this.entityCrud.findAll().forEach(entityList::add);
 		return entityList;
 	}
 
@@ -53,7 +53,6 @@ public class RdbElementDao implements ElementDao<String> {
 		}else {
 			throw new RuntimeException("no element with id: " + elementEntity.getElementId());
 		}
-		
 	}
 
 	@Override
