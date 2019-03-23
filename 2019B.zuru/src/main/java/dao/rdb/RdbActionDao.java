@@ -23,16 +23,16 @@ public class RdbActionDao implements ActionDao {
 
     @Override
     @Transactional
-    public ActionEntity create(ActionEntity actionEntit) {
-        actionEntit.setActionId(""+nextActionId.getAndIncrement()+actionEntit.getElementSmartspace());
-        return this.actionCrud.save(actionEntit);
+    public ActionEntity create(ActionEntity actionEntity) {
+        actionEntity.setActionId(""+nextActionId.getAndIncrement()+actionEntity.getElementSmartspace());
+        return this.actionCrud.save(actionEntity);
     }
 
     @Override
     @Transactional
     public List<ActionEntity> readAll() {
         List<ActionEntity> actionsList = new ArrayList<>();
-        this.actionCrud.findAll().forEach(entity->actionsList.add(entity));
+        this.actionCrud.findAll().forEach(actionsList::add);
         return actionsList;
     }
 
