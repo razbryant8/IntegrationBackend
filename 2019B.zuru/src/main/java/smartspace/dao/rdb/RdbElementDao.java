@@ -8,9 +8,9 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import smartspace.dao.ElementDao;
+import smartspace.data.ElementEntity;
 
-import dao.ElementDao;
-import data.ElementEntity;
 
 @Repository
 public class RdbElementDao implements ElementDao<String> {

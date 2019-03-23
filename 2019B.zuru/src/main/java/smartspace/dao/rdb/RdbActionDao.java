@@ -1,6 +1,6 @@
 package smartspace.dao.rdb;
 
-import dao.ActionDao;
+import smartspace.dao.ActionDao;
 import smartspace.data.ActionEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;

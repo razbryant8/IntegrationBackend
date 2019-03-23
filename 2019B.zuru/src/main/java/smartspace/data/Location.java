@@ -9,6 +9,7 @@ public class Location {
 	public Location() {
 		
 	}
+
 	public double getX() {
 		return x;
 	}
