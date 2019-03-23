@@ -1,4 +1,4 @@
-package dao.rdb;
+package smartspace.dao.rdb;
 
 import org.springframework.data.repository.CrudRepository;
 

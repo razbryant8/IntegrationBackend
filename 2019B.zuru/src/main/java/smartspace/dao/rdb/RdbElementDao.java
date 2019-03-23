@@ -1,4 +1,4 @@
-package dao.rdb;
+package smartspace.dao.rdb;
 
 import java.util.ArrayList;
 import java.util.List;
