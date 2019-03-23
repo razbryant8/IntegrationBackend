@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.springframework.beans.factory.annotation.Autowired;
+import smartspace.data.ActionEntity;
 import smartspace.data.ElementEntity;
 
 import java.util.List;
@@ -84,5 +85,36 @@ public class RdbElementDaoTest {
         rdbElementDao.update(elementEntity);
 
 
+    }
+
+
+    @Test
+    public void testDeleteByKey() {
+       elementEntity = rdbElementDao.create(elementEntity);
+
+       rdbElementDao.deleteByKey(elementEntity.getElementId());
+
+       assertTrue("Failed deleting elementEntity by id", rdbElementDao.readById(elementEntity.getElementId()).isPresent());
+    }
+
+    @Test
+    public void testDelete() {
+        elementEntity = rdbElementDao.create(elementEntity);
+
+        rdbElementDao.delete(elementEntity);
+
+        assertTrue("Failed deleting elementEntity by object", rdbElementDao.readById(elementEntity.getElementId()).isPresent());
+    }
+
+    @Test
+    public void testDeleteAll() {
+        //Add initialized variables to db
+        rdbElementDao.create(new ElementEntity());
+        rdbElementDao.create(new ElementEntity());
+        rdbElementDao.create(new ElementEntity());
+
+        rdbElementDao.deleteAll();
+
+        assertEquals("Failed deleting all", 0, rdbElementDao.readAll().size());
     }
 }
