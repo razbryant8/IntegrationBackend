@@ -14,9 +14,9 @@ import static org.junit.Assert.*;
 
 public class RdbElementDaoTest {
 
-
     @Autowired
     private RdbElementDao rdbElementDao;
+
     private ElementEntity elementEntity;
     private ExpectedException thrown;
 
@@ -81,12 +81,24 @@ public class RdbElementDaoTest {
     public void testUpdateIllegalRow(){
         //Create a row
         ElementEntity elementEntity = rdbElementDao.create(this.elementEntity);
-
+        // Change the id for a wrong id.
+        elementEntity.setElementId(elementEntity.getName());
+        // Ask DB to update the row for that entity.
+        thrown.expectMessage("no element with id:");
         rdbElementDao.update(elementEntity);
-
-
     }
 
+    @Test
+    public void testUpdate(){
+        //Create a row
+        ElementEntity elementEntity = rdbElementDao.create(this.elementEntity);
+        elementEntity.setName("Name");
+        rdbElementDao.update(elementEntity);
+
+        Optional<ElementEntity> elementEntity1 = rdbElementDao.readById(elementEntity.getElementId());
+        elementEntity1.ifPresent(elementEntity2 -> assertEquals("Name field was not updated", "Name", elementEntity2.getName()));
+
+    }
 
     @Test
     public void testDeleteByKey() {
