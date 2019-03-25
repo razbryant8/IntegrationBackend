@@ -1,4 +1,5 @@
 package data;
+
 import java.util.Date;
 import java.util.Map;
 
@@ -8,104 +9,105 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 @Entity
-@Table(name="ELEMENTS")
+@Table(name = "ELEMENTS")
 public class ElementEntity {
-	
-	private String elementSmartspace;
-	private String elementId;
-	private Location location;
-	private String name;
-	private String type;
-	private Date creationTimestamp;
-	private boolean expired;
-	private String creatorSmartspace;
-	private String creatorEmail;
-	private Map<String,Object> moreAttributes;
-	
-	public ElementEntity(){
-		
-	}
-	@Transient
-	public String getElementSmartspace() {
-		return elementSmartspace;
-	}
 
-	public void setElementSmartspace(String elementSmartspace) {
-		this.elementSmartspace = elementSmartspace;
-	}
-	@Id
-	public String getElementId() {
-		return elementId;
-	}
+    private String elementSmartspace;
+    private String elementId;
+    private Location location;
+    private String name;
+    private String type;
+    private Date creationTimestamp;
+    private boolean expired;
+    private String creatorSmartspace;
+    private String creatorEmail;
+    private Map<String, Object> moreAttributes;
 
-	public void setElementId(String elementId) {
-		this.elementId = elementId;
-	}
+    public ElementEntity() {
 
-	public Location getLocation() {
-		return location;
-	}
+    }
 
-	public void setLocation(Location location) {
-		this.location = location;
-	}
+    @Transient
+    public String getElementSmartspace() {
+        return elementSmartspace;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public void setElementSmartspace(String elementSmartspace) {
+        this.elementSmartspace = elementSmartspace;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    @Id
+    public String getElementId() {
+        return elementId;
+    }
 
-	public String getType() {
-		return type;
-	}
+    public void setElementId(String elementId) {
+        this.elementId = elementId;
+    }
 
-	public void setType(String type) {
-		this.type = type;
-	}
+    public Location getLocation() {
+        return location;
+    }
 
-	public Date getCreationTimestamp() {
-		return creationTimestamp;
-	}
+    public void setLocation(Location location) {
+        this.location = location;
+    }
 
-	public void setCreationTimestamp(Date creationTimestamp) {
-		this.creationTimestamp = creationTimestamp;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public boolean isExpired() {
-		return expired;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setExpired(boolean expired) {
-		this.expired = expired;
-	}
+    public String getType() {
+        return type;
+    }
 
-	public String getCreatorSmartspace() {
-		return creatorSmartspace;
-	}
+    public void setType(String type) {
+        this.type = type;
+    }
 
-	public void setCreatorSmartspace(String creatorSmartspace) {
-		this.creatorSmartspace = creatorSmartspace;
-	}
+    public Date getCreationTimestamp() {
+        return creationTimestamp;
+    }
 
-	public String getCreatorEmail() {
-		return creatorEmail;
-	}
+    public void setCreationTimestamp(Date creationTimestamp) {
+        this.creationTimestamp = creationTimestamp;
+    }
 
-	public void setCreatorEmail(String creatorEmail) {
-		this.creatorEmail = creatorEmail;
-	}
+    public boolean isExpired() {
+        return expired;
+    }
 
-	public Map<String, Object> getMoreAttributes() {
-		return moreAttributes;
-	}
+    public void setExpired(boolean expired) {
+        this.expired = expired;
+    }
 
-	public void setMoreAttributes(Map<String, Object> moreAttributes) {
-		this.moreAttributes = moreAttributes;
-	}
-	
-	
+    public String getCreatorSmartspace() {
+        return creatorSmartspace;
+    }
+
+    public void setCreatorSmartspace(String creatorSmartspace) {
+        this.creatorSmartspace = creatorSmartspace;
+    }
+
+    public String getCreatorEmail() {
+        return creatorEmail;
+    }
+
+    public void setCreatorEmail(String creatorEmail) {
+        this.creatorEmail = creatorEmail;
+    }
+
+    public Map<String, Object> getMoreAttributes() {
+        return moreAttributes;
+    }
+
+    public void setMoreAttributes(Map<String, Object> moreAttributes) {
+        this.moreAttributes = moreAttributes;
+    }
+
 
 }

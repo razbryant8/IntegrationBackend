@@ -1,66 +1,78 @@
 package data;
 
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+@Entity
+@Table(name = "USERS")
 public class UserEntity {
-	private String userSmartspace;
-	private String userEmail;
-	private String username;
-	private String avatar;
-	private UserRole role;
-	private long points;
-	
-	public UserEntity() {
-		
-	}
+    private String userSmartspace;
+    private String userEmail;
+    private String username;
+    private String avatar;
+    private UserRole role;
+    private long points;
 
-	public String getUserSmartspace() {
-		return userSmartspace;
-	}
 
-	public void setUserSmartspace(String userSmartspace) {
-		this.userSmartspace = userSmartspace;
-	}
+    public UserEntity() {
 
-	public String getUserEmail() {
-		return userEmail;
-	}
+    }
 
-	public void setUserEmail(String userEmail) {
-		this.userEmail = userEmail;
-	}
 
-	public String getUsername() {
-		return username;
-	}
+    @Transient
+    public String getUserSmartspace() {
+        return userSmartspace;
+    }
 
-	public void setUsername(String username) {
-		this.username = username;
-	}
+    public void setUserSmartspace(String userSmartspace) {
+        this.userSmartspace = userSmartspace;
+    }
 
-	public String getAvatar() {
-		return avatar;
-	}
 
-	public void setAvatar(String avatar) {
-		this.avatar = avatar;
-	}
+    public String getUserEmail() {
+        return userEmail;
+    }
 
-	
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
 
-	public UserRole getRole() {
-		return role;
-	}
+    @Id
+    public String getUsername() {
+        return username;
+    }
 
-	public void setRole(UserRole role) {
-		this.role = role;
-	}
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
-	public long getPoints() {
-		return points;
-	}
+    public String getAvatar() {
+        return avatar;
+    }
 
-	public void setPoints(long points) {
-		this.points = points;
-	}
-	
-	
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+
+    public UserRole getRole() {
+        return role;
+    }
+
+    public void setRole(UserRole role) {
+        this.role = role;
+    }
+
+    public long getPoints() {
+        return points;
+    }
+
+    public void setPoints(long points) {
+        this.points = points;
+    }
+
+
 }

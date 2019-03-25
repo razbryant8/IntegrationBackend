@@ -16,15 +16,15 @@ public class RdbActionDao implements ActionDao {
     private AtomicLong nextActionId;
 
     @Autowired
-    public RdbActionDao(ActionCrud actionCrud){
+    public RdbActionDao(ActionCrud actionCrud) {
         this.actionCrud = actionCrud;
-        this.nextActionId=new AtomicLong(1L);
+        this.nextActionId = new AtomicLong(1L);
     }
 
     @Override
     @Transactional
     public ActionEntity create(ActionEntity actionEntity) {
-        actionEntity.setActionId(""+nextActionId.getAndIncrement()+actionEntity.getElementSmartspace());
+        actionEntity.setActionId("" + nextActionId.getAndIncrement() + actionEntity.getElementSmartspace());
         return this.actionCrud.save(actionEntity);
     }
 
@@ -37,6 +37,7 @@ public class RdbActionDao implements ActionDao {
     }
 
     @Override
+    @Transactional
     public void deleteAll() {
         this.actionCrud.deleteAll();
     }
