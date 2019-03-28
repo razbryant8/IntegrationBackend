@@ -3,8 +3,11 @@ package smartspace.dao.rdb;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import smartspace.data.ActionEntity;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import smartspace.Application;
 import smartspace.data.ElementEntity;
 
 import java.util.List;
@@ -12,6 +15,8 @@ import java.util.Optional;
 
 import static org.junit.Assert.*;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = {Application.class})
 public class RdbElementDaoTest {
 
     @Autowired

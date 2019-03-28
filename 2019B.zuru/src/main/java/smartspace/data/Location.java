@@ -1,5 +1,6 @@
 package smartspace.data;
 
+
 public class Location {
 	private double x;
 	private double y;
