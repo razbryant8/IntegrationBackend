@@ -14,6 +14,7 @@ public class RdbActionDaoTest {
     @Autowired
     private RdbActionDao rdbActionDao;
     private ActionEntity actionEntity;
+    private String marktest;
 
     @Before
     public void setUp() {
