@@ -1,10 +1,11 @@
-package dao.rdb;
+package smartspace.dao.rdb;
 
-import dao.UserDao;
-import data.UserEntity;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import smartspace.dao.UserDao;
+import smartspace.data.UserEntity;
 
 import java.util.ArrayList;
 import java.util.List;

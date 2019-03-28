@@ -71,9 +71,9 @@ public class RdbElementDaoTest {
         List<ElementEntity> elementEntities = rdbElementDao.readAll();
 
         assertEquals("Wrong row number",3,elementEntities.size());
-        assertTrue("Row was not created/found.", elementEntities.contains(elementEntity1));
-        assertTrue("Row was not created/found.", elementEntities.contains(elementEntity2));
-        assertTrue("Row was not created/found.", elementEntities.contains(elementEntity3));
+        assertTrue("elementEntity1 was not created/found.", elementEntities.contains(elementEntity1));
+        assertTrue("elementEntity2 was not created/found.", elementEntities.contains(elementEntity2));
+        assertTrue("elementEntity3 was not created/found.", elementEntities.contains(elementEntity3));
     }
 
 
