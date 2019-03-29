@@ -1,66 +1,74 @@
 package data;
 
 public class UserEntity {
-	private String userSmartspace;
-	private String userEmail;
-	private String username;
-	private String avatar;
-	private UserRole role;
-	private long points;
-	
-	public UserEntity() {
-		
-	}
+    private String userSmartspace;
+    private String userEmail;
+    private String username;
+    private String avatar;
+    private UserRole role;
+    private long points;
 
-	public String getUserSmartspace() {
-		return userSmartspace;
-	}
+    public UserEntity() {
 
-	public void setUserSmartspace(String userSmartspace) {
-		this.userSmartspace = userSmartspace;
-	}
+    }
 
-	public String getUserEmail() {
-		return userEmail;
-	}
+    public UserEntity(String userEmail, String userSmartspace, String username, String avatar, UserRole role, long points) {
+        this.userEmail = userEmail;
+        this.userSmartspace = userSmartspace;
+        this.username = username;
+        this.avatar = avatar;
+        this.role = role;
+        this.points = points;
+    }
 
-	public void setUserEmail(String userEmail) {
-		this.userEmail = userEmail;
-	}
+    public String getUserSmartspace() {
+        return userSmartspace;
+    }
 
-	public String getUsername() {
-		return username;
-	}
+    public void setUserSmartspace(String userSmartspace) {
+        this.userSmartspace = userSmartspace;
+    }
 
-	public void setUsername(String username) {
-		this.username = username;
-	}
+    public String getUserEmail() {
+        return userEmail;
+    }
 
-	public String getAvatar() {
-		return avatar;
-	}
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
 
-	public void setAvatar(String avatar) {
-		this.avatar = avatar;
-	}
+    public String getUsername() {
+        return username;
+    }
 
-	
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
-	public UserRole getRole() {
-		return role;
-	}
+    public String getAvatar() {
+        return avatar;
+    }
 
-	public void setRole(UserRole role) {
-		this.role = role;
-	}
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
 
-	public long getPoints() {
-		return points;
-	}
 
-	public void setPoints(long points) {
-		this.points = points;
-	}
-	
-	
+    public UserRole getRole() {
+        return role;
+    }
+
+    public void setRole(UserRole role) {
+        this.role = role;
+    }
+
+    public long getPoints() {
+        return points;
+    }
+
+    public void setPoints(long points) {
+        this.points = points;
+    }
+
+
 }
