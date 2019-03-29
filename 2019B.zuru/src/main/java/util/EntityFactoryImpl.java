@@ -1,6 +1,6 @@
 package util;
 
-import data.*;
+import smartspace.data.*;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;

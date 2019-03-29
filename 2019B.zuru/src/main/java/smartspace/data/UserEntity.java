@@ -1,4 +1,4 @@
-package data;
+package smartspace.data;
 
 public class UserEntity {
     private String userSmartspace;
