@@ -1,4 +1,4 @@
-package data;
+package smartspace.data;
 
 public enum UserRole {
 	PLAYER,MANAGER;

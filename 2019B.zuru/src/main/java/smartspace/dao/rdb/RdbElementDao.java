@@ -1,4 +1,4 @@
-package dao.rdb;
+package smartspace.dao.rdb;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,9 +8,9 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import smartspace.dao.ElementDao;
+import smartspace.data.ElementEntity;
 
-import dao.ElementDao;
-import data.ElementEntity;
 
 @Repository
 public class RdbElementDao implements ElementDao<String> {
@@ -41,7 +41,7 @@ public class RdbElementDao implements ElementDao<String> {
 	@Transactional
 	public List<ElementEntity> readAll() {
 		List<ElementEntity> entityList = new ArrayList<>();
-		this.entityCrud.findAll().forEach(entity->entityList.add(entity));
+		this.entityCrud.findAll().forEach(entityList::add);
 		return entityList;
 	}
 
@@ -53,7 +53,6 @@ public class RdbElementDao implements ElementDao<String> {
 		}else {
 			throw new RuntimeException("no element with id: " + elementEntity.getElementId());
 		}
-		
 	}
 
 	@Override

@@ -1,9 +1,9 @@
-package util;
+package smartspace.util;
 
 import java.util.Map;
 import java.util.Date;
 
-import data.*;
+import smartspace.data.*;
 
 public interface EntityFactory {
 	public UserEntity createNewUser(String userEmail,String userSmartspace,String username,String avatar,UserRole role,long points);

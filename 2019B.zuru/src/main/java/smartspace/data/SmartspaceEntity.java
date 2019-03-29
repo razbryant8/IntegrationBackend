@@ -1,4 +1,4 @@
-package data;
+package smartspace.data;
 
 public interface SmartspaceEntity<K> {
 	

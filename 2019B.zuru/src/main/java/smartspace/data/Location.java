@@ -1,4 +1,4 @@
-package data;
+package smartspace.data;
 
 public class Location {
 	private double x;
@@ -9,6 +9,7 @@ public class Location {
 	public Location() {
 		
 	}
+
 	public double getX() {
 		return x;
 	}

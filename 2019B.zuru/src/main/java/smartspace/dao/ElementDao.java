@@ -1,9 +1,9 @@
-package dao;
+package smartspace.dao;
 
 import java.util.List;
 import java.util.Optional;
 
-import data.*;
+import smartspace.data.*;
 
 public interface ElementDao<ElementKey> {
 	
