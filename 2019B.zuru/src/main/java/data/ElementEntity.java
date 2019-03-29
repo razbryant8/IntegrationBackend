@@ -1,4 +1,5 @@
 package data;
+
 import java.util.Date;
 import java.util.Map;
 
@@ -8,104 +9,115 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 @Entity
-@Table(name="ELEMENTS")
+@Table(name = "ELEMENTS")
 public class ElementEntity {
-	
-	private String elementSmartspace;
-	private String elementId;
-	private Location location;
-	private String name;
-	private String type;
-	private Date creationTimestamp;
-	private boolean expired;
-	private String creatorSmartspace;
-	private String creatorEmail;
-	private Map<String,Object> moreAttributes;
-	
-	public ElementEntity(){
-		
-	}
-	@Transient
-	public String getElementSmartspace() {
-		return elementSmartspace;
-	}
 
-	public void setElementSmartspace(String elementSmartspace) {
-		this.elementSmartspace = elementSmartspace;
-	}
-	@Id
-	public String getElementId() {
-		return elementId;
-	}
+    private String elementSmartspace;
+    private String elementId;
+    private Location location;
+    private String name;
+    private String type;
+    private Date creationTimestamp;
+    private boolean expired;
+    private String creatorSmartspace;
+    private String creatorEmail;
+    private Map<String, Object> moreAttributes;
 
-	public void setElementId(String elementId) {
-		this.elementId = elementId;
-	}
+    public ElementEntity() {
 
-	public Location getLocation() {
-		return location;
-	}
+    }
 
-	public void setLocation(Location location) {
-		this.location = location;
-	}
+    public ElementEntity(String name, String type, Location location, Date creationTimestamp, String creatorEmail, String creatiorSmartspace, boolean expired, Map<String, Object> moreAttributes) {
+        this.name = name;
+        this.type = type;
+        this.creationTimestamp = creationTimestamp;
+        this.creatorEmail = creatorEmail;
+        this.creatorSmartspace = creatiorSmartspace;
+        this.expired = expired;
+        this.moreAttributes = moreAttributes;
+    }
 
-	public String getName() {
-		return name;
-	}
+    @Transient
+    public String getElementSmartspace() {
+        return elementSmartspace;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setElementSmartspace(String elementSmartspace) {
+        this.elementSmartspace = elementSmartspace;
+    }
 
-	public String getType() {
-		return type;
-	}
+    @Id
+    public String getElementId() {
+        return elementId;
+    }
 
-	public void setType(String type) {
-		this.type = type;
-	}
+    public void setElementId(String elementId) {
+        this.elementId = elementId;
+    }
 
-	public Date getCreationTimestamp() {
-		return creationTimestamp;
-	}
+    public Location getLocation() {
+        return location;
+    }
 
-	public void setCreationTimestamp(Date creationTimestamp) {
-		this.creationTimestamp = creationTimestamp;
-	}
+    public void setLocation(Location location) {
+        this.location = location;
+    }
 
-	public boolean isExpired() {
-		return expired;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setExpired(boolean expired) {
-		this.expired = expired;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public String getCreatorSmartspace() {
-		return creatorSmartspace;
-	}
+    public String getType() {
+        return type;
+    }
 
-	public void setCreatorSmartspace(String creatorSmartspace) {
-		this.creatorSmartspace = creatorSmartspace;
-	}
+    public void setType(String type) {
+        this.type = type;
+    }
 
-	public String getCreatorEmail() {
-		return creatorEmail;
-	}
+    public Date getCreationTimestamp() {
+        return creationTimestamp;
+    }
 
-	public void setCreatorEmail(String creatorEmail) {
-		this.creatorEmail = creatorEmail;
-	}
+    public void setCreationTimestamp(Date creationTimestamp) {
+        this.creationTimestamp = creationTimestamp;
+    }
 
-	public Map<String, Object> getMoreAttributes() {
-		return moreAttributes;
-	}
+    public boolean isExpired() {
+        return expired;
+    }
 
-	public void setMoreAttributes(Map<String, Object> moreAttributes) {
-		this.moreAttributes = moreAttributes;
-	}
-	
-	
+    public void setExpired(boolean expired) {
+        this.expired = expired;
+    }
+
+    public String getCreatorSmartspace() {
+        return creatorSmartspace;
+    }
+
+    public void setCreatorSmartspace(String creatorSmartspace) {
+        this.creatorSmartspace = creatorSmartspace;
+    }
+
+    public String getCreatorEmail() {
+        return creatorEmail;
+    }
+
+    public void setCreatorEmail(String creatorEmail) {
+        this.creatorEmail = creatorEmail;
+    }
+
+    public Map<String, Object> getMoreAttributes() {
+        return moreAttributes;
+    }
+
+    public void setMoreAttributes(Map<String, Object> moreAttributes) {
+        this.moreAttributes = moreAttributes;
+    }
+
 
 }
