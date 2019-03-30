@@ -55,6 +55,7 @@ public class ElementEntity {
         this.elementId = elementId;
     }
 
+    @Transient
     public Location getLocation() {
         return location;
     }
@@ -79,6 +80,7 @@ public class ElementEntity {
         this.type = type;
     }
 
+    @Transient
     public Date getCreationTimestamp() {
         return creationTimestamp;
     }
@@ -111,6 +113,7 @@ public class ElementEntity {
         this.creatorEmail = creatorEmail;
     }
 
+    @Transient
     public Map<String, Object> getMoreAttributes() {
         return moreAttributes;
     }

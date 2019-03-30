@@ -1,9 +1,14 @@
 package smartspace.data;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.util.Date;
 import java.util.Map;
 
-
+@Entity
+@Table(name = "ACTIONS")
 public class ActionEntity {
 
     private String actionSmartspace;
@@ -38,6 +43,7 @@ public class ActionEntity {
         this.actionSmartspace = actionSmartspace;
     }
 
+    @Id
     public String getActionId() {
         return actionId;
     }
@@ -94,6 +100,7 @@ public class ActionEntity {
         this.creationTimestamp = creationTimestamp;
     }
 
+    @Transient
     public Map<String, Object> getMoreAttributes() {
         return moreAttributes;
     }

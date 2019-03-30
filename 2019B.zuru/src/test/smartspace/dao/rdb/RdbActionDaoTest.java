@@ -2,13 +2,18 @@ package smartspace.dao.rdb;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 import smartspace.data.ActionEntity;
 
 import java.util.List;
 
 import static org.junit.Assert.*;
 
+@RunWith(SpringRunner.class)
+@SpringBootTest
 public class RdbActionDaoTest {
 
     @Autowired
@@ -29,7 +34,8 @@ public class RdbActionDaoTest {
     @Test
     public void testReadAllOneRow() {
         ActionEntity actionEntity = rdbActionDao.create(this.actionEntity);
-        assertTrue("Row was not created", this.rdbActionDao.readAll().contains(actionEntity));
+        List<ActionEntity> actionEntities = this.rdbActionDao.readAll();
+        assertTrue("Row was not created", actionEntities.contains(actionEntity));
     }
 
     @Test

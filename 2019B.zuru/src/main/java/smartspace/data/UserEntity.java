@@ -1,5 +1,12 @@
 package smartspace.data;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+@Entity
+@Table(name = "USERS")
 public class UserEntity {
     private String userSmartspace;
     private String userEmail;
@@ -29,6 +36,7 @@ public class UserEntity {
         this.userSmartspace = userSmartspace;
     }
 
+    @Id
     public String getUserEmail() {
         return userEmail;
     }
@@ -53,7 +61,7 @@ public class UserEntity {
         this.avatar = avatar;
     }
 
-
+    @Transient
     public UserRole getRole() {
         return role;
     }
