@@ -27,6 +27,16 @@ public class ElementEntity {
 
     }
 
+    public ElementEntity(String name, String type, Location location, Date creationTimestamp, String creatorEmail, String creatiorSmartspace, boolean expired, Map<String, Object> moreAttributes) {
+        this.name = name;
+        this.type = type;
+        this.creationTimestamp = creationTimestamp;
+        this.creatorEmail = creatorEmail;
+        this.creatorSmartspace = creatiorSmartspace;
+        this.expired = expired;
+        this.moreAttributes = moreAttributes;
+    }
+
     @Transient
     public String getElementSmartspace() {
         return elementSmartspace;
