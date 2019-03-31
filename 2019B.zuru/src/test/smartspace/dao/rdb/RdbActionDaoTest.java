@@ -10,6 +10,7 @@ import smartspace.data.ActionEntity;
 
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
@@ -35,7 +36,7 @@ public class RdbActionDaoTest {
     public void testReadAllOneRow() {
         ActionEntity actionEntity = rdbActionDao.create(this.actionEntity);
         List<ActionEntity> actionEntities = this.rdbActionDao.readAll();
-        assertTrue("Row was not created", actionEntities.contains(actionEntity));
+        assertThat(actionEntities).usingElementComparatorOnFields("actionId").contains(actionEntity);
     }
 
     @Test
@@ -55,9 +56,7 @@ public class RdbActionDaoTest {
 
         List<ActionEntity> actionEntities = rdbActionDao.readAll();
 
-        assertTrue("actionEntity1 not created/found", actionEntities.contains(actionEntity1));
-        assertTrue("actionEntity2 not created/found", actionEntities.contains(actionEntity2));
-        assertTrue("actionEntity3 not created/found", actionEntities.contains(actionEntity3));
+        assertThat(actionEntities).usingElementComparatorOnFields("actionId").contains(actionEntity1, actionEntity2, actionEntity3);
 
         assertEquals("Wrong number of rows", 3, actionEntities.size());
     }
