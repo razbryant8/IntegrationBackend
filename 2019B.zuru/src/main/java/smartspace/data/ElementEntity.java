@@ -1,12 +1,11 @@
 package smartspace.data;
 
+import smartspace.dao.rdb.MapToJsonConverter;
+
 import java.util.Date;
 import java.util.Map;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "ELEMENTS")
@@ -55,7 +54,7 @@ public class ElementEntity {
         this.elementId = elementId;
     }
 
-    @Transient
+    @Embedded
     public Location getLocation() {
         return location;
     }
@@ -80,7 +79,7 @@ public class ElementEntity {
         this.type = type;
     }
 
-    @Transient
+    @Temporal(TemporalType.TIMESTAMP)
     public Date getCreationTimestamp() {
         return creationTimestamp;
     }
@@ -113,7 +112,8 @@ public class ElementEntity {
         this.creatorEmail = creatorEmail;
     }
 
-    @Transient
+    @Lob
+    @Convert(converter = MapToJsonConverter.class)
     public Map<String, Object> getMoreAttributes() {
         return moreAttributes;
     }
