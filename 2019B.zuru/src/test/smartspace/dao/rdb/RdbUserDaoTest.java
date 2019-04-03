@@ -12,6 +12,7 @@ import smartspace.data.UserEntity;
 import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
@@ -22,7 +23,6 @@ public class RdbUserDaoTest {
     private RdbUserDao rdbUserDao;
 
     private UserEntity userEntity;
-    private ExpectedException thrown;
 
     @Before
     public void setUp() {
@@ -58,9 +58,7 @@ public class RdbUserDaoTest {
 
         assertEquals("Wrong row number", 3, userEntities.size());
 
-        assertTrue("Row was not created/found.", userEntities.contains(userEntity1));
-        assertTrue("Row was not created/found.", userEntities.contains(userEntity2));
-        assertTrue("Row was not created/found.", userEntities.contains(userEntity3));
+        assertThat(userEntities).usingElementComparatorOnFields("userEmail").contains(userEntity1, userEntity2, userEntity3);
     }
 
     @Test
@@ -74,14 +72,13 @@ public class RdbUserDaoTest {
         userEntityOpt.ifPresent(userEntity1 -> assertEquals("Points were not updated", 2000, userEntity1.getPoints()));
     }
 
-    @Test
+    @Test(expected = Throwable.class)
     public void testUpdateIllegalRow() {
         //Create a row
         UserEntity userEntity = rdbUserDao.create(this.userEntity);
         // Change the id to a wrong id.
         userEntity.setUserEmail("blah blah");
 
-        thrown.expectMessage("No user with this Email:");
         rdbUserDao.update(userEntity);
     }
 
