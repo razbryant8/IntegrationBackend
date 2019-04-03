@@ -28,6 +28,7 @@ public class UserEntity {
         this.points = points;
     }
 
+    @Transient
     public String getUserSmartspace() {
         return userSmartspace;
     }

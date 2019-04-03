@@ -29,7 +29,7 @@ public class RdbUserDao implements UserDao<String> {
     @Override
     @Transactional
     public UserEntity create(UserEntity userEntity) {
-        userEntity.setUsername("" + nextUserId.getAndIncrement() + userEntity.getUserSmartspace());
+        userEntity.setUserEmail("2019b.zuru" + nextUserId.getAndIncrement() + userEntity.getUserSmartspace());
         return this.userCrud.save(userEntity);
     }
 
@@ -44,17 +44,17 @@ public class RdbUserDao implements UserDao<String> {
     @Transactional
     public List<UserEntity> readAll() {
         List<UserEntity> userEntityList = new ArrayList<>();
-        this.userCrud.findAll().forEach(entity -> userEntityList.add(entity));
+        this.userCrud.findAll().forEach(userEntityList::add);
         return userEntityList;
     }
 
     @Override
     @Transactional
     public void update(UserEntity userEntity) {
-        if (this.userCrud.existsById(userEntity.getUsername())) {
-            userCrud.save(userEntity);
+        if (this.userCrud.existsById(userEntity.getUserEmail())) {
+            this.userCrud.save(userEntity);
         } else {
-            throw new RuntimeException("No user with this name: " + userEntity.getUsername() + "exists!");
+            throw new RuntimeException("No user with this email: " + userEntity.getUserEmail() + "exists!");
         }
 
     }

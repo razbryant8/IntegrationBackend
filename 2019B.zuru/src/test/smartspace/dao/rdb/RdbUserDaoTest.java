@@ -33,13 +33,13 @@ public class RdbUserDaoTest {
     public void testCreate() {
         UserEntity userEntity = rdbUserDao.create(this.userEntity);
         // Checking if username was set to the userEntity;
-        assertNotNull("username is null", userEntity.getUsername());
+        assertNotNull("userEmail is null", userEntity.getUserEmail());
     }
 
     @Test
     public void testReadById() {
         UserEntity userEntity = rdbUserDao.create(this.userEntity);
-        Optional<UserEntity> userEntityOpt = rdbUserDao.readById(userEntity.getUsername());
+        Optional<UserEntity> userEntityOpt = rdbUserDao.readById(userEntity.getUserEmail());
         assertTrue("Row was not created/found", userEntityOpt.isPresent());
     }
 
@@ -79,9 +79,9 @@ public class RdbUserDaoTest {
         //Create a row
         UserEntity userEntity = rdbUserDao.create(this.userEntity);
         // Change the id to a wrong id.
-        userEntity.setUsername("blah blah");
+        userEntity.setUserEmail("blah blah");
 
-        thrown.expectMessage("No user with this name:");
+        thrown.expectMessage("No user with this Email:");
         rdbUserDao.update(userEntity);
     }
 
