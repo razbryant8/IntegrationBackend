@@ -79,6 +79,12 @@ public class RdbUserDao implements UserDao<String> {
             existing.setRole(userEntity.getRole());
         }
 
+        if (userEntity.getPoints() >= 0) {
+            existing.setPoints(userEntity.getPoints());
+        }
+
+        this.userCrud.save(existing);
+
 
     }
 
