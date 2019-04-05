@@ -3,7 +3,6 @@ package smartspace.dao.rdb;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -16,18 +15,20 @@ import smartspace.data.ElementEntity;
 public class RdbElementDao implements ElementDao<String> {
 
     private EntityCrud entityCrud;
-    private AtomicLong nextMessageId;
+    private IdGeneratorCrud idGeneratorCrud;
 
     @Autowired
-    public RdbElementDao(EntityCrud entityCrud) {
+    public RdbElementDao(EntityCrud entityCrud, IdGeneratorCrud idGeneratorCrud) {
         this.entityCrud = entityCrud;
-        this.nextMessageId = new AtomicLong(1L);
+        this.idGeneratorCrud = idGeneratorCrud;
     }
 
     @Override
     @Transactional
     public ElementEntity create(ElementEntity elementEntity) {
-        elementEntity.setElementId("" + nextMessageId.getAndIncrement() + elementEntity.getElementSmartspace());
+        IdGenerator nextId = this.idGeneratorCrud.save(new IdGenerator());
+        elementEntity.setElementId("" + nextId.getNextId() + elementEntity.getElementSmartspace());
+        this.idGeneratorCrud.delete(nextId);
         return this.entityCrud.save(elementEntity);
     }
 
@@ -48,11 +49,27 @@ public class RdbElementDao implements ElementDao<String> {
     @Override
     @Transactional
     public void update(ElementEntity elementEntity) {
-        if (this.entityCrud.existsById(elementEntity.getElementId())) {
-            this.entityCrud.save(elementEntity);
-        } else {
-            throw new RuntimeException("no element with id: " + elementEntity.getElementId());
+        ElementEntity existing = this.readById(elementEntity.getElementId())
+                .orElseThrow(() -> new RuntimeException("No element with this ID: "
+                        + elementEntity.getElementId()));
+
+        if (elementEntity.getLocation() != null) {
+            existing.setLocation(elementEntity.getLocation());
         }
+
+        if (elementEntity.getName() != null) {
+            existing.setName(elementEntity.getName());
+        }
+
+        if (elementEntity.getMoreAttributes() != null) {
+            existing.setMoreAttributes(elementEntity.getMoreAttributes());
+        }
+
+        if (elementEntity.getType() != null) {
+            existing.setType(elementEntity.getType());
+        }
+
+        this.entityCrud.save(existing);
     }
 
     @Override
