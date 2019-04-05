@@ -37,18 +37,6 @@ public class UserEntity {
         this.userSmartspace = userSmartspace;
     }
 
-    @Id
-    public String getUserEmail() {
-        return userEmail;
-    }
-
-    public void setUserEmail(String userEmail) {
-        this.userEmail = userEmail;
-    }
-
-    public String getUsername() {
-        return username;
-    }
 
     public void setUsername(String username) {
         this.username = username;
@@ -65,6 +53,19 @@ public class UserEntity {
     @Transient
     public UserRole getRole() {
         return role;
+    }
+
+    @Id
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
+
+    public String getUsername() {
+        return username;
     }
 
     public void setRole(UserRole role) {
