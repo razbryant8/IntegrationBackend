@@ -7,10 +7,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import smartspace.dao.ElementDao;
 import smartspace.data.ElementEntity;
+import smartspace.data.Location;
 
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,6 +22,7 @@ import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@TestPropertySource(properties= {"spring.profiles.active=default"})
 public class RdbElementDaoTest {
 
     @Autowired
@@ -28,7 +33,7 @@ public class RdbElementDaoTest {
 
     @Before
     public void setUp() {
-        elementEntity = new ElementEntity();
+        elementEntity = new ElementEntity("name","type",new Location(5,4),new Date(),null,null,false,new HashMap<>());
         elementDao.deleteAll();
     }
 
@@ -69,9 +74,9 @@ public class RdbElementDaoTest {
         elementDao.deleteAll();
 
         //Create 3 rows
-        ElementEntity elementEntity1 = elementDao.create(row1);
-        ElementEntity elementEntity2 = elementDao.create(row2);
-        ElementEntity elementEntity3 = elementDao.create(row3);
+        ElementEntity elementEntity1 = elementDao.create(this.elementEntity);
+        ElementEntity elementEntity2 = elementDao.create(this.elementEntity);
+        ElementEntity elementEntity3 = elementDao.create(this.elementEntity);
 
         // Read all the rows from db
         List<ElementEntity> elementEntities = elementDao.readAll();
@@ -126,9 +131,9 @@ public class RdbElementDaoTest {
     @Test
     public void testDeleteAll() {
         //Add initialized variables to db
-        elementDao.create(new ElementEntity());
-        elementDao.create(new ElementEntity());
-        elementDao.create(new ElementEntity());
+        elementDao.create(this.elementEntity);
+        elementDao.create(this.elementEntity);
+        elementDao.create(this.elementEntity);
 
         elementDao.deleteAll();
 
