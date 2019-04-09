@@ -12,6 +12,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import smartspace.dao.ElementDao;
 import smartspace.data.ElementEntity;
 import smartspace.data.Location;
+import smartspace.util.EntityFactory;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -28,12 +29,15 @@ public class RdbElementDaoTest {
     @Autowired
     private ElementDao<String> elementDao;
 
+    @Autowired
+    private EntityFactory factory;
+
     private ElementEntity elementEntity;
 
 
     @Before
     public void setUp() {
-        elementEntity = new ElementEntity("name","type",new Location(5,4),new Date(),null,null,false,new HashMap<>());
+        elementEntity = factory.createNewElement("name","type",new Location(5,4),new Date(),null,null,false,new HashMap<>());
         elementDao.deleteAll();
     }
 
