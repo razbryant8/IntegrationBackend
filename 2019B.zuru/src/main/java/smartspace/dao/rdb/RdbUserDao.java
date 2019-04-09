@@ -1,9 +1,9 @@
 package smartspace.dao.rdb;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
 import smartspace.dao.UserDao;
 import smartspace.data.UserEntity;
 
@@ -62,6 +62,9 @@ public class RdbUserDao implements UserDao<String> {
                 .orElseThrow(() -> new RuntimeException("No user with this email: " + userEntity.getUserEmail() + "exists!"));
 
         // Patching
+        if (userEntity.getUsername() != null) {
+            existing.setUsername(userEntity.getUsername());
+        }
         if (userEntity.getAvatar() != null) {
             existing.setAvatar(userEntity.getAvatar());
         }
@@ -69,7 +72,7 @@ public class RdbUserDao implements UserDao<String> {
         if (userEntity.getRole() != null) {
             existing.setRole(userEntity.getRole());
         }
-        // need to ask Eyal about that
+
         if (userEntity.getPoints() >= 0) {
             existing.setPoints(userEntity.getPoints());
         }
