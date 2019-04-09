@@ -13,18 +13,20 @@ import java.util.concurrent.atomic.AtomicLong;
 @Repository
 public class RdbActionDao implements ActionDao {
     private ActionCrud actionCrud;
-    private AtomicLong nextActionId;
+    private IdGeneratorCrud idGeneratorCrud;
 
     @Autowired
-    public RdbActionDao(ActionCrud actionCrud) {
+    public RdbActionDao(ActionCrud actionCrud, IdGeneratorCrud idGeneratorCrud) {
         this.actionCrud = actionCrud;
-        this.nextActionId = new AtomicLong(1L);
+        this.idGeneratorCrud = idGeneratorCrud;
     }
 
     @Override
     @Transactional
     public ActionEntity create(ActionEntity actionEntity) {
-        actionEntity.setActionId("" + nextActionId.getAndIncrement() + actionEntity.getElementSmartspace());
+        IdGenerator nextId = this.idGeneratorCrud.save(new IdGenerator());
+        actionEntity.setActionId("" + nextId.getNextId() + actionEntity.getElementSmartspace());
+        this.idGeneratorCrud.delete(nextId);
         return this.actionCrud.save(actionEntity);
     }
 
