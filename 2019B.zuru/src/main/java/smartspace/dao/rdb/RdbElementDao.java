@@ -69,6 +69,9 @@ public class RdbElementDao implements ElementDao<String> {
             existing.setType(elementEntity.getType());
         }
 
+        existing.setExpired(elementEntity.isExpired());
+
+
         this.entityCrud.save(existing);
     }
 

@@ -1,9 +1,8 @@
 package smartspace.data;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import smartspace.dao.rdb.MapToJsonConverter;
+
+import javax.persistence.*;
 import java.util.Date;
 import java.util.Map;
 
@@ -92,6 +91,7 @@ public class ActionEntity {
         this.actionType = actionType;
     }
 
+    @Temporal(TemporalType.TIMESTAMP)
     public Date getCreationTimestamp() {
         return creationTimestamp;
     }
@@ -100,7 +100,8 @@ public class ActionEntity {
         this.creationTimestamp = creationTimestamp;
     }
 
-    @Transient
+    @Lob
+    @Convert(converter = MapToJsonConverter.class)
     public Map<String, Object> getMoreAttributes() {
         return moreAttributes;
     }
