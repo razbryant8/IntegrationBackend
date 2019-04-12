@@ -1,19 +1,24 @@
 package smartspace.dao.rdb;
 
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
-import smartspace.dao.UserDao;
+
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.domain.PageRequest;
+
+
+import smartspace.dao.EnhancedUserDao;
 import smartspace.data.UserEntity;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
+import java.util.List;
 
 
 @Repository
-public class RdbUserDao implements UserDao<String> {
+public class RdbUserDao implements EnhancedUserDao<String> {
 
     private UserCrud userCrud;
     private IdGeneratorCrud idGeneratorCrud;
@@ -87,5 +92,34 @@ public class RdbUserDao implements UserDao<String> {
     public void deleteAll() {
         this.userCrud.deleteAll();
 
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<UserEntity> readAll(int size, int page) {
+
+        return this.userCrud
+                .findAll(PageRequest.of(page, size))
+                .getContent();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<UserEntity> readAll(int size, int page, String sortBy) {
+        return this.userCrud
+                .findAll(PageRequest.of(page, size, Direction.ASC, sortBy))
+                .getContent();
+    }
+
+
+    // maybe we need to get user by the email(id)
+    @Override
+    @Transactional(readOnly = true)
+    public List<UserEntity> getUserByRole(String role, int size, int page) {
+
+        return this.userCrud
+                .findAllByRoleLike(
+                        "%" + role + "%",
+                        PageRequest.of(page, size));
     }
 }

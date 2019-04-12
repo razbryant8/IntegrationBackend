@@ -50,7 +50,7 @@ public class UserEntity {
         this.avatar = avatar;
     }
 
-    @Transient
+
     public UserRole getRole() {
         return role;
     }

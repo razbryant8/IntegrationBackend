@@ -1,9 +1,19 @@
 package smartspace.dao.rdb;
 
-import org.springframework.data.repository.CrudRepository;
+
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.repository.query.Param;
 import smartspace.data.UserEntity;
 
-public interface UserCrud extends CrudRepository<UserEntity, String> {
+import java.util.List;
+
+public interface UserCrud extends PagingAndSortingRepository<UserEntity, String> {
+
+    public List<UserEntity>
+    findAllByRoleLike(
+            @Param("role") String role,
+            Pageable pageable);
 
 
 }
