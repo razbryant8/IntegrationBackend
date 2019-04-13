@@ -5,14 +5,16 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import smartspace.dao.ElementDao;
+import smartspace.dao.EnhancedElementDao;
 import smartspace.data.ElementEntity;
 
 
 @Repository
-public class RdbElementDao implements ElementDao<String> {
+public class RdbElementDao implements EnhancedElementDao<String> {
 
     private EntityCrud entityCrud;
     private IdGeneratorCrud idGeneratorCrud;
@@ -96,4 +98,15 @@ public class RdbElementDao implements ElementDao<String> {
 
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<ElementEntity> readAll(int size, int page) {
+        return this.entityCrud.findAll(PageRequest.of(page, size)).getContent();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ElementEntity> readAll(int size, int page, String sortBy) {
+        return this.entityCrud.findAll(PageRequest.of(page, size, Sort.Direction.ASC, sortBy)).getContent();
+    }
 }
