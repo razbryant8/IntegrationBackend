@@ -38,8 +38,6 @@ public class UserController {
     }
 
 
-    /*
-need to complete
     @RequestMapping(
             method = RequestMethod.POST,
             path = "/USER",
@@ -51,12 +49,10 @@ need to complete
 
 
         UserEntity userEntity = user.convertToEntity();
-        UserEntity responseEntity = this.userService
-                .store(userEntity);
+        UserEntity responseEntity = this.userService.store(userEntity);
         UserBoundary result = new UserBoundary(responseEntity);
         return result;
 
-
     }
-*/
+
 }

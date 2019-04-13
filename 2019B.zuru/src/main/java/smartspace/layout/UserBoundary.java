@@ -3,12 +3,17 @@ package smartspace.layout;
 import smartspace.data.UserEntity;
 import smartspace.data.UserRole;
 
-public class UserBoundary {
+import java.util.Map;
 
+public class UserBoundary {
+    private final String SMARTSPCAE_TEXT = "smartspace";
+    private final String EMAIL_TEXT = "email";
+    private Map<String, String> key;
+    private String userSmartspace;
     private String userEmail;
     private String username;
     private String avatar;
-    private UserRole role;
+    private String role;
     private long points;
 
 
@@ -17,15 +22,21 @@ public class UserBoundary {
     }
 
     public UserBoundary(UserEntity userEntity) {
+        this.userSmartspace = userEntity.getUserSmartspace();
         this.userEmail = userEntity.getUserEmail();
+        this.setKey();
         this.username = userEntity.getUsername();
         this.avatar = userEntity.getAvatar();
-        if (userEntity.getRole() != null) {
-            this.role = userEntity.getRole();
-        } else {
-            this.role = null;
-        }
+        this.role = userEntity.getRole().name();
         this.points = userEntity.getPoints();
+    }
+
+    public Map<String, String> getKey() {
+        return this.key;
+    }
+
+    public String getUserSmartspace() {
+        return userSmartspace;
     }
 
     public String getUserEmail() {
@@ -40,12 +51,21 @@ public class UserBoundary {
         return avatar;
     }
 
-    public UserRole getRole() {
+    public String getRole() {
         return role;
     }
 
     public long getPoints() {
         return points;
+    }
+
+    private void setKey() {
+        this.key.put(SMARTSPCAE_TEXT, this.userSmartspace);
+        this.key.put(EMAIL_TEXT, this.userEmail);
+    }
+
+    public void setUserSmartspace(String userSmartspace) {
+        this.userSmartspace = userSmartspace;
     }
 
     public void setUserEmail(String userEmail) {
@@ -60,7 +80,7 @@ public class UserBoundary {
         this.avatar = avatar;
     }
 
-    public void setRole(UserRole role) {
+    public void setRole(String role) {
         this.role = role;
     }
 
@@ -68,36 +88,29 @@ public class UserBoundary {
         this.points = points;
     }
 
-    /*
-need to complete
+
     public UserEntity convertToEntity() {
         UserEntity entity = new UserEntity();
 
-        entity.setRole(null);
-        if (this.role != null && this.author.contains("#")) {
-            String[] args = this.author.split("#");
-            if (args.length == 2) {
-                entity.setAuthor(new Name(args[0], args[1]));
-            }
+        if (this.key != null) {
+            entity.setUserSmartspace(this.key.get(SMARTSPCAE_TEXT));
+            entity.setUserEmail(this.key.get(EMAIL_TEXT));
         }
-
-        entity.setDetails(this.details);
-
-        entity.setKey(this.key);
-
-        if (this.type != null) {
-            entity.setMessageType(MessageType.valueOf(this.type));
+        //role is enum
+        if (this.role != null) {
+            entity.setRole(UserRole.valueOf(this.role));
         } else {
-            entity.setMessageType(null);
+            entity.setRole(null);
         }
 
-        entity.setText(this.text);
+        entity.setUsername(this.username);
 
-        entity.setTimestamp(this.timestamp);
+        entity.setAvatar(this.avatar);
+
+        entity.setPoints(this.points);
 
         return entity;
     }
-*/
 
 
 }
