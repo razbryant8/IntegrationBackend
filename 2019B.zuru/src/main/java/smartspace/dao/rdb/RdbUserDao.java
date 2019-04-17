@@ -37,7 +37,7 @@ public class RdbUserDao implements EnhancedUserDao<String> {
     @Transactional
     public UserEntity create(UserEntity userEntity) {
         IdGenerator nextId = this.idGeneratorCrud.save(new IdGenerator());
-        userEntity.setUserEmail("" + nextId.getNextId() + userEntity.getUserSmartspace());
+        userEntity.setKey("" + nextId.getNextId() + userEntity.getUserSmartspace()+ userEntity.getRole());
         this.idGeneratorCrud.delete(nextId);
 
         return this.userCrud.save(userEntity);
@@ -78,7 +78,7 @@ public class RdbUserDao implements EnhancedUserDao<String> {
             existing.setRole(userEntity.getRole());
         }
 
-        if (userEntity.getPoints() >= 0) {
+               if (userEntity.getPoints() >= 0) {
             existing.setPoints(userEntity.getPoints());
         }
 

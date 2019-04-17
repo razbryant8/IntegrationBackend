@@ -7,7 +7,7 @@ import javax.persistence.Transient;
 
 @Entity
 @Table(name = "USERS")
-public class UserEntity {
+public class UserEntity implements SmartspaceEntity{
     private String userSmartspace;
     private String userEmail;
     private String username;
@@ -81,4 +81,14 @@ public class UserEntity {
     }
 
 
+    @Override
+    public Object getKey() {
+        return null;
+    }
+
+    @Override
+    public void setKey(Object key) {
+
+
+    }
 }
