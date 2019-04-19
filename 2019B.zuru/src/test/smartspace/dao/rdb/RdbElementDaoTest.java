@@ -119,13 +119,12 @@ public class RdbElementDaoTest {
 
 
     @Test(expected = Throwable.class)
-    // Guy is this test true. Omri did it and i dont know why
     public void testUpdateIllegalRow() {
         // GIVEN the database contains one element
         ElementEntity elementEntity = elementDao.create(factory.createNewElement("name","type",new Location(5,4),new Date(),null,null,false,new HashMap<>()));
 
         // WHEN we update the id for a wrong id.
-        elementEntity.setKey(elementEntity.getName());
+        elementEntity.setKey(elementEntity.getElementId()+1+"#"+elementEntity.getElementSmartspace());
         elementDao.update(elementEntity);
 
         // THEN exception is Expected
