@@ -1,4 +1,4 @@
-package smartspace.util;
+package smartspace.data.util;
 
 import smartspace.data.*;
 import org.springframework.stereotype.Component;

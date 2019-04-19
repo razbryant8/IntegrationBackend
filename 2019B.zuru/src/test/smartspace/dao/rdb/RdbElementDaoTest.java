@@ -2,6 +2,7 @@ package smartspace.dao.rdb;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,14 +11,16 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import smartspace.dao.ElementDao;
+import smartspace.dao.EnhancedElementDao;
 import smartspace.data.ElementEntity;
 import smartspace.data.Location;
-import smartspace.util.EntityFactory;
+import smartspace.data.util.EntityFactory;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
 
@@ -26,89 +29,118 @@ import static org.junit.Assert.*;
 @TestPropertySource(properties= {"spring.profiles.active=default"})
 public class RdbElementDaoTest {
 
-    @Autowired
     private ElementDao<String> elementDao;
 
-    @Autowired
+    private EnhancedElementDao<String> enhancedDao;
+
     private EntityFactory factory;
 
-    private ElementEntity elementEntity;
+    @Autowired
+    public void setElementDao(ElementDao<String> elementDao) {
+        this.elementDao = elementDao;
+    }
 
+    @Autowired
+    public void setFactory(EntityFactory factory) {
+        this.factory = factory;
+    }
+
+    @Autowired
+    public void setEnhancedDao(EnhancedElementDao<String> enhancedDao) {
+        this.enhancedDao = enhancedDao;
+    }
 
     @Before
     public void setUp() {
-        elementEntity = factory.createNewElement("name","type",new Location(5,4),new Date(),null,null,false,new HashMap<>());
+
         elementDao.deleteAll();
+    }
+
+    @After
+    public void tearDown(){
+        this.elementDao.deleteAll();
     }
 
     @Test
     public void testCreate() {
-        ElementEntity elementEntity = elementDao.create(this.elementEntity);
-        // Checking if id was generated and set to the elementEntity.
+        // GIVEN nothing
+
+        // WHEN  we try to  create one element entity
+        ElementEntity elementEntity = elementDao.create(factory.createNewElement("name","type",new Location(5,4),new Date(),null,null,false,new HashMap<>()));
+
+        // THEN the element is created Checking if id was generated and set to the elementEntity.
         assertNotNull("Id is null", elementEntity.getElementId());
     }
 
     @Test
     public void testReadById() {
-        ElementEntity elementEntity = elementDao.create(this.elementEntity);
-        // Checking if id was generated and set to the elementEntity.
-        assertNotNull("Id is null", elementEntity.getElementId());
-        // Read the row I just created
-        Optional<ElementEntity> elementEntityOpt = elementDao.readById(elementEntity.getElementId());
-        assertTrue("Row was not created/found.", elementEntityOpt.isPresent());
+        //  GIVEN the database contains one element
+        ElementEntity elementEntity = elementDao.create(factory.createNewElement("name","type",new Location(5,4),new Date(),null,null,false,new HashMap<>()));
+
+        // WHEN we read an element by id
+        Optional<ElementEntity> result = elementDao.readById(elementEntity.getKey());
+
+        // THEN the element we read is the element we created
+        assertTrue("Row was not created/found.", result.isPresent());
+        assertEquals(elementEntity.getKey(),result.get().getKey());
     }
 
 
     @Test
     public void testReadAll() {
-        ElementEntity elementEntity = elementDao.create(this.elementEntity);
-        // Read all the rows and look just for the one.
+        //GIVEN the database contain one element
+        ElementEntity elementEntity = elementDao.create(factory.createNewElement("name","type",new Location(5,4),new Date(),null,null,false,new HashMap<>()));
+
+        // WHEN Read all the rows
         List<ElementEntity> elementEntities = elementDao.readAll();
-        assertThat(elementEntities).usingElementComparatorOnFields("elementId").contains(elementEntity);
+
+        // THEN the list contains only one element and it is the one we created
+        assertEquals("Wrong row number",1,elementEntities.size());
+        assertThat(elementEntities).usingElementComparatorOnFields("key").contains(elementEntity);
     }
 
 
     @Test
     public void testReadAllThreeRows() {
-        ElementEntity row1 = new ElementEntity();
-        ElementEntity row2 = new ElementEntity();
-        ElementEntity row3 = new ElementEntity();
+        // GIVEN the database contains three elements
+        ElementEntity elementEntity1 = elementDao.create(factory.createNewElement("name","type",new Location(5,4),new Date(),null,null,false,new HashMap<>()));
+        ElementEntity elementEntity2 = elementDao.create(factory.createNewElement("name","type",new Location(5,4),new Date(),null,null,false,new HashMap<>()));
+        ElementEntity elementEntity3 = elementDao.create(factory.createNewElement("name","type",new Location(5,4),new Date(),null,null,false,new HashMap<>()));
 
-        //Clear db
-        elementDao.deleteAll();
-
-        //Create 3 rows
-        ElementEntity elementEntity1 = elementDao.create(this.elementEntity);
-        ElementEntity elementEntity2 = elementDao.create(this.elementEntity);
-        ElementEntity elementEntity3 = elementDao.create(this.elementEntity);
-
-        // Read all the rows from db
+        // WHEN Read all rows
         List<ElementEntity> elementEntities = elementDao.readAll();
 
+        // THEN the list cnotains three elements and al of them are the same as above
         assertEquals("Wrong row number", 3, elementEntities.size());
-        assertThat(elementEntities).usingElementComparatorOnFields("elementId").contains(elementEntity1);
-        assertThat(elementEntities).usingElementComparatorOnFields("elementId").contains(elementEntity2);
-        assertThat(elementEntities).usingElementComparatorOnFields("elementId").contains(elementEntity3);
+        assertThat(elementEntities).usingElementComparatorOnFields("key").contains(elementEntity1);
+        assertThat(elementEntities).usingElementComparatorOnFields("key").contains(elementEntity2);
+        assertThat(elementEntities).usingElementComparatorOnFields("key").contains(elementEntity3);
     }
 
 
     @Test(expected = Throwable.class)
+    // Guy is this test true. Omri did it and i dont know why
     public void testUpdateIllegalRow() {
-        //Create a row
-        ElementEntity elementEntity = elementDao.create(this.elementEntity);
-        // Change the id for a wrong id.
-        elementEntity.setElementId(elementEntity.getName());
-        // Ask DB to update the row for that entity.
+        // GIVEN the database contains one element
+        ElementEntity elementEntity = elementDao.create(factory.createNewElement("name","type",new Location(5,4),new Date(),null,null,false,new HashMap<>()));
+
+        // WHEN we update the id for a wrong id.
+        elementEntity.setKey(elementEntity.getName());
         elementDao.update(elementEntity);
+
+        // THEN exception is Expected
     }
 
     @Test
     public void testUpdate() {
-        //Create a row
-        ElementEntity elementEntity = elementDao.create(this.elementEntity);
+        //GIVEN the database contain one row
+        ElementEntity elementEntity = elementDao.create(factory.createNewElement("name","type",new Location(5,4),new Date(),null,null,false,new HashMap<>()));
+
+        // WHEN we update row Name
         elementEntity.setName("Name");
         elementDao.update(elementEntity);
 
+        // THEN the row name has changed
         Optional<ElementEntity> elementEntity1 = elementDao.readById(elementEntity.getElementId());
         elementEntity1.ifPresent(elementEntity2 -> assertEquals("Name field was not updated", "Name", elementEntity2.getName()));
 
@@ -116,31 +148,97 @@ public class RdbElementDaoTest {
 
     @Test
     public void testDeleteByKey() {
-        elementEntity = elementDao.create(elementEntity);
+        //GIVEN the database contains one element
+        ElementEntity elementEntity = elementDao.create(factory.createNewElement("name","type",new Location(5,4),new Date(),null,null,false,new HashMap<>()));
 
-        elementDao.deleteByKey(elementEntity.getElementId());
+        // WHEN we delete row by key
+        elementDao.deleteByKey(elementEntity.getKey());
 
+        // THEN the database does not contain that element
         assertFalse("Failed deleting elementEntity by id", elementDao.readById(elementEntity.getElementId()).isPresent());
     }
 
     @Test
     public void testDelete() {
-        elementEntity = elementDao.create(elementEntity);
+        // GIVEN the database contain one row
+        ElementEntity elementEntity = elementDao.create(factory.createNewElement("name","type",new Location(5,4),new Date(),null,null,false,new HashMap<>()));
 
+        // WHEN we delete entity
         elementDao.delete(elementEntity);
 
+        // THEN the entity does not exsist in the database
         assertFalse("Failed deleting elementEntity by object", elementDao.readById(elementEntity.getElementId()).isPresent());
     }
 
     @Test
     public void testDeleteAll() {
-        //Add initialized variables to db
-        elementDao.create(this.elementEntity);
-        elementDao.create(this.elementEntity);
-        elementDao.create(this.elementEntity);
+        //GIVEN the database contains three elements
+        elementDao.create(factory.createNewElement("name","type",new Location(5,4),new Date(),null,null,false,new HashMap<>())););
+        elementDao.create(factory.createNewElement("name","type",new Location(5,4),new Date(),null,null,false,new HashMap<>()));
+        elementDao.create(factory.createNewElement("name","type",new Location(5,4),new Date(),null,null,false,new HashMap<>()));
 
+        // WHEN we delete all the rows
         elementDao.deleteAll();
 
+        // THEN the database is empty
         assertEquals("Failed deleting all", 0, elementDao.readAll().size());
+    }
+
+    @Test
+    public void saveEntity(){
+        // GIVEN nothing
+
+        // WHEN we save entity in the database
+        ElementEntity elementEntity = factory.createNewElement("name","type",new Location(5,4),new Date(),null,null,false,new HashMap<>());
+        elementEntity.setKey("1#2019B.zuru");
+        enhancedDao.save(elementEntity);
+
+        // THEN the database contains one row which is that element
+        List<ElementEntity> elementEntities = enhancedDao.readAll();
+        assertEquals("Wrong row number",1,elementEntities.size());
+        assertThat(elementEntities).usingElementComparatorOnFields("key").contains(elementEntity);
+    }
+
+    @Test
+    public void testReadAllUsingPaginationAndSortingByKey (){
+        // GIVEN the database contains 5 elements
+        elementDao.create(factory.createNewElement("name","type",new Location(5,4),new Date(),null,null,false,new HashMap<>()));
+        elementDao.create(factory.createNewElement("name","type",new Location(5,4),new Date(),null,null,false,new HashMap<>()));
+        elementDao.create(factory.createNewElement("name","type",new Location(5,4),new Date(),null,null,false,new HashMap<>()));
+        elementDao.create(factory.createNewElement("name","type",new Location(5,4),new Date(),null,null,false,new HashMap<>()));
+        elementDao.create(factory.createNewElement("name","type",new Location(5,4),new Date(),null,null,false,new HashMap<>()));
+
+        // WHEN we read up to 5 elements from the beginning sorted by key
+        List<ElementEntity> actual = this.enhancedDao.readAll(5, 0, "key");
+
+        // THEN we receive the first 5 elements
+        assertThat(actual)
+                .usingElementComparatorOnFields("key")
+                .containsExactlyElementsOf(
+                        actual
+                                .stream()
+                                .sorted((m1,m2)->m1.getKey().compareTo(m2.getKey()))
+                                .limit(5)
+                                .collect(Collectors.toList()));
+
+    }
+
+    @Test
+    public void testReadAllUsingPagination (){
+        // GIVEN the database contains 5 elements
+        elementDao.create(factory.createNewElement("name","type",new Location(5,4),new Date(),null,null,false,new HashMap<>()));
+        elementDao.create(factory.createNewElement("name","type",new Location(5,4),new Date(),null,null,false,new HashMap<>()));
+        elementDao.create(factory.createNewElement("name","type",new Location(5,4),new Date(),null,null,false,new HashMap<>()));
+        elementDao.create(factory.createNewElement("name","type",new Location(5,4),new Date(),null,null,false,new HashMap<>()));
+        elementDao.create(factory.createNewElement("name","type",new Location(5,4),new Date(),null,null,false,new HashMap<>()));
+
+
+        // WHEN we read up to 5 elements from the beginning
+        List<ElementEntity> actual = this.enhancedDao.readAll(5, 0);
+
+        // THEN we receive 5 elements exactly
+        assertThat(actual)
+                .hasSize(5);
+
     }
 }
