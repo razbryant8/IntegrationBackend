@@ -3,6 +3,7 @@ package smartspace.layout;
 import smartspace.data.UserEntity;
 import smartspace.data.UserRole;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class UserBoundary {
@@ -22,6 +23,12 @@ public class UserBoundary {
     }
 
     public UserBoundary(UserEntity userEntity) {
+        
+        this.key =  new HashMap<String, String>();
+        this.key.put("Email",userEntity.getUserEmail()).
+                replace(userEntity.getUserSmartspace(), "");
+        this.key.put("smartspace", userEntity.getUserSmartspace());
+
         this.userSmartspace = userEntity.getUserSmartspace();
         this.userEmail = userEntity.getUserEmail();
         this.setKey();

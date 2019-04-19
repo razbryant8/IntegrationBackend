@@ -1,13 +1,10 @@
 package smartspace.data;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "USERS")
-public class UserEntity implements SmartspaceEntity{
+public class UserEntity implements SmartspaceEntity<String> {
     private String userSmartspace;
     private String userEmail;
     private String username;
@@ -55,7 +52,8 @@ public class UserEntity implements SmartspaceEntity{
         return role;
     }
 
-    @Id
+
+    @Transient
     public String getUserEmail() {
         return userEmail;
     }
@@ -80,14 +78,20 @@ public class UserEntity implements SmartspaceEntity{
         this.points = points;
     }
 
-
+    @Column(name = "ID")
+    @Id
     @Override
-    public Object getKey() {
-        return null;
+    public String getKey() {
+        return getUserEmail() + "#" + getUserSmartspace();
     }
 
     @Override
-    public void setKey(Object key) {
+    public void setKey(String key) {
+        String[] args = key.split("#");
+        if (args.length == 2) {
+            this.setUserEmail(args[0]);
+            this.setUserSmartspace(args[1]);
+        }
 
 
     }

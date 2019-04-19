@@ -21,13 +21,12 @@ import java.util.List;
 public class RdbUserDao implements EnhancedUserDao<String> {
 
     private UserCrud userCrud;
-    private IdGeneratorCrud idGeneratorCrud;
 
 
     @Autowired
-    public RdbUserDao(UserCrud userCrud, IdGeneratorCrud idGeneratorCrud) {
+    public RdbUserDao(UserCrud userCrud) {
         this.userCrud = userCrud;
-        this.idGeneratorCrud = idGeneratorCrud;
+
 
 
     }
@@ -36,9 +35,6 @@ public class RdbUserDao implements EnhancedUserDao<String> {
     @Override
     @Transactional
     public UserEntity create(UserEntity userEntity) {
-        IdGenerator nextId = this.idGeneratorCrud.save(new IdGenerator());
-        userEntity.setKey("" + nextId.getNextId() + userEntity.getUserSmartspace()+ userEntity.getRole());
-        this.idGeneratorCrud.delete(nextId);
 
         return this.userCrud.save(userEntity);
 

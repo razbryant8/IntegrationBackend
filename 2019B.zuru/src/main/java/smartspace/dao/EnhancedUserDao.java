@@ -11,4 +11,5 @@ public interface EnhancedUserDao<k> extends UserDao<k> {
 
     public List<UserEntity> getUserByRole(
             String role, int size, int page);
+
 }

@@ -20,10 +20,10 @@ public class UserController {
         this.userService = userService;
     }
 
-
+    // need to pix the path
     @RequestMapping(
             method = RequestMethod.GET,
-            path = "/USER",
+            path = "/smartspace/admin/users/",
             produces = MediaType.APPLICATION_JSON_VALUE)
 
     public UserBoundary[] getAll(
@@ -37,10 +37,10 @@ public class UserController {
                 .toArray(new UserBoundary[0]);
     }
 
-
+    // need to pix the path
     @RequestMapping(
             method = RequestMethod.POST,
-            path = "/USER",
+            path = "/smartspace/admin/users/",
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
 
