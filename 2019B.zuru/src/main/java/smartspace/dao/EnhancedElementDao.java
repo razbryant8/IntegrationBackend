@@ -8,6 +8,8 @@ public interface EnhancedElementDao<ElementKey> extends ElementDao<ElementKey> {
     public List<ElementEntity> readAll(int size, int page);
 
     public List<ElementEntity> readAll(int size, int page, String sortBy);
+
+    public ElementEntity upsert(ElementEntity elementEntity);
     /*public List<ElementEntity> getMessagesContainigText (
             String pattern, int size, int page);
     public List<ElementEntity> getMessagesWithTimestampRange(

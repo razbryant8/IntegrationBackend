@@ -29,19 +29,19 @@ public class RdbElementDao implements EnhancedElementDao<String> {
     @Transactional
     public ElementEntity create(ElementEntity elementEntity) {
         IdGenerator nextId = this.idGeneratorCrud.save(new IdGenerator());
-        elementEntity.setElementId("" + nextId.getNextId() + elementEntity.getElementSmartspace());
+        elementEntity.setKey("" + nextId.getNextId() + "#" + elementEntity.getElementSmartspace());
         this.idGeneratorCrud.delete(nextId);
         return this.entityCrud.save(elementEntity);
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public Optional<ElementEntity> readById(String elementKey) {
         return this.entityCrud.findById(elementKey);
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<ElementEntity> readAll() {
         List<ElementEntity> entityList = new ArrayList<>();
         this.entityCrud.findAll().forEach(entityList::add);
@@ -108,5 +108,10 @@ public class RdbElementDao implements EnhancedElementDao<String> {
     @Transactional(readOnly = true)
     public List<ElementEntity> readAll(int size, int page, String sortBy) {
         return this.entityCrud.findAll(PageRequest.of(page, size, Sort.Direction.ASC, sortBy)).getContent();
+    }
+
+    @Override
+    public ElementEntity upsert(ElementEntity elementEntity) {
+        return entityCrud.save(elementEntity);
     }
 }

@@ -9,7 +9,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "ELEMENTS")
-public class ElementEntity {
+public class ElementEntity implements SmartspaceEntity<String> {
 
     private String elementSmartspace;
     private String elementId;
@@ -47,7 +47,7 @@ public class ElementEntity {
         this.elementSmartspace = elementSmartspace;
     }
 
-    @Id
+    @Transient
     public String getElementId() {
         return elementId;
     }
@@ -124,5 +124,18 @@ public class ElementEntity {
         this.moreAttributes = moreAttributes;
     }
 
+    @Id
+    @Override
+    public String getKey() {
+        return this.elementId + "#" + this.elementSmartspace;
+    }
 
+    @Override
+    public void setKey(String key) {
+        String[] args = key.split("#");
+        if (args.length == 2) {
+            this.elementId = args[0];
+            this.elementSmartspace = args[1];
+        }
+    }
 }

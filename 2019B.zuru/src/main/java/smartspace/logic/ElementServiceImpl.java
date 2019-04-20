@@ -1,18 +1,19 @@
 package smartspace.logic;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import smartspace.dao.EnhancedElementDao;
 import smartspace.data.ElementEntity;
 
-import java.util.Date;
 import java.util.List;
 
 @Service
 public class ElementServiceImpl implements ElementService {
 
     private EnhancedElementDao<String> enhancedElementDao;
+    private String smartspace;
 
     @Autowired
     public ElementServiceImpl(EnhancedElementDao<String> enhancedElementDao) {
@@ -28,9 +29,8 @@ public class ElementServiceImpl implements ElementService {
     @Transactional
     public ElementEntity store(ElementEntity elementEntity) {
         if (validate(elementEntity)) {
-            elementEntity.setCreationTimestamp(new Date());
             return this.enhancedElementDao
-                    .create(elementEntity);
+                    .upsert(elementEntity);
         } else {
             throw new RuntimeException("Invalid element input");
         }
@@ -46,8 +46,18 @@ public class ElementServiceImpl implements ElementService {
                 elementEntity.getCreatorEmail() != null &&
                 !elementEntity.getCreatorEmail().trim().isEmpty() &&
                 elementEntity.getCreatorSmartspace() != null &&
-                !elementEntity.getCreatorSmartspace().trim().isEmpty(); //To be completed &&
-        //!elementEntity.getElementSmartspace().equals();
+                !elementEntity.getCreatorSmartspace().trim().isEmpty() &&
+                elementEntity.getElementSmartspace() != null &&
+                !elementEntity.getElementSmartspace().trim().isEmpty() &&
+                !elementEntity.getElementSmartspace().equals(this.smartspace) &&
+                elementEntity.getElementId() != null &&
+                !elementEntity.getElementId().trim().isEmpty();
 
     }
+
+    @Value("${spring.application.name}")
+    public void setSmartspace(String smartspace) {
+        this.smartspace = smartspace;
+    }
+
 }

@@ -1,7 +1,11 @@
 package smartspace.data;
 
+import javafx.stage.Screen;
+import javafx.stage.Window;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.swing.*;
 
 @Embeddable
 public class Location {
@@ -19,7 +23,7 @@ public class Location {
 
     }
 
-    @Column(name="X")
+    @Column(name = "X")
     public double getX() {
         return x;
     }
@@ -28,6 +32,7 @@ public class Location {
         this.x = x;
     }
 
+    @Column(name = "Y")
     public double getY() {
         return y;
     }
@@ -35,6 +40,5 @@ public class Location {
     public void setY(double y) {
         this.y = y;
     }
-
 
 }

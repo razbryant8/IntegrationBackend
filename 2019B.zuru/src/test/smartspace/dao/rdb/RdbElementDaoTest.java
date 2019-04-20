@@ -172,7 +172,7 @@ public class RdbElementDaoTest {
     @Test
     public void testDeleteAll() {
         //GIVEN the database contains three elements
-        elementDao.create(factory.createNewElement("name","type",new Location(5,4),new Date(),null,null,false,new HashMap<>())););
+        elementDao.create(factory.createNewElement("name","type",new Location(5,4),new Date(),null,null,false,new HashMap<>()));
         elementDao.create(factory.createNewElement("name","type",new Location(5,4),new Date(),null,null,false,new HashMap<>()));
         elementDao.create(factory.createNewElement("name","type",new Location(5,4),new Date(),null,null,false,new HashMap<>()));
 
@@ -190,7 +190,7 @@ public class RdbElementDaoTest {
         // WHEN we save entity in the database
         ElementEntity elementEntity = factory.createNewElement("name","type",new Location(5,4),new Date(),null,null,false,new HashMap<>());
         elementEntity.setKey("1#2019B.zuru");
-        enhancedDao.save(elementEntity);
+        enhancedDao.upsert(elementEntity);
 
         // THEN the database contains one row which is that element
         List<ElementEntity> elementEntities = enhancedDao.readAll();
