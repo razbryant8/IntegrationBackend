@@ -51,7 +51,7 @@ public class RdbElementDao implements EnhancedElementDao<String> {
     @Override
     @Transactional
     public void update(ElementEntity elementEntity) {
-        ElementEntity existing = this.readById(elementEntity.getElementId())
+        ElementEntity existing = this.readById(elementEntity.getKey())
                 .orElseThrow(() -> new RuntimeException("No element with this ID: "
                         + elementEntity.getElementId()));
 

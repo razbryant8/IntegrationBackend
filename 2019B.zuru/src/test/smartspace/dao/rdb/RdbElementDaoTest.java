@@ -140,8 +140,8 @@ public class RdbElementDaoTest {
         elementDao.update(elementEntity);
 
         // THEN the row name has changed
-        Optional<ElementEntity> elementEntity1 = elementDao.readById(elementEntity.getElementId());
-        elementEntity1.ifPresent(elementEntity2 -> assertEquals("Name field was not updated", "Name", elementEntity2.getName()));
+        Optional<ElementEntity> elementEntity1 = elementDao.readById(elementEntity.getKey());
+        elementEntity1.ifPresent(elementEntity2 -> assertEquals("Name field was not updated", elementEntity.getName(), elementEntity2.getName()));
 
     }
 

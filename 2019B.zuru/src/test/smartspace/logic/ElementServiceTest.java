@@ -114,7 +114,7 @@ public class ElementServiceTest {
     public void checkStore(){
         // GIVEN Valid Element Entity
         ElementEntity elementEntity = factory.createNewElement("name","type",new Location(5,4),new Date(),"zur@gmail.com","test",false,new HashMap<>());
-        elmentEntity.setKey("1#anotherTeam");
+        elementEntity.setKey("1#anotherTeam");
 
         // WHEN we store the entity using ElementService Logic
         elementService.store(elementEntity);

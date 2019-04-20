@@ -82,11 +82,13 @@ public class UserEntity implements SmartspaceEntity{
 
 
     @Override
+    @Transient
     public Object getKey() {
         return null;
     }
 
     @Override
+    @Transient
     public void setKey(Object key) {
 
 
