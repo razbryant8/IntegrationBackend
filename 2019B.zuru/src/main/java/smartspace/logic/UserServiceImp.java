@@ -40,6 +40,11 @@ public class UserServiceImp implements UserService {
         }
     }
 
+    @Override
+    public List<UserEntity> getUsersByEmailAndSmartspace(String email, String smartspace, int size, int page) {
+        return this.userDao.getUsersByEmailAndSmartspace(email,smartspace,size,page,"ID");
+    }
+
     // maybe we need to check only the smart space ->  user.getUserSmartspace(); ?? ;
     private boolean validate(UserEntity user) {
         return user.getRole() != null &&

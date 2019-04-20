@@ -6,32 +6,32 @@ public class UserKey {
 
     private String email;
 
-    private String smartspce;
+    private String smartspace;
 
 
     public UserKey() {
 
     }
 
-    public UserKey(String email, String smartspce) {
+    public UserKey(String email, String smartspace) {
         this.email = email;
-        this.smartspce = smartspce;
+        this.smartspace = smartspace;
     }
 
     public void setEmail(String email) {
         this.email = email;
     }
 
-    public void setSmartspce(String smartspce) {
-        this.smartspce = smartspce;
+    public void setSmartspace(String smartspace) {
+        this.smartspace = smartspace;
     }
 
     public String getEmail() {
         return email;
     }
 
-    public String getSmartspce() {
-        return smartspce;
+    public String getSmartspace() {
+        return smartspace;
     }
 
     @Override
@@ -40,11 +40,11 @@ public class UserKey {
         if (!(o instanceof UserKey)) return false;
         UserKey userKey = (UserKey) o;
         return getEmail().equals(userKey.getEmail()) &&
-                getSmartspce().equals(userKey.getSmartspce());
+                getSmartspace().equals(userKey.getSmartspace());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getEmail(), getSmartspce());
+        return Objects.hash(getEmail(), getSmartspace());
     }
 }
