@@ -15,5 +15,9 @@ public interface UserCrud extends PagingAndSortingRepository<UserEntity, String>
             @Param("role") String role,
             Pageable pageable);
 
+    public List<UserEntity>
+    findAllByEmailAndSmartspaceId(
+            @Param("ID") String id,
+            Pageable pageable);
 
 }

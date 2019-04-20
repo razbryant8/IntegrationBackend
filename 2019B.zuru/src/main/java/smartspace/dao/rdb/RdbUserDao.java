@@ -118,4 +118,12 @@ public class RdbUserDao implements EnhancedUserDao<String> {
                         "%" + role + "%",
                         PageRequest.of(page, size));
     }
+
+    @Override
+    public List<UserEntity> getUsersByEmailAndSmartspace(String email, String smartspace, int size, int page, String sortBy) {
+        return this.userCrud
+                .findAllByEmailAndSmartspaceId(
+                        "%" + email+"#"+ smartspace+ "%",
+                        PageRequest.of(page, size));
+    }
 }
