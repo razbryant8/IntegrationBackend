@@ -41,7 +41,7 @@ public class UserServiceImp implements UserService {
         }
     }
 
-    public Optional<UserEntity> getUserByKey(String key, int size, int page){
+    public Optional<UserEntity> getUserByKey(String key){
         return this.userDao
                 .readById(key);
     }
