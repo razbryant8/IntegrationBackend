@@ -121,9 +121,6 @@ public class RdbUserDao implements EnhancedUserDao<String> {
 
     @Override
     public List<UserEntity> getUsersByEmailAndSmartspace(String email, String smartspace, int size, int page, String sortBy) {
-        return null /*this.userCrud
-                .findAllByEmailAndSmartspaceId(
-                        "%" + email+"#"+ smartspace+ "%",
-                        PageRequest.of(page, size))*/;
+        return null; /*need to implement */
     }
 }
