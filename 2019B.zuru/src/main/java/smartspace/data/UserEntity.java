@@ -96,4 +96,10 @@ public class UserEntity implements SmartspaceEntity<String> {
         }
 
     }
+
+    @Override
+    public String toString() {
+        return "userEntity [id=" + getKey() + ", username=" + getUsername() + ", avatar=" + getAvatar() + ", role="
+                + getRole().name() + ", points=" + getPoints() +"]";
+    }
 }

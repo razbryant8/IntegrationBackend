@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class UserBoundary {
-    private String key;
+    private UserKey key;
     private String userSmartspace;
     private String userEmail;
     private String username;
@@ -25,14 +25,14 @@ public class UserBoundary {
 
         this.userSmartspace = userEntity.getUserSmartspace();
         this.userEmail = userEntity.getUserEmail();
-        this.key = this.userEmail+"#"+this.userSmartspace;
+        this.key = new UserKey(this.userEmail, this.userSmartspace);
         this.username = userEntity.getUsername();
         this.avatar = userEntity.getAvatar();
         this.role = userEntity.getRole().name();
         this.points = userEntity.getPoints();
     }
 
-    public String getKey() { return this.key; }
+    public UserKey getKey() { return this.key; }
 
     public String getUserSmartspace() {
         return userSmartspace;
@@ -58,7 +58,7 @@ public class UserBoundary {
         return points;
     }
 
-    private void setKey(String key) { this.key = key; }
+    private void UserKey(UserKey key) { this.key = key; }
 
     public void setUserSmartspace(String userSmartspace) {
         this.userSmartspace = userSmartspace;
@@ -86,13 +86,10 @@ public class UserBoundary {
     public UserEntity convertToEntity() {
         UserEntity entity = new UserEntity();
 
-        this.key = null;
-        if (this.key != null && this.key.contains("#")) {
-            String[] args = this.key.split("#");
-            if (args.length == 2) {
-                entity.setUserEmail(args[0]);
-                entity.setUserSmartspace(args[1]);
-            }
+        if (this.key != null) {
+            entity.setUserEmail(this.key.getEmail());
+            entity.setUserSmartspace(this.key.getSmartspace());
+            entity.setKey(this.key.getEmail()+"#"+this.key.getSmartspace());
         }
 
         //role is enum
