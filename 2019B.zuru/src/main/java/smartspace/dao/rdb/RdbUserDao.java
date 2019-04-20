@@ -123,4 +123,5 @@ public class RdbUserDao implements EnhancedUserDao<String> {
     public List<UserEntity> getUsersByEmailAndSmartspace(String email, String smartspace, int size, int page, String sortBy) {
         return null; /*need to implement */
     }
+
 }

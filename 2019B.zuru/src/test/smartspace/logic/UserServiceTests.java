@@ -15,6 +15,7 @@ import smartspace.data.UserRole;
 import smartspace.data.util.EntityFactory;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
@@ -66,6 +67,25 @@ public class UserServiceTests {
         // THEN the List contains exactly one element
         assertEquals(1,userEntities.size());
         assertThat(userEntities).usingElementComparatorOnFields("userSmartspace","userEmail").contains(userEntity);
+    }
+
+    @Test
+    public void checkGetUserByKey(){
+        //GIVEN one user to insert db
+        String mail = "mail1";
+        String smartspace = "smart1";
+        String key = mail+"#"+smartspace;
+        UserEntity expectedEntity = enhancedUserDao.create(entityFactory.createNewUser(mail,smartspace,"user1","ava1", UserRole.ADMIN,100));
+
+        //WHEN getUserByKey
+        Optional<UserEntity> returnedOptEntity = enhancedUserDao.readById(key);
+        UserEntity returnedEntity = returnedOptEntity.get();
+
+        //THEN the user will be the user that inserted
+        assertThat(returnedEntity).isEqualToComparingOnlyGivenFields(expectedEntity,
+                "userSmartspace","userEmail","username","avatar","role","points");
+
+
     }
 
 

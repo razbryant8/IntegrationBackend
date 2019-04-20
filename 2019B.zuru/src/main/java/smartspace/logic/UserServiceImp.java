@@ -9,6 +9,7 @@ import smartspace.dao.EnhancedUserDao;
 import smartspace.data.UserEntity;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -38,6 +39,11 @@ public class UserServiceImp implements UserService {
         } else {
             throw new RuntimeException("Invalid user input");
         }
+    }
+
+    public Optional<UserEntity> getUserByKey(String key, int size, int page){
+        return this.userDao
+                .readById(key);
     }
 
     @Override
