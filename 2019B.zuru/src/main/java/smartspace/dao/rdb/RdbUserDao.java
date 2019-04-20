@@ -59,8 +59,8 @@ public class RdbUserDao implements EnhancedUserDao<String> {
     @Transactional
     public void update(UserEntity userEntity) {
 
-        UserEntity existing = this.readById(userEntity.getUserEmail())
-                .orElseThrow(() -> new RuntimeException("No user with this email: " + userEntity.getUserEmail() + "exists!"));
+        UserEntity existing = this.readById(userEntity.getKey())
+                .orElseThrow(() -> new RuntimeException("No user with this key " + userEntity.getKey() + " is exists!"));
 
         // Patching
         if (userEntity.getUsername() != null) {
@@ -121,9 +121,9 @@ public class RdbUserDao implements EnhancedUserDao<String> {
 
     @Override
     public List<UserEntity> getUsersByEmailAndSmartspace(String email, String smartspace, int size, int page, String sortBy) {
-        return this.userCrud
+        return null /*this.userCrud
                 .findAllByEmailAndSmartspaceId(
                         "%" + email+"#"+ smartspace+ "%",
-                        PageRequest.of(page, size));
+                        PageRequest.of(page, size))*/;
     }
 }

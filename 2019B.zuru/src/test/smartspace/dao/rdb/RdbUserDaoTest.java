@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import smartspace.data.UserEntity;
+import smartspace.data.UserRole;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,7 +27,7 @@ public class RdbUserDaoTest {
 
     @Before
     public void setUp() {
-        userEntity = new UserEntity();
+        rdbUserDao.deleteAll(); userEntity = new UserEntity();
     }
 
     @Test
@@ -38,8 +39,10 @@ public class RdbUserDaoTest {
 
     @Test
     public void testReadById() {
+        String expectedId = "email#smartspace";
+        this.userEntity.setKey(expectedId);
         UserEntity userEntity = rdbUserDao.create(this.userEntity);
-        Optional<UserEntity> userEntityOpt = rdbUserDao.readById(userEntity.getUserEmail());
+        Optional<UserEntity> userEntityOpt = rdbUserDao.readById(expectedId);
         assertTrue("Row was not created/found", userEntityOpt.isPresent());
     }
 
@@ -49,9 +52,9 @@ public class RdbUserDaoTest {
         rdbUserDao.deleteAll();
 
         //Create 3 rows
-        UserEntity userEntity1 = rdbUserDao.create(new UserEntity());
-        UserEntity userEntity2 = rdbUserDao.create(new UserEntity());
-        UserEntity userEntity3 = rdbUserDao.create(new UserEntity());
+        UserEntity userEntity1 = rdbUserDao.create(new UserEntity("mail1","smartspace1","user1","ava1", UserRole.ADMIN,100));
+        UserEntity userEntity2 = rdbUserDao.create(new UserEntity("mail12","smartspace12","user1","ava1", UserRole.ADMIN,100));
+        UserEntity userEntity3 = rdbUserDao.create(new UserEntity("mail123","smartspace123","user1","ava1", UserRole.ADMIN,100));
 
         // Read all the rows from db
         List<UserEntity> userEntities = rdbUserDao.readAll();
@@ -64,11 +67,13 @@ public class RdbUserDaoTest {
     @Test
     public void testUpdate() {
         //Create a row
-        UserEntity userEntity = rdbUserDao.create(this.userEntity);
+        UserEntity testEntity = new UserEntity("mail1","smartspace1","user1","ava1", UserRole.ADMIN,100);
+        testEntity.setKey(testEntity.getUserEmail()+"#"+testEntity.getUserSmartspace());
+        UserEntity userEntity = rdbUserDao.create(testEntity);
         userEntity.setPoints(2000);
         rdbUserDao.update(userEntity);
 
-        Optional<UserEntity> userEntityOpt = rdbUserDao.readById(userEntity.getUserEmail());
+        Optional<UserEntity> userEntityOpt = rdbUserDao.readById(testEntity.getUserEmail());
         userEntityOpt.ifPresent(userEntity1 -> assertEquals("Points were not updated", 2000, userEntity1.getPoints()));
     }
 

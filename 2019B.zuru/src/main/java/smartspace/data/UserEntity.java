@@ -87,12 +87,13 @@ public class UserEntity implements SmartspaceEntity<String> {
 
     @Override
     public void setKey(String key) {
-        String[] args = key.split("#");
-        if (args.length == 2) {
-            this.setUserEmail(args[0]);
-            this.setUserSmartspace(args[1]);
+        if(key != null) {
+            String[] args = key.split("#");
+            if (args.length == 2) {
+                this.setUserEmail(args[0]);
+                this.setUserSmartspace(args[1]);
+            }
         }
-
 
     }
 }
