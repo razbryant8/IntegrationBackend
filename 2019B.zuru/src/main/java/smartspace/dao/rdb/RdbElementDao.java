@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
@@ -18,6 +19,7 @@ public class RdbElementDao implements EnhancedElementDao<String> {
 
     private EntityCrud entityCrud;
     private IdGeneratorCrud idGeneratorCrud;
+    private String smartspace;
 
     @Autowired
     public RdbElementDao(EntityCrud entityCrud, IdGeneratorCrud idGeneratorCrud) {
@@ -29,7 +31,7 @@ public class RdbElementDao implements EnhancedElementDao<String> {
     @Transactional
     public ElementEntity create(ElementEntity elementEntity) {
         IdGenerator nextId = this.idGeneratorCrud.save(new IdGenerator());
-        elementEntity.setKey("" + nextId.getNextId() + "#" + elementEntity.getElementSmartspace());
+        elementEntity.setKey("" + nextId.getNextId() + "#" + this.smartspace);
         this.idGeneratorCrud.delete(nextId);
         return this.entityCrud.save(elementEntity);
     }
@@ -113,5 +115,10 @@ public class RdbElementDao implements EnhancedElementDao<String> {
     @Override
     public ElementEntity upsert(ElementEntity elementEntity) {
         return entityCrud.save(elementEntity);
+    }
+
+    @Value("${spring.application.name}")
+    public void setSmartspace(String smartspace) {
+        this.smartspace = smartspace;
     }
 }

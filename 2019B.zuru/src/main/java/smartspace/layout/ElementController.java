@@ -4,11 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import smartspace.data.UserRole;
 import smartspace.logic.ElementService;
 import smartspace.logic.UserService;
 
-import java.util.Collections;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -26,17 +24,22 @@ public class ElementController {
 
     @RequestMapping(
             method = RequestMethod.GET,
-            path = "/messagedemo",//didn't change that because didn't know how to retrieve the necessary values
+            path = "/smartspace/admin/elements/{adminSmartspace}/{adminEmail}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ElementBoundary[] getAll(
+            @PathVariable("adminSmartspace") String adminSmartspace,
+            @PathVariable("adminEmail") String adminEmail,
             @RequestParam(name = "size", required = false, defaultValue = "10") int size,
             @RequestParam(name = "page", required = false, defaultValue = "0") int page) {
-        return this.elementService
-                .getAll(size, page)
-                .stream()
-                .map(ElementBoundary::new)
-                .collect(Collectors.toList())
-                .toArray(new ElementBoundary[0]);
+        if (validate(adminSmartspace, adminEmail)) {
+            return this.elementService
+                    .getAll(size, page)
+                    .stream()
+                    .map(ElementBoundary::new)
+                    .collect(Collectors.toList())
+                    .toArray(new ElementBoundary[0]);
+        } else
+            throw new RuntimeException("Unauthorized operation");
     }
 
     @Transactional
@@ -49,7 +52,7 @@ public class ElementController {
             @PathVariable("adminSmartspace") String adminSmartspace,
             @PathVariable("adminEmail") String adminEmail,
             @RequestBody ElementBoundary[] elementBoundary) {
-        if (validate(adminSmartspace,adminEmail))
+        if (validate(adminSmartspace, adminEmail))
             return IntStream.range(0, elementBoundary.length)
                     .mapToObj(i -> elementBoundary[i].convertToEntity())
                     .map(this.elementService::store)
@@ -62,6 +65,7 @@ public class ElementController {
 
     private boolean validate(String adminSmartspace, String adminEmail) {
         return true;
+        //TODO complete the user servica getByKey usage in order to validate user's credentials
         //return this.userService.//to be completed
     }
 }

@@ -1,8 +1,8 @@
 package smartspace.layout;
 
-import org.springframework.stereotype.Component;
 
-@Component
+import java.util.Objects;
+
 public class ElementKeyType {
 
     private String id;
@@ -30,5 +30,19 @@ public class ElementKeyType {
 
     public void setSmartspace(String smartspace) {
         this.smartspace = smartspace;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ElementKeyType)) return false;
+        ElementKeyType that = (ElementKeyType) o;
+        return getId().equals(that.getId()) &&
+                getSmartspace().equals(that.getSmartspace());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getSmartspace());
     }
 }

@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.TestPropertySource;
@@ -19,7 +20,9 @@ import smartspace.layout.ElementCreatorType;
 import smartspace.layout.ElementKeyType;
 import smartspace.layout.ElementLatLngType;
 import smartspace.logic.ElementService;
+
 import javax.annotation.PostConstruct;
+
 import org.junit.After;
 
 import java.util.Date;
@@ -27,7 +30,7 @@ import java.util.HashMap;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@TestPropertySource(properties= {"spring.profiles.active=default"})
+@TestPropertySource(properties = {"spring.profiles.active=default"})
 public class ElementRestControllerTests {
     private String baseUrl;
 
@@ -45,7 +48,8 @@ public class ElementRestControllerTests {
 
     private EntityFactory factory;
 
-    @LocalServerPort
+    //@LocalServerPort
+    @Value("${server.port}")
     public void setPort(int port) {
         this.port = port;
     }
@@ -77,34 +81,36 @@ public class ElementRestControllerTests {
     }
 
     @Before
-    public void setUp(){
-        adminUser = userDao.create(factory.createNewUser("zur@gmail.com","2019B.zuru","Zur","haha", UserRole.ADMIN,0));
+    public void setUp() {
+        adminUser = userDao.create(factory.createNewUser("zur@gmail.com", "2019B.zuru", "Zur", "haha", UserRole.ADMIN, 0));
     }
 
     @After
     public void tearDown() {
         this.elementDao
                 .deleteAll();
+        this.userDao.deleteAll();
+        adminUser = null;
     }
 
     @Test(expected = Throwable.class)
-    public void NotAdminImport(){
+    public void NotAdminImport() {
         // GIVEN the database contain one Admin user
 
         // WHEN someone that is not admin Import using REST API
         ElementBoundary newElementBoundary = new ElementBoundary();
         newElementBoundary.setCreated(new Date());
-        newElementBoundary.setCreator(new ElementCreatorType("zur@gmail.com","2019B.uu"));
+        newElementBoundary.setCreator(new ElementCreatorType("zur@gmail.com", "2019B.uu"));
         newElementBoundary.setElementProperties(new HashMap<>());
         newElementBoundary.setExpired(false);
         newElementBoundary.setElementType("scooter");
-        newElementBoundary.setKey(new ElementKeyType("5","2019B.test"));
+        newElementBoundary.setKey(new ElementKeyType("5", "2019B.test"));
         newElementBoundary.setName("Name");
-        newElementBoundary.setLatlng(new ElementLatLngType(35,35));
+        newElementBoundary.setLatlng(new ElementLatLngType(35, 35));
 
         ElementBoundary actualResult = this.restTemplate
                 .postForObject(
-                        this.baseUrl+"/badSmartSpace/badEmail",
+                        this.baseUrl + "/badSmartSpace/badEmail",
                         newElementBoundary,
                         ElementBoundary.class);
 
@@ -113,48 +119,49 @@ public class ElementRestControllerTests {
     }
 
     @Test(expected = Throwable.class)
-    public void NotAdminExport(){
+    public void NotAdminExport() {
         // GIVEN the database contain one Admin user
 
         // WHEN someone that is not admin Export using REST API
         ElementBoundary newElementBoundary = new ElementBoundary();
         newElementBoundary.setCreated(new Date());
-        newElementBoundary.setCreator(new ElementCreatorType("zur@gmail.com","2019B.uu"));
+        newElementBoundary.setCreator(new ElementCreatorType("zur@gmail.com", "2019B.uu"));
         newElementBoundary.setElementProperties(new HashMap<>());
         newElementBoundary.setExpired(false);
         newElementBoundary.setElementType("scooter");
-        newElementBoundary.setKey(new ElementKeyType("5","2019B.test"));
+        newElementBoundary.setKey(new ElementKeyType("5", "2019B.test"));
         newElementBoundary.setName("Name");
-        newElementBoundary.setLatlng(new ElementLatLngType(35,35));
+        newElementBoundary.setLatlng(new ElementLatLngType(35, 35));
 
         int page = 0;
         int size = 5;
-        ElementBoundary[]result =
+        ElementBoundary[] result =
                 this.restTemplate
                         .getForObject(
-                                this.baseUrl+ "/badSmartSpace/BadEmail?size={size}&page={page}",
+                                this.baseUrl + "/badSmartSpace/BadEmail?size={size}&page={page}",
                                 ElementBoundary[].class,
                                 size, page);
 
         // THEN exception is thrown
 
     }
-    @Test(expected = Throwable.class)
-    public void importFromCurrentSmartSpace(){
+    //@Test(expected = Throwable.class)
+    //public void importFromCurrentSmartSpace(){
+
+    //}
+
+    @Test
+    public void validOneElementImport() {
 
     }
 
     @Test
-    public void validOneElementImport(){
+    public void validMultiplElementImport() {
 
     }
 
     @Test
-    public void validMultiplElementImport(){
+    public void testExportUsingPagination() {
 
-    }
-    @Test
-    public void testExportUsingPagination(){
-        
     }
 }

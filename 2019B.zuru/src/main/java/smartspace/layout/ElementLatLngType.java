@@ -1,8 +1,8 @@
 package smartspace.layout;
 
-import org.springframework.stereotype.Component;
 
-@Component
+import java.util.Objects;
+
 public class ElementLatLngType {
 
     private double lat;
@@ -30,5 +30,19 @@ public class ElementLatLngType {
 
     public void setLng(double lng) {
         this.lng = lng;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ElementLatLngType)) return false;
+        ElementLatLngType that = (ElementLatLngType) o;
+        return Double.compare(that.getLat(), getLat()) == 0 &&
+                Double.compare(that.getLng(), getLng()) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getLat(), getLng());
     }
 }

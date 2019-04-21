@@ -1,8 +1,8 @@
 package smartspace.layout;
 
-import org.springframework.stereotype.Component;
 
-@Component
+import java.util.Objects;
+
 public class ElementCreatorType {
 
     private String email;
@@ -30,5 +30,19 @@ public class ElementCreatorType {
 
     public void setSmartspace(String smartspace) {
         this.smartspace = smartspace;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ElementCreatorType)) return false;
+        ElementCreatorType that = (ElementCreatorType) o;
+        return getEmail().equals(that.getEmail()) &&
+                getSmartspace().equals(that.getSmartspace());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getEmail(), getSmartspace());
     }
 }
