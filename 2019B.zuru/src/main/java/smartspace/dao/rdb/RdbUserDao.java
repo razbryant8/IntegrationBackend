@@ -1,5 +1,6 @@
 package smartspace.dao.rdb;
 
+
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -26,7 +27,6 @@ public class RdbUserDao implements EnhancedUserDao<String> {
     @Autowired
     public RdbUserDao(UserCrud userCrud) {
         this.userCrud = userCrud;
-
 
 
     }
@@ -74,7 +74,7 @@ public class RdbUserDao implements EnhancedUserDao<String> {
             existing.setRole(userEntity.getRole());
         }
 
-               if (userEntity.getPoints() >= 0) {
+        if (userEntity.getPoints() >= 0) {
             existing.setPoints(userEntity.getPoints());
         }
 
@@ -107,8 +107,6 @@ public class RdbUserDao implements EnhancedUserDao<String> {
                 .getContent();
     }
 
-
-    // maybe we need to get user by the email(id)
     @Override
     @Transactional(readOnly = true)
     public List<UserEntity> getUserByRole(String role, int size, int page) {
@@ -120,8 +118,10 @@ public class RdbUserDao implements EnhancedUserDao<String> {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<UserEntity> getUsersByEmailAndSmartspace(String email, String smartspace, int size, int page, String sortBy) {
-        return null; /*need to implement */
+        return this.userCrud.findUserByEmailAndSmartspaceLike(
+                email, smartspace, "", PageRequest.of(page, size));
     }
 
 }

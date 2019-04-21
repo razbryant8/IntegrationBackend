@@ -20,7 +20,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    // need to pix the path
+
     @RequestMapping(
             method = RequestMethod.GET,
             path = "/smartspace/admin/users/{adminSmartspace}/{adminEmail}",
@@ -31,14 +31,13 @@ public class UserController {
             @PathVariable("adminEmail") String adminEmail,
             @RequestParam(name = "size", required = false, defaultValue = "10") int size,
             @RequestParam(name = "page", required = false, defaultValue = "0") int page) {
-        return this.userService.getUsersByEmailAndSmartspace(adminEmail, adminEmail,size ,page)
+        return this.userService.getUsersByEmailAndSmartspace(adminEmail, adminSmartspace, size, page)
                 .stream()
                 .map(UserBoundary::new)
                 .collect(Collectors.toList())
                 .toArray(new UserBoundary[0]);
     }
 
-    // need to pix the path
     @RequestMapping(
             method = RequestMethod.POST,
             path = "/smartspace/admin/users/{adminSmartspace}/{adminEmail}",
@@ -57,5 +56,6 @@ public class UserController {
         return result;
 
     }
+
 
 }

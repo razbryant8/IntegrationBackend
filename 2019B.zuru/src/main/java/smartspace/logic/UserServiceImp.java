@@ -41,17 +41,17 @@ public class UserServiceImp implements UserService {
         }
     }
 
-    public Optional<UserEntity> getUserByKey(String key){
+    public Optional<UserEntity> getUserByKey(String key) {
         return this.userDao
                 .readById(key);
     }
 
     @Override
     public List<UserEntity> getUsersByEmailAndSmartspace(String email, String smartspace, int size, int page) {
-        return null; /*need to implement */
+        return this.userDao.getUsersByEmailAndSmartspace(email, smartspace, size, page, "");
     }
 
-    // maybe we need to check only the smart space ->  user.getUserSmartspace(); ?? ;
+    // maybe we need to check only the smartspace ->  user.getUserSmartspace(); ?? ;
     private boolean validate(UserEntity user) {
         return user.getRole() != null &&
                 !user.getUsername().trim().isEmpty() &&

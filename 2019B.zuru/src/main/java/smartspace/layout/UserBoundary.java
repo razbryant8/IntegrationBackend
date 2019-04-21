@@ -32,7 +32,9 @@ public class UserBoundary {
         this.points = userEntity.getPoints();
     }
 
-    public UserKey getKey() { return this.key; }
+    public UserKey getKey() {
+        return this.key;
+    }
 
     public String getUserSmartspace() {
         return userSmartspace;
@@ -58,7 +60,9 @@ public class UserBoundary {
         return points;
     }
 
-    private void UserKey(UserKey key) { this.key = key; }
+    private void UserKey(UserKey key) {
+        this.key = key;
+    }
 
     public void setUserSmartspace(String userSmartspace) {
         this.userSmartspace = userSmartspace;
@@ -76,7 +80,9 @@ public class UserBoundary {
         this.avatar = avatar;
     }
 
-    public void setRole(String role) { this.role = role; }
+    public void setRole(String role) {
+        this.role = role;
+    }
 
     public void setPoints(long points) {
         this.points = points;
@@ -89,7 +95,7 @@ public class UserBoundary {
         if (this.key != null) {
             entity.setUserEmail(this.key.getEmail());
             entity.setUserSmartspace(this.key.getSmartspace());
-            entity.setKey(this.key.getEmail()+"#"+this.key.getSmartspace());
+            entity.setKey(this.key.getEmail() + "#" + this.key.getSmartspace());
         }
 
         //role is enum
