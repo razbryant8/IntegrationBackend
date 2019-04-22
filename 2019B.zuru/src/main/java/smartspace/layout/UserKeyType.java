@@ -3,15 +3,15 @@ package smartspace.layout;
 
 import java.util.Objects;
 
-public class ElementCreatorType {
+public class UserKeyType {
 
     private String email;
     private String smartspace;
 
-    public ElementCreatorType() {
+    public UserKeyType() {
     }
 
-    public ElementCreatorType(String email, String smartspace) {
+    public UserKeyType(String email, String smartspace) {
         this.email = email;
         this.smartspace = smartspace;
     }
@@ -35,8 +35,8 @@ public class ElementCreatorType {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof ElementCreatorType)) return false;
-        ElementCreatorType that = (ElementCreatorType) o;
+        if (!(o instanceof UserKeyType)) return false;
+        UserKeyType that = (UserKeyType) o;
         return getEmail().equals(that.getEmail()) &&
                 getSmartspace().equals(that.getSmartspace());
     }

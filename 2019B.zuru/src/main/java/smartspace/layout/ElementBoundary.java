@@ -7,12 +7,12 @@ import java.util.Date;
 import java.util.Map;
 
 public class ElementBoundary {
-    private ElementKeyType key;
+    private KeyType key;
     private String elementType;
     private String name;
     private boolean expired;
     private Date created;
-    private ElementCreatorType creator;
+    private UserKeyType creator;
     private ElementLatLngType latlng;
     private Map<String, Object> elementProperties;
 
@@ -20,13 +20,13 @@ public class ElementBoundary {
     }
 
     public ElementBoundary(ElementEntity elementEntity) {
-        this.key = new ElementKeyType(elementEntity.getElementId(),
+        this.key = new KeyType(elementEntity.getElementId(),
                 elementEntity.getElementSmartspace());
         this.elementType = elementEntity.getType();
         this.name = elementEntity.getName();
         this.expired = elementEntity.isExpired();
         this.created = elementEntity.getCreationTimestamp();
-        this.creator = new ElementCreatorType(elementEntity.getCreatorEmail(),
+        this.creator = new UserKeyType(elementEntity.getCreatorEmail(),
                 elementEntity.getCreatorSmartspace());
         if (elementEntity.getLocation() != null) {
             latlng = new ElementLatLngType(180.0 - elementEntity.getLocation().getY(),
@@ -36,11 +36,11 @@ public class ElementBoundary {
         this.elementProperties = elementEntity.getMoreAttributes();
     }
 
-    public ElementKeyType getKey() {
+    public KeyType getKey() {
         return key;
     }
 
-    public void setKey(ElementKeyType key) {
+    public void setKey(KeyType key) {
         this.key = key;
     }
 
@@ -76,11 +76,11 @@ public class ElementBoundary {
         this.created = created;
     }
 
-    public ElementCreatorType getCreator() {
+    public UserKeyType getCreator() {
         return creator;
     }
 
-    public void setCreator(ElementCreatorType creator) {
+    public void setCreator(UserKeyType creator) {
         this.creator = creator;
     }
 

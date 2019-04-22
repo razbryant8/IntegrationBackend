@@ -3,15 +3,15 @@ package smartspace.layout;
 
 import java.util.Objects;
 
-public class ElementKeyType {
+public class KeyType {
 
     private String id;
     private String smartspace;
 
-    public ElementKeyType() {
+    public KeyType() {
     }
 
-    public ElementKeyType(String id, String smartspace) {
+    public KeyType(String id, String smartspace) {
         this.id = id;
         this.smartspace = smartspace;
     }
@@ -35,8 +35,8 @@ public class ElementKeyType {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof ElementKeyType)) return false;
-        ElementKeyType that = (ElementKeyType) o;
+        if (!(o instanceof KeyType)) return false;
+        KeyType that = (KeyType) o;
         return getId().equals(that.getId()) &&
                 getSmartspace().equals(that.getSmartspace());
     }
