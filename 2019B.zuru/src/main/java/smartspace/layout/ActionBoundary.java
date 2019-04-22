@@ -11,7 +11,7 @@ public class ActionBoundary {
     private String type;
     private Date created;
     private KeyType element;
-    private ElementCreatorType player;
+    private UserKeyType player;
     private Map<String, Object> actionProperties;
 
     public ActionBoundary() { }
@@ -21,7 +21,7 @@ public class ActionBoundary {
         this.type = actionEntity.getActionType();
         this.created = actionEntity.getCreationTimestamp();
         this.element = new KeyType(actionEntity.getElementId(), actionEntity.getElementSmartspace());
-        this.player = new ElementCreaterType(actionEntity.getPlayerEmail(), actionEntity.getPlayerSmartspace());
+        this.player = new UserKeyType(actionEntity.getPlayerEmail(), actionEntity.getPlayerSmartspace());
         this.actionProperties = actionEntity.getMoreAttributes();
     }
 
@@ -57,11 +57,11 @@ public class ActionBoundary {
         this.element = element;
     }
 
-    public ElementCreatorType getPlayer() {
+    public UserKeyType getPlayer() {
         return player;
     }
 
-    public void setPlayer(ElementCreatorType player) {
+    public void setPlayer(UserKeyType player) {
         this.player = player;
     }
 
@@ -82,5 +82,27 @@ public class ActionBoundary {
         } else {
             entity.setKey(null);
         }
+
+        if (this.type != null) {
+            entity.setActionType(this.type);
+        }
+
+        entity.setCreationTimestamp(this.created);
+
+        if (this.element != null && this.element.getId() != null
+                && this.element.getSmartspace() != null) {
+            entity.setElementId(this.element.getId() + "#" + this.element.getSmartspace());
+        } else {
+            entity.setElementId(null);
+        }
+
+        if (this.player != null) {
+            entity.setPlayerSmartspace(this.player.getSmartspace());
+            entity.setPlayerEmail(this.player.getEmail());
+        }
+
+        entity.setMoreAttributes(this.actionProperties);
+        
+        return entity;
     }
 }
