@@ -19,6 +19,7 @@ public class ActionEntity {
     private String actionType;
     private Date creationTimestamp;
     private Map<String, Object> moreAttributes;
+    //temp
 
     public ActionEntity() {
 
