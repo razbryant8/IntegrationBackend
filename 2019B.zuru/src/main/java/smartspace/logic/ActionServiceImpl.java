@@ -3,6 +3,7 @@ package smartspace.logic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import smartspace.dao.EnhancedActionDao;
 import smartspace.data.ActionEntity;
 
@@ -14,19 +15,45 @@ public class ActionServiceImpl implements ActionService {
     private EnhancedActionDao enhancedActionDao;
     private String smartspace;
 
-//    @Autowired
-//    public ActionServiceImpl(EnhancedActionDao enhancedActionDao) {
-//        this.enhancedActionDao = enhancedActionDao;
-//    }
-
-    @Override
-    public List<ActionEntity> getAll(int size, int page) {
-        return null;
+    @Autowired
+    public ActionServiceImpl(EnhancedActionDao enhancedActionDao) {
+        this.enhancedActionDao = enhancedActionDao;
     }
 
     @Override
+    public List<ActionEntity> getAll(int size, int page) {
+        return this.enhancedActionDao.readAll(size, page, "creationTimestamp");
+    }
+
+
+
+    @Override
+    @Transactional
     public ActionEntity store(ActionEntity actionEntity) {
-        return null;
+        if (validate(actionEntity)) {
+            return this.enhancedActionDao
+                    .upsert(actionEntity);
+        } else {
+            throw new RuntimeException("Invalid element input");
+        }
+    }
+
+    private boolean validate(ActionEntity actionEntity) {
+        return actionEntity.getMoreAttributes() != null &&
+                actionEntity.getActionType() != null &&
+                !actionEntity.getActionType().trim().isEmpty() &&
+                actionEntity.getPlayerEmail() != null &&
+                !actionEntity.getPlayerEmail().trim().isEmpty() &&
+                actionEntity.getPlayerSmartspace() != null &&
+                !actionEntity.getPlayerSmartspace().trim().isEmpty() &&
+                actionEntity.getActionSmartspace() != null &&
+                !actionEntity.getActionSmartspace().trim().isEmpty() &&
+                actionEntity.getElementSmartspace() != null &&
+                !actionEntity.getElementSmartspace().trim().isEmpty() &&
+                !actionEntity.getElementSmartspace().equals(this.smartspace) &&
+                actionEntity.getElementId() != null &&
+                !actionEntity.getElementId().trim().isEmpty();
+
     }
 
     @Value("${spring.application.name}")
