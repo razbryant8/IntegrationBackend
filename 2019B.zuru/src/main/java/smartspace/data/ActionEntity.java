@@ -8,7 +8,7 @@ import java.util.Map;
 
 @Entity
 @Table(name = "ACTIONS")
-public class ActionEntity {
+public class ActionEntity implements SmartspaceEntity<String> {
 
     private String actionSmartspace;
     private String actionId;
@@ -19,7 +19,6 @@ public class ActionEntity {
     private String actionType;
     private Date creationTimestamp;
     private Map<String, Object> moreAttributes;
-    //temp
 
     public ActionEntity() {
 
@@ -34,7 +33,7 @@ public class ActionEntity {
         this.playerSmartspace = playerSmartspace;
         this.moreAttributes = moreAttributes;
     }
-
+    @Transient
     public String getActionSmartspace() {
         return actionSmartspace;
     }
@@ -43,7 +42,7 @@ public class ActionEntity {
         this.actionSmartspace = actionSmartspace;
     }
 
-    @Id
+    @Transient
     public String getActionId() {
         return actionId;
     }
@@ -112,4 +111,18 @@ public class ActionEntity {
     }
 
 
+    @Id
+    @Override
+    public String getKey() {
+        return this.actionId + "#" + this.actionSmartspace;
+    }
+
+    @Override
+    public void setKey(String key) {
+        String[] tokens = key.split("#");
+        if(tokens.length == 2){
+            setActionId(tokens[0]);
+            setActionSmartspace(tokens[1]);
+        }
+    }
 }
