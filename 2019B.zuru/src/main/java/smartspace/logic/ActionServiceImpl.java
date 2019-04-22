@@ -26,7 +26,6 @@ public class ActionServiceImpl implements ActionService {
     }
 
 
-
     @Override
     @Transactional
     public ActionEntity store(ActionEntity actionEntity) {
