@@ -26,13 +26,14 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<UserEntity> getAll(int size, int page) {
         return this.userDao
                 .readAll(size, page, "Role");
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public UserEntity store(UserEntity user) {
         if (validate(user)) {
             user.setRole(user.getRole());          // not sure about that
@@ -43,19 +44,20 @@ public class UserServiceImp implements UserService {
         }
     }
 
+    @Transactional(readOnly = true)
     public Optional<UserEntity> getUserByKey(String key) {
         return this.userDao
                 .readById(key);
     }
 
     @Override
+    @Transactional(readOnly = true)
     // for import users from another db
     public List<UserEntity> getUsersByEmailAndSmartspace(String email, String smartspace, int size, int page) {
-        if(this.smartspace != smartspace){
+        if (this.smartspace != smartspace) {
             return this.userDao.getUsersByEmailAndSmartspace(email, smartspace, size, page, "");
-        }
-        else{
-            throw  new RuntimeException("Invalid smartspace value!");
+        } else {
+            throw new RuntimeException("Invalid smartspace value!");
         }
 
     }
