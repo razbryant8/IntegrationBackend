@@ -1,6 +1,7 @@
 package smartspace.logic;
 
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ import java.util.Optional;
 public class UserServiceImp implements UserService {
 
     private EnhancedUserDao<String> userDao;
+    private String smartspace;
 
 
     @Autowired
@@ -33,7 +35,7 @@ public class UserServiceImp implements UserService {
     @Transactional
     public UserEntity store(UserEntity user) {
         if (validate(user)) {
-            user.setRole(user.getRole());          // not sure about that (line 33)
+            user.setRole(user.getRole());          // not sure about that
             return this.userDao
                     .create(user);
         } else {
@@ -47,8 +49,15 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
+    // for import users from another db
     public List<UserEntity> getUsersByEmailAndSmartspace(String email, String smartspace, int size, int page) {
-        return this.userDao.getUsersByEmailAndSmartspace(email, smartspace, size, page, "");
+        if(this.smartspace != smartspace){
+            return this.userDao.getUsersByEmailAndSmartspace(email, smartspace, size, page, "");
+        }
+        else{
+            throw  new RuntimeException("Invalid smartspace value!");
+        }
+
     }
 
     // maybe we need to check only the smartspace ->  user.getUserSmartspace(); ?? ;
@@ -59,5 +68,10 @@ public class UserServiceImp implements UserService {
                 !user.getUserEmail().trim().isEmpty() &&
                 user.getPoints() >= 0.0;
 
+    }
+
+    @Value("${spring.application.name}")
+    public void setSmartspace(String smartspace) {
+        this.smartspace = smartspace;
     }
 }

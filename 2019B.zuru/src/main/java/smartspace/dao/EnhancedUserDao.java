@@ -1,9 +1,10 @@
 package smartspace.dao;
 
+
 import smartspace.data.UserEntity;
 
 import java.util.List;
-import java.util.Optional;
+
 
 public interface EnhancedUserDao<String> extends UserDao<String> {
     public List<UserEntity> readAll(int size, int page);
@@ -14,6 +15,6 @@ public interface EnhancedUserDao<String> extends UserDao<String> {
             String role, int size, int page);
 
     public List<UserEntity> getUsersByEmailAndSmartspace(
-            String email,String smartspace, int size, int page, String sortBy);
+            String email, String smartspace, int size, int page,  String sortBy);
 
 }

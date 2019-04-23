@@ -12,7 +12,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import smartspace.dao.ElementDao;
 import smartspace.data.ElementEntity;
 import smartspace.data.Location;
-import smartspace.util.EntityFactory;
+import smartspace.data.util.EntityFactory;
+//import smartspace.util.EntityFactory;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -23,7 +24,7 @@ import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@TestPropertySource(properties= {"spring.profiles.active=default"})
+@TestPropertySource(properties = {"spring.profiles.active=default"})
 public class RdbElementDaoTest {
 
     @Autowired
@@ -37,7 +38,7 @@ public class RdbElementDaoTest {
 
     @Before
     public void setUp() {
-        elementEntity = factory.createNewElement("name","type",new Location(5,4),new Date(),null,null,false,new HashMap<>());
+        elementEntity = factory.createNewElement("name", "type", new Location(5, 4), new Date(), null, null, false, new HashMap<>());
         elementDao.deleteAll();
     }
 
