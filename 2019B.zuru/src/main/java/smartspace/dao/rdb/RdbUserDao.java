@@ -41,14 +41,14 @@ public class RdbUserDao implements EnhancedUserDao<String> {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public Optional<UserEntity> readById(String userKey) {
         return this.userCrud.findById(userKey);
     }
 
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<UserEntity> readAll() {
         List<UserEntity> userEntityList = new ArrayList<>();
         this.userCrud.findAll().forEach(userEntityList::add);
@@ -56,7 +56,7 @@ public class RdbUserDao implements EnhancedUserDao<String> {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public void update(UserEntity userEntity) {
 
         UserEntity existing = this.readById(userEntity.getKey())

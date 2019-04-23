@@ -33,7 +33,6 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public UserEntity store(UserEntity user) {
         if (validate(user)) {
             user.setRole(user.getRole());          // not sure about that
