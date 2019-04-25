@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import smartspace.data.UserEntity;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserCrud extends PagingAndSortingRepository<UserEntity, String> {
 
@@ -15,5 +16,15 @@ public interface UserCrud extends PagingAndSortingRepository<UserEntity, String>
             @Param("role") String role,
             Pageable pageable);
 
+    public List<UserEntity>
+    findUserByEmailAndSmartspaceLike(
+            @Param("email") String email,
+            @Param("smartspace") String smartspace,
+            @Param("sortBy") String sortBy,
+            Pageable pageable);
+
+
+
 
 }
+

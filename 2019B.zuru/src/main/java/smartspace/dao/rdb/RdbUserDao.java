@@ -1,5 +1,6 @@
 package smartspace.dao.rdb;
 
+
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -21,13 +22,11 @@ import java.util.List;
 public class RdbUserDao implements EnhancedUserDao<String> {
 
     private UserCrud userCrud;
-    private IdGeneratorCrud idGeneratorCrud;
 
 
     @Autowired
-    public RdbUserDao(UserCrud userCrud, IdGeneratorCrud idGeneratorCrud) {
+    public RdbUserDao(UserCrud userCrud) {
         this.userCrud = userCrud;
-        this.idGeneratorCrud = idGeneratorCrud;
 
 
     }
@@ -36,23 +35,20 @@ public class RdbUserDao implements EnhancedUserDao<String> {
     @Override
     @Transactional
     public UserEntity create(UserEntity userEntity) {
-        IdGenerator nextId = this.idGeneratorCrud.save(new IdGenerator());
-        userEntity.setKey("" + nextId.getNextId() + userEntity.getUserSmartspace()+ userEntity.getRole());
-        this.idGeneratorCrud.delete(nextId);
 
         return this.userCrud.save(userEntity);
 
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public Optional<UserEntity> readById(String userKey) {
         return this.userCrud.findById(userKey);
     }
 
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<UserEntity> readAll() {
         List<UserEntity> userEntityList = new ArrayList<>();
         this.userCrud.findAll().forEach(userEntityList::add);
@@ -60,11 +56,11 @@ public class RdbUserDao implements EnhancedUserDao<String> {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public void update(UserEntity userEntity) {
 
-        UserEntity existing = this.readById(userEntity.getUserEmail())
-                .orElseThrow(() -> new RuntimeException("No user with this email: " + userEntity.getUserEmail() + "exists!"));
+        UserEntity existing = this.readById(userEntity.getKey())
+                .orElseThrow(() -> new RuntimeException("No user with this key " + userEntity.getKey() + " is exists!"));
 
         // Patching
         if (userEntity.getUsername() != null) {
@@ -78,7 +74,7 @@ public class RdbUserDao implements EnhancedUserDao<String> {
             existing.setRole(userEntity.getRole());
         }
 
-               if (userEntity.getPoints() >= 0) {
+        if (userEntity.getPoints() >= 0) {
             existing.setPoints(userEntity.getPoints());
         }
 
@@ -111,8 +107,6 @@ public class RdbUserDao implements EnhancedUserDao<String> {
                 .getContent();
     }
 
-
-    // maybe we need to get user by the email(id)
     @Override
     @Transactional(readOnly = true)
     public List<UserEntity> getUserByRole(String role, int size, int page) {
@@ -122,4 +116,12 @@ public class RdbUserDao implements EnhancedUserDao<String> {
                         "%" + role + "%",
                         PageRequest.of(page, size));
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<UserEntity> getUsersByEmailAndSmartspace(String email, String smartspace, int size, int page, String sortBy) {
+        return this.userCrud.findUserByEmailAndSmartspaceLike(
+                email, smartspace, "", PageRequest.of(page, size));
+    }
+
 }

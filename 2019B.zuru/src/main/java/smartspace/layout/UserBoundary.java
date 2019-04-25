@@ -3,12 +3,11 @@ package smartspace.layout;
 import smartspace.data.UserEntity;
 import smartspace.data.UserRole;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class UserBoundary {
-    private final String SMARTSPCAE_TEXT = "smartspace";
-    private final String EMAIL_TEXT = "email";
-    private Map<String, String> key;
+    private UserKey key;
     private String userSmartspace;
     private String userEmail;
     private String username;
@@ -22,16 +21,18 @@ public class UserBoundary {
     }
 
     public UserBoundary(UserEntity userEntity) {
+
+
         this.userSmartspace = userEntity.getUserSmartspace();
         this.userEmail = userEntity.getUserEmail();
-        this.setKey();
+        this.key = new UserKey(this.userEmail, this.userSmartspace);
         this.username = userEntity.getUsername();
         this.avatar = userEntity.getAvatar();
         this.role = userEntity.getRole().name();
         this.points = userEntity.getPoints();
     }
 
-    public Map<String, String> getKey() {
+    public UserKey getKey() {
         return this.key;
     }
 
@@ -59,9 +60,8 @@ public class UserBoundary {
         return points;
     }
 
-    private void setKey() {
-        this.key.put(SMARTSPCAE_TEXT, this.userSmartspace);
-        this.key.put(EMAIL_TEXT, this.userEmail);
+    private void UserKey(UserKey key) {
+        this.key = key;
     }
 
     public void setUserSmartspace(String userSmartspace) {
@@ -93,9 +93,11 @@ public class UserBoundary {
         UserEntity entity = new UserEntity();
 
         if (this.key != null) {
-            entity.setUserSmartspace(this.key.get(SMARTSPCAE_TEXT));
-            entity.setUserEmail(this.key.get(EMAIL_TEXT));
+            entity.setUserEmail(this.key.getEmail());
+            entity.setUserSmartspace(this.key.getSmartspace());
+            entity.setKey(this.key.getEmail() + "#" + this.key.getSmartspace());
         }
+
         //role is enum
         if (this.role != null) {
             entity.setRole(UserRole.valueOf(this.role));

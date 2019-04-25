@@ -1,13 +1,10 @@
 package smartspace.data;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "USERS")
-public class UserEntity implements SmartspaceEntity{
+public class UserEntity implements SmartspaceEntity<String> {
     private String userSmartspace;
     private String userEmail;
     private String username;
@@ -20,8 +17,7 @@ public class UserEntity implements SmartspaceEntity{
     }
 
     public UserEntity(String userEmail, String userSmartspace, String username, String avatar, UserRole role, long points) {
-        this.userEmail = userEmail;
-        this.userSmartspace = userSmartspace;
+        this.setKey(userEmail+"#"+userSmartspace);
         this.username = username;
         this.avatar = avatar;
         this.role = role;
@@ -55,7 +51,8 @@ public class UserEntity implements SmartspaceEntity{
         return role;
     }
 
-    @Id
+
+    @Transient
     public String getUserEmail() {
         return userEmail;
     }
@@ -80,17 +77,28 @@ public class UserEntity implements SmartspaceEntity{
         this.points = points;
     }
 
-
+    @Column(name = "ID")
+    @Id
     @Override
-    @Transient
-    public Object getKey() {
-        return null;
+    public String getKey() {
+        return getUserEmail() + "#" + getUserSmartspace();
     }
 
     @Override
-    @Transient
-    public void setKey(Object key) {
+    public void setKey(String key) {
+        if(key != null) {
+            String[] args = key.split("#");
+            if (args.length == 2) {
+                this.setUserEmail(args[0]);
+                this.setUserSmartspace(args[1]);
+            }
+        }
 
+    }
 
+    @Override
+    public String toString() {
+        return "userEntity [id=" + getKey() + ", username=" + getUsername() + ", avatar=" + getAvatar() + ", role="
+                + getRole().name() + ", points=" + getPoints() +"]";
     }
 }

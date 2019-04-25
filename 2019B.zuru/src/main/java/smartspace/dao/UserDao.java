@@ -5,11 +5,11 @@ import java.util.Optional;
 
 import smartspace.data.*;
 
-public interface UserDao<UserKey> {
+public interface UserDao<String> {
 
     public UserEntity create(UserEntity userEntity);
 
-    public Optional<UserEntity> readById(UserKey userKey);
+    public Optional<UserEntity> readById(String id);
 
     public List<UserEntity> readAll();
 

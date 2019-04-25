@@ -15,6 +15,7 @@ import smartspace.dao.EnhancedElementDao;
 import smartspace.data.ElementEntity;
 import smartspace.data.Location;
 import smartspace.data.util.EntityFactory;
+//import smartspace.util.EntityFactory;
 
 import java.util.Date;
 import java.util.HashMap;
