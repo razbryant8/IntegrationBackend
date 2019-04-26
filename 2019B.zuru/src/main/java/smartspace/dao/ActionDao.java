@@ -5,8 +5,8 @@ import smartspace.data.*;
 
 public interface ActionDao {
 	
-	public ActionEntity create(ActionEntity actionEntit);
-	public List<ActionEntity> readAll();
-	public void deleteAll();
+	ActionEntity create(ActionEntity actionEntity);
+	List<ActionEntity> readAll();
+	void deleteAll();
 
 }

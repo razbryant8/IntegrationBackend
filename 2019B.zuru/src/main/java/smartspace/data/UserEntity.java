@@ -24,7 +24,6 @@ public class UserEntity implements SmartspaceEntity<String> {
         this.points = points;
     }
 
-    @Transient
     public String getUserSmartspace() {
         return userSmartspace;
     }

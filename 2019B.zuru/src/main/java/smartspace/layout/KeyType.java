@@ -1,9 +1,9 @@
 package smartspace.layout;
 
-
 import java.util.Objects;
 
 public class KeyType {
+
 
     private String id;
     private String smartspace;

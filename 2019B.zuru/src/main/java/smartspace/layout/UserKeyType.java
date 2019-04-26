@@ -1,6 +1,5 @@
 package smartspace.layout;
 
-
 import java.util.Objects;
 
 public class UserKeyType {
