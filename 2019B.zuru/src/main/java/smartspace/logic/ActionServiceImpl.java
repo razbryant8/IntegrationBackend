@@ -33,7 +33,7 @@ public class ActionServiceImpl implements ActionService {
             return this.enhancedActionDao
                     .upsert(actionEntity);
         } else {
-            throw new RuntimeException("Invalid element input");
+            throw new RuntimeException("Invalid action input");
         }
     }
 

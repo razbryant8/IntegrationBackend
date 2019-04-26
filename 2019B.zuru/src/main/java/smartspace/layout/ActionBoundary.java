@@ -91,6 +91,7 @@ public class ActionBoundary {
 
         if (this.element != null && this.element.getId() != null
                 && this.element.getSmartspace() != null) {
+            entity.setElementSmartspace(this.element.getSmartspace());
             entity.setElementId(this.element.getId() + "#" + this.element.getSmartspace());
         } else {
             entity.setElementId(null);
