@@ -21,6 +21,7 @@ import smartspace.data.util.EntityFactory;
 import smartspace.logic.ElementService;
 
 import javax.annotation.PostConstruct;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -172,6 +173,8 @@ public class ElementControllerTest {
         // GIVEN the database contain one Admin user
 
         // WHEN someone that is Import using REST API
+        ArrayList<ElementBoundary> boundryArr = new ArrayList<ElementBoundary>();
+
         ElementBoundary newElementBoundary = new ElementBoundary();
         newElementBoundary.setCreated(new Date());
         newElementBoundary.setCreator(new UserKeyType("zur@gmail.com", "2019B.uu"));
@@ -182,18 +185,18 @@ public class ElementControllerTest {
         newElementBoundary.setName("Name");
         newElementBoundary.setLatlng(new ElementLatLngType(35, 35));
 
-        ElementBoundary actualResult = this.restTemplate
+        boundryArr.add(newElementBoundary);
+
+        ElementBoundary[] actualResult = this.restTemplate
                 .postForObject(
                         this.baseUrl + adminUser.getUserSmartspace() + "/" + adminUser.getUserEmail(),
-                        newElementBoundary,
-                        ElementBoundary.class);
+                        boundryArr.toArray(),
+                        ElementBoundary[].class);
 
-        // THEN The element was imported to our database
-        assertThat(this.elementDao.readById(actualResult.getKey()))
-                .isPresent()
-                .get()
-                .extracting("key")
-                .containsExactly(actualResult.getKey());
+        // THEN the database contain those one elements
+        List<ElementEntity> actualInDB = this.elementDao.readAll();
+        assertThat(actualInDB).hasSize(1);
+        assertThat(actualInDB).usingElementComparatorOnFields("key").contains(actualResult[0] .convertToEntity());
     }
 
     @Test
@@ -201,6 +204,8 @@ public class ElementControllerTest {
         // GIVEN the database contain one Admin user
 
         // WHEN someone that is Import two elements using REST
+        ArrayList<ElementBoundary> boundryArr = new ArrayList<ElementBoundary>();
+
         ElementBoundary newElementBoundary = new ElementBoundary();
         newElementBoundary.setCreated(new Date());
         newElementBoundary.setCreator(new UserKeyType("zur@gmail.com", "2019B.uu"));
@@ -221,23 +226,20 @@ public class ElementControllerTest {
         newElementBoundary2.setName("Name");
         newElementBoundary2.setLatlng(new ElementLatLngType(35, 35));
 
-        ElementBoundary actualResult1 = this.restTemplate
+        boundryArr.add(newElementBoundary);
+        boundryArr.add(newElementBoundary2);
+
+        ElementBoundary[] actualResult1 = this.restTemplate
                 .postForObject(
                         this.baseUrl + "/" + adminUser.getUserSmartspace() + "/" + adminUser.getUserEmail(),
-                        newElementBoundary,
-                        ElementBoundary.class);
-
-        ElementBoundary actualResult2 = this.restTemplate
-                .postForObject(
-                        this.baseUrl + adminUser.getUserSmartspace() + "/" + adminUser.getUserEmail(),
-                        newElementBoundary,
-                        ElementBoundary.class);
+                        boundryArr,
+                        ElementBoundary[].class);
 
         // THEN the database contain those two elements
         List<ElementEntity> actualInDB = this.elementDao.readAll();
         assertThat(actualInDB).hasSize(2);
-        assertThat(actualInDB).usingElementComparatorOnFields("key").contains(newElementBoundary.convertToEntity());
-        assertThat(actualInDB).usingElementComparatorOnFields("key").contains(newElementBoundary2.convertToEntity());
+        assertThat(actualInDB).usingElementComparatorOnFields("key").contains(actualResult1[0] .convertToEntity());
+        assertThat(actualInDB).usingElementComparatorOnFields("key").contains(actualResult1[1].convertToEntity());
 
     }
 

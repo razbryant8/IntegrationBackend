@@ -117,11 +117,4 @@ public class RdbUserDao implements EnhancedUserDao<String> {
                         PageRequest.of(page, size));
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public List<UserEntity> getUsersByEmailAndSmartspace(String email, String smartspace, int size, int page, String sortBy) {
-        return this.userCrud.findUserByEmailAndSmartspaceLike(
-                email, smartspace, "", PageRequest.of(page, size));
-    }
-
 }

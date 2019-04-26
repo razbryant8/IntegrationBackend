@@ -11,7 +11,8 @@ public interface UserService {
 
     public UserEntity store(UserEntity user);
 
-    public List<UserEntity> getUsersByEmailAndSmartspace(
-            String email,String smartspace, int size, int page);
+    public Optional<UserEntity> getUserByKey(String key);
+
+    public Optional<UserEntity> getUserByMailAndSmartSpace(String email, String smartSpace);
 
 }

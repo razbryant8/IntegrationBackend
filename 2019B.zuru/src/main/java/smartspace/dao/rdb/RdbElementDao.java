@@ -17,13 +17,13 @@ import smartspace.data.ElementEntity;
 @Repository
 public class RdbElementDao implements EnhancedElementDao<String> {
 
-    private EntityCrud entityCrud;
+    private ElementCrud elementCrud;
     private IdGeneratorCrud idGeneratorCrud;
     private String smartspace;
 
     @Autowired
-    public RdbElementDao(EntityCrud entityCrud, IdGeneratorCrud idGeneratorCrud) {
-        this.entityCrud = entityCrud;
+    public RdbElementDao(ElementCrud elementCrud, IdGeneratorCrud idGeneratorCrud) {
+        this.elementCrud = elementCrud;
         this.idGeneratorCrud = idGeneratorCrud;
     }
 
@@ -33,20 +33,20 @@ public class RdbElementDao implements EnhancedElementDao<String> {
         IdGenerator nextId = this.idGeneratorCrud.save(new IdGenerator());
         elementEntity.setKey("" + nextId.getNextId() + "#" + this.smartspace);
         this.idGeneratorCrud.delete(nextId);
-        return this.entityCrud.save(elementEntity);
+        return this.elementCrud.save(elementEntity);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Optional<ElementEntity> readById(String elementKey) {
-        return this.entityCrud.findById(elementKey);
+        return this.elementCrud.findById(elementKey);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<ElementEntity> readAll() {
         List<ElementEntity> entityList = new ArrayList<>();
-        this.entityCrud.findAll().forEach(entityList::add);
+        this.elementCrud.findAll().forEach(entityList::add);
         return entityList;
     }
 
@@ -76,45 +76,45 @@ public class RdbElementDao implements EnhancedElementDao<String> {
         existing.setExpired(elementEntity.isExpired());
 
 
-        this.entityCrud.save(existing);
+        this.elementCrud.save(existing);
     }
 
     @Override
     @Transactional
     public void deleteByKey(String elementKey) {
-        this.entityCrud.deleteById(elementKey);
+        this.elementCrud.deleteById(elementKey);
 
     }
 
     @Override
     @Transactional
     public void delete(ElementEntity elementEntity) {
-        this.entityCrud.delete(elementEntity);
+        this.elementCrud.delete(elementEntity);
 
     }
 
     @Override
     @Transactional
     public void deleteAll() {
-        this.entityCrud.deleteAll();
+        this.elementCrud.deleteAll();
 
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<ElementEntity> readAll(int size, int page) {
-        return this.entityCrud.findAll(PageRequest.of(page, size)).getContent();
+        return this.elementCrud.findAll(PageRequest.of(page, size)).getContent();
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<ElementEntity> readAll(int size, int page, String sortBy) {
-        return this.entityCrud.findAll(PageRequest.of(page, size, Sort.Direction.ASC, sortBy)).getContent();
+        return this.elementCrud.findAll(PageRequest.of(page, size, Sort.Direction.ASC, sortBy)).getContent();
     }
 
     @Override
     public ElementEntity upsert(ElementEntity elementEntity) {
-        return entityCrud.save(elementEntity);
+        return elementCrud.save(elementEntity);
     }
 
     @Value("${spring.application.name}")

@@ -14,7 +14,5 @@ public interface EnhancedUserDao<String> extends UserDao<String> {
     public List<UserEntity> getUserByRole(
             String role, int size, int page);
 
-    public List<UserEntity> getUsersByEmailAndSmartspace(
-            String email, String smartspace, int size, int page,  String sortBy);
 
 }

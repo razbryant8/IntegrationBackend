@@ -43,21 +43,18 @@ public class UserServiceImp implements UserService {
         }
     }
 
+    @Override
     @Transactional(readOnly = true)
     public Optional<UserEntity> getUserByKey(String key) {
         return this.userDao
                 .readById(key);
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    // for import users from another db
-    public List<UserEntity> getUsersByEmailAndSmartspace(String email, String smartspace, int size, int page) {
-        if (this.smartspace != smartspace) {
-            return this.userDao.getUsersByEmailAndSmartspace(email, smartspace, size, page, "");
-        } else {
-            throw new RuntimeException("Invalid smartspace value!");
-        }
+    public Optional<UserEntity> getUserByMailAndSmartSpace(String email, String smartSpace) {
+        UserEntity user = new UserEntity();
+        user.setUserSmartspace(smartSpace);
+        user.setUserEmail(email);
+        return this.userDao.readById(user.getKey());
 
     }
 

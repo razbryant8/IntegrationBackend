@@ -4,9 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import smartspace.data.UserEntity;
+import smartspace.data.UserRole;
 import smartspace.logic.ElementService;
 import smartspace.logic.UserService;
 
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -64,8 +67,9 @@ public class ElementController {
     }
 
     private boolean validate(String adminSmartspace, String adminEmail) {
-        return true;
-        //TODO complete the user servica getByKey usage in order to validate user's credentials
-        //return this.userService.//to be completed
+        Optional<UserEntity> dbUser = userService.getUserByMailAndSmartSpace(adminEmail,adminSmartspace);
+        if(dbUser.isPresent() && dbUser.get().getRole().equals(UserRole.ADMIN))
+            return true;
+        return false;
     }
 }
