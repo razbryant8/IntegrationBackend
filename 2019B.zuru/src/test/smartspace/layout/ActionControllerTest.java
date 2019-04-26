@@ -123,7 +123,7 @@ public class ActionControllerTest {
         assertEquals("Data base contains more than one action in it" , actionEntities.size(),1);
 
         // THEN the database contains the new message
-        assertThat(actionEntities.get(0)).extracting("actionkey").containsExactly(result.getActionKey());
+        assertThat(actionEntities.get(0)).extracting("actionKey").containsExactly(result.getActionKey());
 
     }
 
