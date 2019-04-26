@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import smartspace.dao.EnhancedActionDao;
 import smartspace.dao.EnhancedElementDao;
 import smartspace.data.ActionEntity;
+import smartspace.data.ElementEntity;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,11 +16,11 @@ import java.util.Optional;
 public class ActionServiceImpl implements ActionService {
 
     private EnhancedActionDao enhancedActionDao;
-    private EnhancedElementDao enhancedElementDao;
+    private EnhancedElementDao<String> enhancedElementDao;
     private String smartspace;
 
     @Autowired
-    public ActionServiceImpl(EnhancedActionDao enhancedActionDao, EnhancedElementDao enhancedElementDao) {
+    public ActionServiceImpl(EnhancedActionDao enhancedActionDao, EnhancedElementDao<String> enhancedElementDao) {
         this.enhancedActionDao = enhancedActionDao;
         this.enhancedElementDao = enhancedElementDao;
     }
@@ -42,7 +43,7 @@ public class ActionServiceImpl implements ActionService {
     }
 
     private boolean validate(ActionEntity actionEntity) {
-        return actionEntity.getMoreAttributes() != null &&
+        return  actionEntity.getMoreAttributes() != null &&
                 actionEntity.getActionType() != null &&
                 !actionEntity.getActionType().trim().isEmpty() &&
                 actionEntity.getPlayerEmail() != null &&
@@ -59,8 +60,9 @@ public class ActionServiceImpl implements ActionService {
 //                actionEntity.getElementSmartspace().equals(actionEntity.getActionSmartspace()) &&
 //                actionEntity.getElementSmartspace().equals(actionEntity.getPlayerSmartspace()) &&
                 actionEntity.getElementId() != null &&
-                !actionEntity.getElementId().trim().isEmpty();
-//                !enhancedElementDao.readById(actionEntity.getElementId()).isPresent();
+                !actionEntity.getElementId().trim().isEmpty() &&
+                !enhancedElementDao.readById(actionEntity.getElementId()).isPresent();
+
     }
 
     @Value("${spring.application.name}")

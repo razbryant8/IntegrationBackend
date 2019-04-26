@@ -7,8 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import smartspace.logic.ActionService;
 
 import java.util.Arrays;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+
 
 @RestController
 public class ActionController {
