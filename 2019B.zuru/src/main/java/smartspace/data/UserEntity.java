@@ -80,12 +80,13 @@ public class UserEntity implements SmartspaceEntity{
         this.points = points;
     }
 
-
+    @Transient
     @Override
     public Object getKey() {
         return null;
     }
 
+    @Transient
     @Override
     public void setKey(Object key) {
 
