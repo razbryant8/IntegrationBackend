@@ -115,7 +115,7 @@ public class ActionServiceImplTest {
     @Test()
     public void checkStore(){
         // GIVEN Valid Element Entity
-        ActionEntity actionEntity = enhancedActionDao.create(factory.createNewAction("someID", "anotherTeam", "someType", new Date(), "mark@gmail.com", "anotherTeam", new HashMap<>()));
+        ActionEntity actionEntity = factory.createNewAction("someID", "anotherTeam", "someType", new Date(), "mark@gmail.com", "anotherTeam", new HashMap<>());
         actionEntity.setKey("1#"+"anotherTeam");
 
         // WHEN we store the entity using ActionService Logic
@@ -175,7 +175,75 @@ public class ActionServiceImplTest {
         // THEN we expect Exception to be thrown
     }
 
+    @Test(expected = Throwable.class)
+    public void checkValidateIllegalPlayerSmartSpace(){
+        // GIVEN Entity with null player smartSpace
+        ActionEntity actionEntity = enhancedActionDao.create(factory.createNewAction("someID", this.currentSmartSpace, "someType", new Date(), "mark@gmail.com", null, new HashMap<>()));
+        actionEntity.setKey("1#"+this.currentSmartSpace);
 
+        // WHEN we store the entity using ActionService Logic
+        actionService.store(actionEntity);
 
+        // THEN we expect Exception to be thrown
+    }
 
+    @Test(expected = Throwable.class)
+    public void checkValidateIllegalActionSmartSpace(){
+        // GIVEN Entity with null action smartSpace
+        ActionEntity actionEntity = enhancedActionDao.create(factory.createNewAction("someID", this.currentSmartSpace, "someType", new Date(), "mark@gmail.com", this.currentSmartSpace, new HashMap<>()));
+        actionEntity.setKey("1#"+null);
+
+        // WHEN we store the entity using ActionService Logic
+        actionService.store(actionEntity);
+
+        // THEN we expect Exception to be thrown
+    }
+
+    @Test(expected = Throwable.class)
+    public void checkValidateIllegalElementSmartSpace(){
+        // GIVEN Entity with null element smartSpace
+        ActionEntity actionEntity = enhancedActionDao.create(factory.createNewAction("someID", null, "someType", new Date(), "mark@gmail.com", this.currentSmartSpace, new HashMap<>()));
+        actionEntity.setKey("1#"+this.currentSmartSpace);
+
+        // WHEN we store the entity using ActionService Logic
+        actionService.store(actionEntity);
+
+        // THEN we expect Exception to be thrown
+    }
+
+    @Test(expected = Throwable.class)
+    public void checkValidateIllegalActionID(){
+        // GIVEN Entity with null action ID
+        ActionEntity actionEntity = enhancedActionDao.create(factory.createNewAction("someID", this.currentSmartSpace, "someType", new Date(), "mark@gmail.com", this.currentSmartSpace, new HashMap<>()));
+        actionEntity.setKey(null + this.currentSmartSpace);
+
+        // WHEN we store the entity using ActionService Logic
+        actionService.store(actionEntity);
+
+        // THEN we expect Exception to be thrown
+    }
+
+    @Test(expected = Throwable.class)
+    public void checkValidateIllegalElementID(){
+        // GIVEN Entity with null Element ID
+        ActionEntity actionEntity = enhancedActionDao.create(factory.createNewAction(null, this.currentSmartSpace, "someType", new Date(), "mark@gmail.com", this.currentSmartSpace, new HashMap<>()));
+        actionEntity.setKey("1#"+this.currentSmartSpace);
+
+        // WHEN we store the entity using ActionService Logic
+        actionService.store(actionEntity);
+
+        // THEN we expect Exception to be thrown
+    }
+
+//    @Test(expected = Throwable.class)
+//    public void checkValidateIllegalSmartspacesForActionElementPlayer(){
+//        // GIVEN Entity with not equal smart spaces between the 3 entities : Player, Element & Action.
+//        ActionEntity actionEntity = enhancedActionDao.create(factory.createNewAction("someID", "marktest", "someType", new Date(), "mark@gmail.com", this.currentSmartSpace, new HashMap<>()));
+//        actionEntity.setKey("1#"+this.currentSmartSpace);
+//
+//        // WHEN we store the entity using ActionService Logic
+//        actionService.store(actionEntity);
+//
+//        // THEN we expect Exception to be thrown
+//    }
 }
