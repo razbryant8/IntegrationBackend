@@ -12,7 +12,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import smartspace.dao.ElementDao;
 import smartspace.data.ElementEntity;
 import smartspace.data.Location;
-import smartspace.util.EntityFactory;
+import smartspace.data.util.EntityFactory;
 
 import java.util.Date;
 import java.util.HashMap;

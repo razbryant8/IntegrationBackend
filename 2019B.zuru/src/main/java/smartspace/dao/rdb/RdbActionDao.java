@@ -28,7 +28,7 @@ public class RdbActionDao implements EnhancedActionDao {
     @Transactional
     public ActionEntity create(ActionEntity actionEntity) {
         IdGenerator nextId = this.idGeneratorCrud.save(new IdGenerator());
-        actionEntity.setActionId("" + nextId.getNextId() + "#" + this.smartspace);
+        actionEntity.setKey("" + nextId.getNextId() + "#" + this.smartspace);
         this.idGeneratorCrud.delete(nextId);
         return this.actionCrud.save(actionEntity);
     }
@@ -49,7 +49,7 @@ public class RdbActionDao implements EnhancedActionDao {
 
     @Value("${spring.application.name}")
     public void setSmartspace(String smartspace) {
-
+        this.smartspace = smartspace;
     }
 
     @Override

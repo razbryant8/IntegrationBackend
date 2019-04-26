@@ -1,4 +1,4 @@
-package smartspace.util;
+package smartspace.data.util;
 
 import java.util.Map;
 import java.util.Date;
