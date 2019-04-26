@@ -1,7 +1,5 @@
 package smartspace.dao.rdb;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,13 +10,14 @@ import org.springframework.test.context.junit4.SpringRunner;
 import smartspace.dao.ElementDao;
 import smartspace.data.ElementEntity;
 import smartspace.data.Location;
-import smartspace.util.EntityFactory;
+import smartspace.data.util.EntityFactory;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
