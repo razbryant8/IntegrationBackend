@@ -41,11 +41,6 @@ public class RdbUserDaoTest {
     }
 
     @After
-    public void tearDown() throws Exception {
-        rdbUserDao.deleteAll();
-    }
-
-    @After
     public void tearDown() {
         this.rdbUserDao.deleteAll();
     }
