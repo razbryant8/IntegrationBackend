@@ -3,7 +3,6 @@ package smartspace.layout;
 
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import smartspace.data.UserEntity;
 import smartspace.logic.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -37,7 +36,8 @@ public class UserController {
                     .stream()
                     .map(UserBoundary::new)
                     .collect(Collectors.toList())
-                    .toArray(new UserBoundary[0]);        else
+                    .toArray(new UserBoundary[0]);
+        else
             throw new RuntimeException("Unauthorized operation");
 
     }
@@ -63,11 +63,36 @@ public class UserController {
             throw new RuntimeException("Unauthorized operation");
 
     }
+/*
+    @RequestMapping(
+            method = RequestMethod.POST,
+            path = "/smartspace/admin/users/{adminSmartspace}/{adminEmail}",
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+
+
+    public UserBoundary store (
+            @PathVariable("adminSmartspace") String adminSmartspace,
+            @PathVariable("adminEmail") String adminEmail,
+            @RequestBody UserBoundary user) {
+            if (validate(adminSmartspace, adminEmail))
+                return new UserBoundary(this.userService.store(user.convertToEntity()));
+            else throw new RuntimeException("Unauthorized operation");
+    }
+*/
+/*
+    private boolean validate(String adminSmartspace, String adminEmail) {
+        Optional<UserEntity> dbUser = userService.getUserByMailAndSmartSpace(adminEmail,adminSmartspace);
+        if(!dbUser.isPresent() || !dbUser.get().getRole().equals(UserRole.ADMIN) ||
+                adminSmartspace.equals(this.userService.getCurrentSmartspace()))
+            return false;
+        return true;
+    }*/
 
     private boolean validate(String adminSmartspace, String adminEmail) {
+        if (adminSmartspace.equals(this.userService.getCurrentSmartspace()))
+            return false;
         return true;
-        //TODO complete the user servica getByKey usage in order to validate user's credentials
-        //return this.userService.//to be completed
     }
 
 

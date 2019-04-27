@@ -54,6 +54,21 @@ public class UserServiceTests {
         this.enhancedUserDao.deleteAll();
     }
 
+
+    @Test()
+    public void checkGetAllUsersInEmptyPage(){
+        // GIVEN empty DB
+
+        // WHEN getAll users from empty page
+        int size = 5;
+        int page = 0;
+        List<UserEntity> usersEntities = userService.getAll(size,page);
+
+        // THEN the List is empty
+        assertEquals(0,usersEntities.size());
+    }
+
+
     @Test
     public void checkGetAllInPageWithOneUser(){
         // GIVEN The database contains one user
@@ -74,10 +89,11 @@ public class UserServiceTests {
         //GIVEN one user to insert db
         String mail = "mail1";
         String smartspace = "smart1";
-        UserEntity expectedEntity = enhancedUserDao.create(entityFactory.createNewUser(mail,currentSmartSpace,"user1","ava1", UserRole.ADMIN,100));
+        String key = mail+"#"+smartspace;
+        UserEntity expectedEntity = enhancedUserDao.upsert(entityFactory.createNewUser(mail,smartspace,"user1","ava1", UserRole.ADMIN,100));
 
         //WHEN getUserByKey
-        Optional<UserEntity> returnedOptEntity = enhancedUserDao.readById(expectedEntity.getKey());
+        Optional<UserEntity> returnedOptEntity = enhancedUserDao.readById(key);
         UserEntity returnedEntity = returnedOptEntity.get();
 
         //THEN the user will be the user that inserted
@@ -88,5 +104,125 @@ public class UserServiceTests {
     }
 
 
+    @Test()
+    public void checkUserServiceStore() {
 
+        // GIVEN Valid User Entity
+        String mail = "mail1";
+        String smartspace = "smart1";
+        UserEntity userEntity = entityFactory.createNewUser(mail, smartspace,
+                "user1", "ava1", UserRole.ADMIN, 100);
+        String userEntityId = userEntity.getKey();
+        // WHEN we store the user using UserService Logic
+        userService.store(userEntity);
+
+        // THEN the user entity is stored
+        Optional<UserEntity> expectedUserEntity = this.enhancedUserDao.readById(userEntityId);
+        assertThat(expectedUserEntity.get()).isEqualToComparingOnlyGivenFields(userEntity,
+                "userSmartspace","userEmail","username","avatar","role","points");
+    }
+
+    @Test()
+    public void checkMultipyUsersStoreByAmount() {
+
+        // GIVEN Valid User Entity
+        UserEntity userEntity1 = entityFactory.createNewUser("mail1", "smart1",
+                "user1", "ava1", UserRole.ADMIN, 100);
+        UserEntity userEntity2 = entityFactory.createNewUser("mail2", "smart2",
+                "user2", "ava2", UserRole.ADMIN, 200);
+        UserEntity userEntity3 = entityFactory.createNewUser("mail3", "smart3",
+                "user3", "ava3", UserRole.ADMIN, 300);
+
+        // WHEN we store the users using UserService Logic
+        userService.store(userEntity1);
+        userService.store(userEntity2);
+        userService.store(userEntity3);
+
+        // THEN the amount od user entities is stored
+
+        int size = 5;
+        int page = 0;
+        List<UserEntity> usersEntities = userService.getAll(size,page);
+
+        assertEquals(3,usersEntities.size());
+    }
+
+
+    @Test(expected = Throwable.class)
+    public void checkValidateIlligalUserSmartspace(){
+        // GIVEN Valid User Entity from this project
+        UserEntity userEntity = entityFactory.createNewUser("mail1", "2019b.zuru",
+                "user1", "ava1", UserRole.ADMIN, 100);
+
+        // WHEN we store the user entity using UserService Logic
+        userService.store(userEntity);
+
+        // THEN we expect Exception to be thrown because is the same smartspace that in our project
+
+    }
+
+    @Test(expected = Throwable.class)
+    public void checkValidateIlligalNotAdminUserRole(){
+        // GIVEN Valid User Entity from this project
+        UserEntity userEntity = entityFactory.createNewUser("mail1", "2019b.zuru",
+                "user1", "ava1", UserRole.MANAGER, 100);
+
+        // WHEN we store the user entity using UserService Logic
+        userService.store(userEntity);
+
+        // THEN we expect Exception to be thrown because is the not a admin
+
+    }
+
+    @Test(expected = Throwable.class)
+    public void checkValidateIlligalNullserRole(){
+        // GIVEN Valid User Entity from this project
+        UserEntity userEntity = entityFactory.createNewUser("mail1", "2019b.zuru",
+                "user1", "ava1", null, 100);
+
+        // WHEN we store the user entity using UserService Logic
+        userService.store(userEntity);
+
+        // THEN we expect Exception to be thrown because is the not a admin
+
+    }
+
+    @Test(expected = Throwable.class)
+    public void checkValidateIlligalEmptyUsername(){
+        // GIVEN Valid User Entity from this project
+        UserEntity userEntity = entityFactory.createNewUser("mail1", "2019b.zuru",
+                "", "ava1", UserRole.ADMIN, 100);
+
+        // WHEN we store the user entity using UserService Logic
+        userService.store(userEntity);
+
+        // THEN we expect Exception to be thrown because is the not a admin
+
+    }
+
+    @Test(expected = Throwable.class)
+    public void checkValidateIlligalSpacesAvatar(){
+        // GIVEN Valid User Entity from this project
+        UserEntity userEntity = entityFactory.createNewUser("mail1", "2019b.zuru",
+                "user1", "      ", UserRole.ADMIN, 100);
+
+        // WHEN we store the user entity using UserService Logic
+        userService.store(userEntity);
+
+        // THEN we expect Exception to be thrown because is the not a admin
+
+    }
+
+    @Test(expected = Throwable.class)
+    public void checkValidateIlligalNegetivePoints(){
+        // GIVEN Valid User Entity from this project
+        UserEntity userEntity = entityFactory.createNewUser("mail1", "2019b.zuru",
+                "user1", ":-}", UserRole.ADMIN, -550);
+
+        // WHEN we store the user entity using UserService Logic
+        userService.store(userEntity);
+
+        // THEN we expect Exception to be thrown because is the not a admin
+
+    }
 }

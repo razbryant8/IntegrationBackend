@@ -8,8 +8,6 @@ import java.util.Map;
 
 public class UserBoundary {
     private UserKey key;
-    private String userSmartspace;
-    private String userEmail;
     private String username;
     private String avatar;
     private String role;
@@ -23,9 +21,7 @@ public class UserBoundary {
     public UserBoundary(UserEntity userEntity) {
 
 
-        this.userSmartspace = userEntity.getUserSmartspace();
-        this.userEmail = userEntity.getUserEmail();
-        this.key = new UserKey(this.userEmail, this.userSmartspace);
+        this.key = new UserKey(userEntity.getUserEmail(), userEntity.getUserSmartspace());
         this.username = userEntity.getUsername();
         this.avatar = userEntity.getAvatar();
         this.role = userEntity.getRole().name();
@@ -34,14 +30,6 @@ public class UserBoundary {
 
     public UserKey getKey() {
         return this.key;
-    }
-
-    public String getUserSmartspace() {
-        return userSmartspace;
-    }
-
-    public String getUserEmail() {
-        return userEmail;
     }
 
     public String getUsername() {
@@ -64,21 +52,9 @@ public class UserBoundary {
         this.key = key;
     }
 
-    public void setUserSmartspace(String userSmartspace) {
-        this.userSmartspace = userSmartspace;
-    }
+    public void setUsername(String username) { this.username = username; }
 
-    public void setUserEmail(String userEmail) {
-        this.userEmail = userEmail;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
-    }
+    public void setAvatar(String avatar) { this.avatar = avatar; }
 
     public void setRole(String role) {
         this.role = role;

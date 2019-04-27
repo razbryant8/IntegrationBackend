@@ -124,4 +124,9 @@ public class RdbUserDao implements EnhancedUserDao<String> {
                         PageRequest.of(page, size));
     }
 
+    @Override
+    public UserEntity upsert(UserEntity userEntity) {
+        return userCrud.save(userEntity);
+    }
+
 }
