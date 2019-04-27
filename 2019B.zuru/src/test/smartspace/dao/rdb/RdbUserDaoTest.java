@@ -1,5 +1,6 @@
 package smartspace.dao.rdb;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -36,6 +37,11 @@ public class RdbUserDaoTest {
     @Before
     public void setUp() {
         rdbUserDao.deleteAll(); userEntity = new UserEntity();
+    }
+
+    @After
+    public void tearDown() {
+        this.rdbUserDao.deleteAll();
     }
 
     @Test

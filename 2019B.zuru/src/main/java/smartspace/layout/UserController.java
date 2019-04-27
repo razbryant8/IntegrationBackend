@@ -2,10 +2,14 @@ package smartspace.layout;
 
 
 import org.springframework.http.MediaType;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import smartspace.data.UserEntity;
+import smartspace.data.UserRole;
 import smartspace.logic.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -42,12 +46,12 @@ public class UserController {
 
     }
 
+    @Transactional
     @RequestMapping(
             method = RequestMethod.POST,
             path = "/smartspace/admin/users/{adminSmartspace}/{adminEmail}",
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-
     public UserBoundary[] store(
             @PathVariable("adminSmartspace") String adminSmartspace,
             @PathVariable("adminEmail") String adminEmail,
@@ -63,34 +67,12 @@ public class UserController {
             throw new RuntimeException("Unauthorized operation");
 
     }
-/*
-    @RequestMapping(
-            method = RequestMethod.POST,
-            path = "/smartspace/admin/users/{adminSmartspace}/{adminEmail}",
-            produces = MediaType.APPLICATION_JSON_VALUE,
-            consumes = MediaType.APPLICATION_JSON_VALUE)
 
 
-    public UserBoundary store (
-            @PathVariable("adminSmartspace") String adminSmartspace,
-            @PathVariable("adminEmail") String adminEmail,
-            @RequestBody UserBoundary user) {
-            if (validate(adminSmartspace, adminEmail))
-                return new UserBoundary(this.userService.store(user.convertToEntity()));
-            else throw new RuntimeException("Unauthorized operation");
-    }
-*/
-/*
     private boolean validate(String adminSmartspace, String adminEmail) {
         Optional<UserEntity> dbUser = userService.getUserByMailAndSmartSpace(adminEmail,adminSmartspace);
         if(!dbUser.isPresent() || !dbUser.get().getRole().equals(UserRole.ADMIN) ||
                 adminSmartspace.equals(this.userService.getCurrentSmartspace()))
-            return false;
-        return true;
-    }*/
-
-    private boolean validate(String adminSmartspace, String adminEmail) {
-        if (adminSmartspace.equals(this.userService.getCurrentSmartspace()))
             return false;
         return true;
     }
