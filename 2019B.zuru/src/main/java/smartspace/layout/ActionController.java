@@ -4,21 +4,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import smartspace.data.UserEntity;
+import smartspace.data.UserRole;
 import smartspace.logic.ActionService;
+import smartspace.logic.UserService;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 
 @RestController
 public class ActionController {
 
     private ActionService actionService;
+    private UserService userService;
 
     @Autowired
-    public ActionController(ActionService actionService) {
+    public ActionController(ActionService actionService, UserService userService) {
         this.actionService = actionService;
+        this.userService = userService;
     }
-
 
     @RequestMapping(
             method = RequestMethod.GET,
@@ -58,8 +63,9 @@ public class ActionController {
     }
 
     private boolean validate(String adminSmartspace, String adminEmail) {
-        return true;
-        //TODO complete the user servica getByKey usage in order to validate user's credentials
-        //return this.userService.//to be completed
+        Optional<UserEntity> dbUser = userService.getUserByMailAndSmartSpace(adminEmail,adminSmartspace);
+        if(dbUser.isPresent() && dbUser.get().getRole().equals(UserRole.ADMIN))
+            return true;
+        return false;
     }
 }

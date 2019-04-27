@@ -10,7 +10,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import smartspace.dao.EnhancedActionDao;
+import smartspace.dao.EnhancedElementDao;
 import smartspace.data.ActionEntity;
+import smartspace.data.ElementEntity;
+import smartspace.data.Location;
 import smartspace.data.util.EntityFactory;
 
 import java.util.Date;
@@ -27,11 +30,18 @@ public class ActionServiceImplTest {
 
     private EnhancedActionDao enhancedActionDao;
 
+    private EnhancedElementDao enhancedElementDao;
+
     private EntityFactory factory;
 
     private ActionServiceImpl actionService;
 
     private String currentSmartSpace;
+
+    @Autowired
+    public void setEnhancedElementDao(EnhancedElementDao enhancedElementDao) {
+        this.enhancedElementDao = enhancedElementDao;
+    }
 
     @Value("${spring.application.name}")
     public void setCurrentSmartSpace(String currentSmartSpace) {
@@ -114,8 +124,12 @@ public class ActionServiceImplTest {
 
     @Test()
     public void checkStore(){
-        // GIVEN Valid Element Entity
-        ActionEntity actionEntity = factory.createNewAction("someID", "anotherTeam", "someType", new Date(), "mark@gmail.com", "anotherTeam", new HashMap<>());
+        // GIVEN Valid Element Entity exists on db
+        ElementEntity newElement = factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", "test", false, new HashMap<>());
+        newElement.setKey("5#"+"anotherTeam");
+        enhancedElementDao.upsert(newElement);
+
+        ActionEntity actionEntity = factory.createNewAction("5#anotherTeam", "anotherTeam", "someType", new Date(), "mark@gmail.com", "anotherTeam", new HashMap<>());
         actionEntity.setKey("1#"+"anotherTeam");
 
         // WHEN we store the entity using ActionService Logic
