@@ -86,7 +86,7 @@ public class UserControllerTest {
         // WHEN a user with illegal permissions try to Import using REST API
         UserBoundary[] userBoundaries = new UserBoundary[1];
         userBoundaries[0] = new UserBoundary();
-        userBoundaries[0].setUserKey(new UserKey("test_import@mail", "2019b.test"));
+        userBoundaries[0].setUserKey(new UserKeyType("test_import@mail", "2019b.test"));
         userBoundaries[0].setUsername("user2");
         userBoundaries[0].setAvatar(":-{");
         userBoundaries[0].setRole("PLAYER");
@@ -126,7 +126,7 @@ public class UserControllerTest {
         ArrayList<UserBoundary> UserBoundryArr = new ArrayList<UserBoundary>();
 
         UserBoundary newUserBoundary = new UserBoundary();
-        newUserBoundary.setUserKey(new UserKey("test_import@mail", "2019b.test"));
+        newUserBoundary.setUserKey(new UserKeyType("test_import@mail", "2019b.test"));
         newUserBoundary.setUsername("user2");
         newUserBoundary.setAvatar(":-{");
         newUserBoundary.setRole("PLAYER");
@@ -155,7 +155,7 @@ public class UserControllerTest {
         ArrayList<UserBoundary> UserBoundryArr = new ArrayList<UserBoundary>();
 
         UserBoundary newUserBoundary1 = new UserBoundary();
-        newUserBoundary1.setUserKey(new UserKey("test_import1@mail", "2019b.test"));
+        newUserBoundary1.setUserKey(new UserKeyType("test_import1@mail", "2019b.test"));
         newUserBoundary1.setUsername("user2");
         newUserBoundary1.setAvatar(":-{");
         newUserBoundary1.setRole("PLAYER");
@@ -164,7 +164,7 @@ public class UserControllerTest {
         UserBoundryArr.add(newUserBoundary1);
 
         UserBoundary newUserBoundary2 = new UserBoundary();
-        newUserBoundary2.setUserKey(new UserKey("test_import2@mail", "2019b.test"));
+        newUserBoundary2.setUserKey(new UserKeyType("test_import2@mail", "2019b.test"));
         newUserBoundary2.setUsername("user3");
         newUserBoundary2.setAvatar(" ^ ^ ");
         newUserBoundary2.setRole("MANAGER");
@@ -195,7 +195,7 @@ public class UserControllerTest {
         // WHEN we try to import a user from the same smartspace of our project.
         UserBoundary[] userBoundaries = new UserBoundary[1];
         userBoundaries[0] = new UserBoundary();
-        userBoundaries[0].setUserKey(new UserKey());
+        userBoundaries[0].setUserKey(new UserKeyType());
         userBoundaries[0].setUsername("userrr");
         userBoundaries[0].setRole("PLAYER");
         userBoundaries[0].setAvatar(":P");

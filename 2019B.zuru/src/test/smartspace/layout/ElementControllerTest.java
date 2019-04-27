@@ -107,6 +107,8 @@ public class ElementControllerTest {
         // GIVEN the database contain one Admin user
 
         // WHEN someone that is not admin Import using REST API
+        ArrayList<ElementBoundary> boundryArr = new ArrayList<ElementBoundary>();
+
         ElementBoundary newElementBoundary = new ElementBoundary();
         newElementBoundary.setCreated(new Date());
         newElementBoundary.setCreator(new UserKeyType("zur@gmail.com", "2019B.uu"));
@@ -117,11 +119,13 @@ public class ElementControllerTest {
         newElementBoundary.setName("Name");
         newElementBoundary.setLatlng(new ElementLatLngType(35, 35));
 
-        ElementBoundary actualResult = this.restTemplate
+        boundryArr.add(newElementBoundary);
+
+        ElementBoundary[] actualResult = this.restTemplate
                 .postForObject(
                         this.baseUrl + "badSmartSpace/badEmail",
-                        newElementBoundary,
-                        ElementBoundary.class);
+                        boundryArr,
+                        ElementBoundary[].class);
 
         // THEN exception is thrown
 
@@ -149,21 +153,25 @@ public class ElementControllerTest {
         // GIVEN the database contain one Admin user
 
         // WHEN someone that is Import new elemeent that is from the current Smartspace using REST API
+        ArrayList<ElementBoundary> boundryArr = new ArrayList<ElementBoundary>();
+
         ElementBoundary newElementBoundary = new ElementBoundary();
         newElementBoundary.setCreated(new Date());
         newElementBoundary.setCreator(new UserKeyType("zur@gmail.com", currentSmartspace));
         newElementBoundary.setElementProperties(new HashMap<>());
         newElementBoundary.setExpired(false);
         newElementBoundary.setElementType("scooter");
-        newElementBoundary.setKey(new KeyType("5", "2019B.test"));
+        newElementBoundary.setKey(new KeyType("5", currentSmartspace));
         newElementBoundary.setName("Name");
         newElementBoundary.setLatlng(new ElementLatLngType(35, 35));
 
-        ElementBoundary actualResult = this.restTemplate
+        boundryArr.add(newElementBoundary);
+
+        ElementBoundary[] actualResult = this.restTemplate
                 .postForObject(
                         this.baseUrl + adminUser.getUserSmartspace() + "/" + adminUser.getUserEmail(),
-                        newElementBoundary,
-                        ElementBoundary.class);
+                        boundryArr,
+                        ElementBoundary[].class);
 
         // THEN Exception is thrown
     }

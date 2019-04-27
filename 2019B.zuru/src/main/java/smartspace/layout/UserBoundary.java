@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class UserBoundary {
-    private UserKey key;
+    private UserKeyType key;
     private String username;
     private String avatar;
     private String role;
@@ -21,14 +21,14 @@ public class UserBoundary {
     public UserBoundary(UserEntity userEntity) {
 
 
-        this.key = new UserKey(userEntity.getUserEmail(), userEntity.getUserSmartspace());
+        this.key = new UserKeyType(userEntity.getUserEmail(), userEntity.getUserSmartspace());
         this.username = userEntity.getUsername();
         this.avatar = userEntity.getAvatar();
         this.role = userEntity.getRole().name();
         this.points = userEntity.getPoints();
     }
 
-    public UserKey getKey() {
+    public UserKeyType getKey() {
         return this.key;
     }
 
@@ -48,7 +48,7 @@ public class UserBoundary {
         return points;
     }
 
-    public void setUserKey(UserKey key) {
+    public void setUserKey(UserKeyType key) {
         this.key = key;
     }
 
