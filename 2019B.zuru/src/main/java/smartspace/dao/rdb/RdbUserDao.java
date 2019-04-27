@@ -1,6 +1,7 @@
 package smartspace.dao.rdb;
 
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -22,6 +23,7 @@ import java.util.List;
 public class RdbUserDao implements EnhancedUserDao<String> {
 
     private UserCrud userCrud;
+    private String smartspace;
 
 
     @Autowired
@@ -31,11 +33,16 @@ public class RdbUserDao implements EnhancedUserDao<String> {
 
     }
 
+    @Value("${spring.application.name}")
+    public void setSmartspace(String smartspace) {
+        this.smartspace = smartspace;
+    }
+
 
     @Override
     @Transactional
     public UserEntity create(UserEntity userEntity) {
-
+        userEntity.setKey("" + userEntity.getUserEmail()+ "#" + this.smartspace);
         return this.userCrud.save(userEntity);
 
     }
@@ -56,7 +63,7 @@ public class RdbUserDao implements EnhancedUserDao<String> {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional()
     public void update(UserEntity userEntity) {
 
         UserEntity existing = this.readById(userEntity.getKey())

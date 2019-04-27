@@ -74,11 +74,10 @@ public class UserServiceTests {
         //GIVEN one user to insert db
         String mail = "mail1";
         String smartspace = "smart1";
-        String key = mail+"#"+smartspace;
-        UserEntity expectedEntity = enhancedUserDao.create(entityFactory.createNewUser(mail,smartspace,"user1","ava1", UserRole.ADMIN,100));
+        UserEntity expectedEntity = enhancedUserDao.create(entityFactory.createNewUser(mail,currentSmartSpace,"user1","ava1", UserRole.ADMIN,100));
 
         //WHEN getUserByKey
-        Optional<UserEntity> returnedOptEntity = enhancedUserDao.readById(key);
+        Optional<UserEntity> returnedOptEntity = enhancedUserDao.readById(expectedEntity.getKey());
         UserEntity returnedEntity = returnedOptEntity.get();
 
         //THEN the user will be the user that inserted

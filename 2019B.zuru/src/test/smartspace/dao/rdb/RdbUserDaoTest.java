@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import smartspace.data.UserEntity;
@@ -25,6 +26,13 @@ public class RdbUserDaoTest {
 
     private UserEntity userEntity;
 
+    private String smartspace;
+
+    @Value("${spring.application.name}")
+    public void setSmartspace(String smartspace) {
+        this.smartspace = smartspace;
+    }
+
     @Before
     public void setUp() {
         rdbUserDao.deleteAll(); userEntity = new UserEntity();
@@ -39,8 +47,12 @@ public class RdbUserDaoTest {
 
     @Test
     public void testReadById() {
-        String expectedId = "email#smartspace";
-        this.userEntity.setKey(expectedId);
+        String expectedId = "email#" + this.smartspace;
+        this.userEntity.setUserEmail("email");
+        this.userEntity.setRole(UserRole.ADMIN);
+        this.userEntity.setPoints(15);
+        this.userEntity.setAvatar("haha");
+        this.userEntity.setUsername("zur");
         UserEntity userEntity = rdbUserDao.create(this.userEntity);
         Optional<UserEntity> userEntityOpt = rdbUserDao.readById(expectedId);
         assertTrue("Row was not created/found", userEntityOpt.isPresent());
