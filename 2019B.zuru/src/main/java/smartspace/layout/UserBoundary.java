@@ -3,8 +3,6 @@ package smartspace.layout;
 import smartspace.data.UserEntity;
 import smartspace.data.UserRole;
 
-import java.util.HashMap;
-import java.util.Map;
 
 public class UserBoundary {
     private UserKeyType key;
@@ -52,9 +50,13 @@ public class UserBoundary {
         this.key = key;
     }
 
-    public void setUsername(String username) { this.username = username; }
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
-    public void setAvatar(String avatar) { this.avatar = avatar; }
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
 
     public void setRole(String role) {
         this.role = role.toUpperCase();
@@ -63,7 +65,6 @@ public class UserBoundary {
     public void setPoints(long points) {
         this.points = points;
     }
-
 
 
     public UserEntity convertToEntity() {
