@@ -40,10 +40,6 @@ public class RdbUserDaoTest {
         userEntity = new UserEntity();
     }
 
-    @After
-    public void tearDown() throws Exception {
-        rdbUserDao.deleteAll();
-    }
 
     @After
     public void tearDown() {
