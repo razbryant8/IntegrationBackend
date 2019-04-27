@@ -45,6 +45,11 @@ public class RdbUserDaoTest {
         rdbUserDao.deleteAll();
     }
 
+    @After
+    public void tearDown() {
+        this.rdbUserDao.deleteAll();
+    }
+
     @Test
     public void testCreate() {
         UserEntity userEntity = rdbUserDao.create(this.userEntity);

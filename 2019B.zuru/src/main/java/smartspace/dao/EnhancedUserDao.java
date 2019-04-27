@@ -14,5 +14,7 @@ public interface EnhancedUserDao<String> extends UserDao<String> {
     public List<UserEntity> getUserByRole(
             String role, int size, int page);
 
+    public UserEntity upsert(UserEntity userEntity);
+
 
 }

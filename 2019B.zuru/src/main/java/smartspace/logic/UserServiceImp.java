@@ -17,7 +17,7 @@ import java.util.Optional;
 public class UserServiceImp implements UserService {
 
     private EnhancedUserDao<String> userDao;
-    private String smartspace;
+    private String currentSmartspace;
 
 
     @Autowired
@@ -35,9 +35,8 @@ public class UserServiceImp implements UserService {
     @Override
     public UserEntity store(UserEntity user) {
         if (validate(user)) {
-            user.setRole(user.getRole());          // not sure about that
             return this.userDao
-                    .create(user);
+                    .upsert(user);
         } else {
             throw new RuntimeException("Invalid user input");
         }
@@ -50,6 +49,7 @@ public class UserServiceImp implements UserService {
                 .readById(key);
     }
 
+    @Transactional(readOnly = true)
     public Optional<UserEntity> getUserByMailAndSmartSpace(String email, String smartSpace) {
         UserEntity user = new UserEntity();
         user.setUserSmartspace(smartSpace);
@@ -58,10 +58,11 @@ public class UserServiceImp implements UserService {
 
     }
 
-    // maybe we need to check only the smartspace ->  user.getUserSmartspace(); ?? ;
+
     private boolean validate(UserEntity user) {
         return user.getRole() != null &&
                 !user.getUsername().trim().isEmpty() &&
+                !user.getUserSmartspace().equals(this.currentSmartspace) &&
                 !user.getAvatar().trim().isEmpty() &&
                 !user.getUserEmail().trim().isEmpty() &&
                 user.getPoints() >= 0.0;
@@ -69,7 +70,12 @@ public class UserServiceImp implements UserService {
     }
 
     @Value("${spring.application.name}")
-    public void setSmartspace(String smartspace) {
-        this.smartspace = smartspace;
+    public void setSmartspace(String currentSmartspace) {
+        this.currentSmartspace = currentSmartspace;
+    }
+
+    @Override
+    public String getCurrentSmartspace() {
+        return currentSmartspace;
     }
 }

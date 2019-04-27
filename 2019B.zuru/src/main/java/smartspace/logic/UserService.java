@@ -15,4 +15,6 @@ public interface UserService {
 
     public Optional<UserEntity> getUserByMailAndSmartSpace(String email, String smartSpace);
 
+    public String getCurrentSmartspace();
+
 }

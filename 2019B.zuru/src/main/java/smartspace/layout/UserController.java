@@ -2,11 +2,14 @@ package smartspace.layout;
 
 
 import org.springframework.http.MediaType;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import smartspace.data.UserEntity;
+import smartspace.data.UserRole;
 import smartspace.logic.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -37,17 +40,18 @@ public class UserController {
                     .stream()
                     .map(UserBoundary::new)
                     .collect(Collectors.toList())
-                    .toArray(new UserBoundary[0]);        else
+                    .toArray(new UserBoundary[0]);
+        else
             throw new RuntimeException("Unauthorized operation");
 
     }
 
+    @Transactional
     @RequestMapping(
             method = RequestMethod.POST,
             path = "/smartspace/admin/users/{adminSmartspace}/{adminEmail}",
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-
     public UserBoundary[] store(
             @PathVariable("adminSmartspace") String adminSmartspace,
             @PathVariable("adminEmail") String adminEmail,
@@ -64,10 +68,13 @@ public class UserController {
 
     }
 
+
     private boolean validate(String adminSmartspace, String adminEmail) {
+        Optional<UserEntity> dbUser = userService.getUserByMailAndSmartSpace(adminEmail,adminSmartspace);
+        if(!dbUser.isPresent() || !dbUser.get().getRole().equals(UserRole.ADMIN) ||
+                adminSmartspace.equals(this.userService.getCurrentSmartspace()))
+            return false;
         return true;
-        //TODO complete the user servica getByKey usage in order to validate user's credentials
-        //return this.userService.//to be completed
     }
 
 

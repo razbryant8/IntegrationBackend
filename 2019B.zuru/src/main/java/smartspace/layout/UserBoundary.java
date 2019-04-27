@@ -3,13 +3,9 @@ package smartspace.layout;
 import smartspace.data.UserEntity;
 import smartspace.data.UserRole;
 
-import java.util.HashMap;
-import java.util.Map;
 
 public class UserBoundary {
-    private UserKey key;
-    private String userSmartspace;
-    private String userEmail;
+    private UserKeyType key;
     private String username;
     private String avatar;
     private String role;
@@ -23,25 +19,15 @@ public class UserBoundary {
     public UserBoundary(UserEntity userEntity) {
 
 
-        this.userSmartspace = userEntity.getUserSmartspace();
-        this.userEmail = userEntity.getUserEmail();
-        this.key = new UserKey(this.userEmail, this.userSmartspace);
+        this.key = new UserKeyType(userEntity.getUserEmail(), userEntity.getUserSmartspace());
         this.username = userEntity.getUsername();
         this.avatar = userEntity.getAvatar();
         this.role = userEntity.getRole().name();
         this.points = userEntity.getPoints();
     }
 
-    public UserKey getKey() {
+    public UserKeyType getKey() {
         return this.key;
-    }
-
-    public String getUserSmartspace() {
-        return userSmartspace;
-    }
-
-    public String getUserEmail() {
-        return userEmail;
     }
 
     public String getUsername() {
@@ -60,16 +46,8 @@ public class UserBoundary {
         return points;
     }
 
-    private void UserKey(UserKey key) {
+    public void setUserKey(UserKeyType key) {
         this.key = key;
-    }
-
-    public void setUserSmartspace(String userSmartspace) {
-        this.userSmartspace = userSmartspace;
-    }
-
-    public void setUserEmail(String userEmail) {
-        this.userEmail = userEmail;
     }
 
     public void setUsername(String username) {
@@ -81,7 +59,7 @@ public class UserBoundary {
     }
 
     public void setRole(String role) {
-        this.role = role;
+        this.role = role.toUpperCase();
     }
 
     public void setPoints(long points) {
