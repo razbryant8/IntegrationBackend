@@ -49,6 +49,7 @@ public class UserServiceImp implements UserService {
                 .readById(key);
     }
 
+    @Transactional(readOnly = true)
     public Optional<UserEntity> getUserByMailAndSmartSpace(String email, String smartSpace) {
         UserEntity user = new UserEntity();
         user.setUserSmartspace(smartSpace);
@@ -57,7 +58,7 @@ public class UserServiceImp implements UserService {
 
     }
 
-    // maybe we need to check only the smartspace ->  user.getUserSmartspace(); ?? ;
+
     private boolean validate(UserEntity user) {
         return user.getRole() != null &&
                 !user.getUsername().trim().isEmpty() &&
