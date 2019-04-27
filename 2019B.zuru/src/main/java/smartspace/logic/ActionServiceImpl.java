@@ -43,7 +43,7 @@ public class ActionServiceImpl implements ActionService {
     }
 
     private boolean validate(ActionEntity actionEntity) {
-        return  actionEntity.getMoreAttributes() != null &&
+        return actionEntity.getMoreAttributes() != null &&
                 actionEntity.getActionType() != null &&
                 !actionEntity.getActionType().trim().isEmpty() &&
                 actionEntity.getPlayerEmail() != null &&
@@ -52,16 +52,14 @@ public class ActionServiceImpl implements ActionService {
                 !actionEntity.getPlayerSmartspace().trim().isEmpty() &&
                 actionEntity.getActionSmartspace() != null &&
                 !actionEntity.getActionSmartspace().trim().isEmpty() &&
-                actionEntity.getActionId()!=null &&
-                !actionEntity.getActionId().trim().isEmpty()&&
+                actionEntity.getActionId() != null &&
+                !actionEntity.getActionId().trim().isEmpty() &&
                 actionEntity.getElementSmartspace() != null &&
                 !actionEntity.getElementSmartspace().trim().isEmpty() &&
                 !actionEntity.getElementSmartspace().equals(this.smartspace) &&
-//                actionEntity.getElementSmartspace().equals(actionEntity.getActionSmartspace()) &&
-//                actionEntity.getElementSmartspace().equals(actionEntity.getPlayerSmartspace()) &&
                 actionEntity.getElementId() != null &&
                 !actionEntity.getElementId().trim().isEmpty() &&
-                !enhancedElementDao.readById(actionEntity.getElementId()).isPresent();
+                enhancedElementDao.readById(actionEntity.getElementId()).isPresent();
 
     }
 
