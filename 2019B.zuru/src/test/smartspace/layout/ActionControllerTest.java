@@ -310,12 +310,16 @@ public class ActionControllerTest {
 
 
     @Test
-    public void testExportUsingPagination() {
+    public void testExportUsingPagination() throws InterruptedException {
         // GIVEN the database contain one Admin user and five actions
         ActionEntity actionEntity = enhancedActionDao.create(entityFactory.createNewAction("1", "smart", "type", new Date(), "email", "space", new HashMap<>()));
+        Thread.sleep(100);
         ActionEntity actionEntity1 = enhancedActionDao.create(entityFactory.createNewAction("2", "smart", "type", new Date(), "email", "space", new HashMap<>()));
+        Thread.sleep(100);
         ActionEntity actionEntity2 = enhancedActionDao.create(entityFactory.createNewAction("3", "smart", "type", new Date(), "email", "space", new HashMap<>()));
+        Thread.sleep(100);
         ActionEntity actionEntity3 = enhancedActionDao.create(entityFactory.createNewAction("4", "smart", "type", new Date(), "email", "space", new HashMap<>()));
+        Thread.sleep(100);
         ActionEntity actionEntity4 = enhancedActionDao.create(entityFactory.createNewAction("5", "smart", "type", new Date(), "email", "space", new HashMap<>()));
 
 

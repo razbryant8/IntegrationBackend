@@ -39,6 +39,7 @@ public class RdbUserDaoTest {
         userEntity = new UserEntity();
     }
 
+
     @After
     public void tearDown() {
         this.rdbUserDao.deleteAll();

@@ -252,13 +252,18 @@ public class ElementControllerTest {
     }
 
     @Test
-    public void testExportUsingPagination() {
+    public void testExportUsingPagination() throws InterruptedException {
         // GIVEN the database contain one Admin user and two elements
         ElementEntity elementEntity = elementDao.create(factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", "2019b.zuru", false, new HashMap<>()));
+        Thread.sleep(100);
         ElementEntity elementEntity2 = elementDao.create(factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", "2019b.zuru", false, new HashMap<>()));
+        Thread.sleep(100);
         ElementEntity elementEntity3 = elementDao.create(factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", "2019b.zuru", false, new HashMap<>()));
+        Thread.sleep(100);
         ElementEntity elementEntity4 = elementDao.create(factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", "2019b.zuru", false, new HashMap<>()));
+        Thread.sleep(100);
         ElementEntity elementEntity5 = elementDao.create(factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", "2019b.zuru", false, new HashMap<>()));
+        Thread.sleep(100);
         ElementEntity elementEntity6 = elementDao.create(factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", "2019b.zuru", false, new HashMap<>()));
 
         // WHEN I get all messages using page 1 and size 3
