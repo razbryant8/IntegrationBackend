@@ -1,5 +1,6 @@
 package smartspace.dao.rdb;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -35,7 +36,13 @@ public class RdbUserDaoTest {
 
     @Before
     public void setUp() {
-        rdbUserDao.deleteAll(); userEntity = new UserEntity();
+        rdbUserDao.deleteAll();
+        userEntity = new UserEntity();
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        rdbUserDao.deleteAll();
     }
 
     @Test
@@ -64,9 +71,9 @@ public class RdbUserDaoTest {
         rdbUserDao.deleteAll();
 
         //Create 3 rows
-        UserEntity userEntity1 = rdbUserDao.create(new UserEntity("mail1","smartspace1","user1","ava1", UserRole.ADMIN,100));
-        UserEntity userEntity2 = rdbUserDao.create(new UserEntity("mail12","smartspace12","user1","ava1", UserRole.ADMIN,100));
-        UserEntity userEntity3 = rdbUserDao.create(new UserEntity("mail123","smartspace123","user1","ava1", UserRole.ADMIN,100));
+        UserEntity userEntity1 = rdbUserDao.create(new UserEntity("mail1", "smartspace1", "user1", "ava1", UserRole.ADMIN, 100));
+        UserEntity userEntity2 = rdbUserDao.create(new UserEntity("mail12", "smartspace12", "user1", "ava1", UserRole.ADMIN, 100));
+        UserEntity userEntity3 = rdbUserDao.create(new UserEntity("mail123", "smartspace123", "user1", "ava1", UserRole.ADMIN, 100));
 
         // Read all the rows from db
         List<UserEntity> userEntities = rdbUserDao.readAll();
@@ -79,8 +86,8 @@ public class RdbUserDaoTest {
     @Test
     public void testUpdate() {
         //Create a row
-        UserEntity testEntity = new UserEntity("mail1","smartspace1","user1","ava1", UserRole.ADMIN,100);
-        testEntity.setKey(testEntity.getUserEmail()+"#"+testEntity.getUserSmartspace());
+        UserEntity testEntity = new UserEntity("mail1", "smartspace1", "user1", "ava1", UserRole.ADMIN, 100);
+        testEntity.setKey(testEntity.getUserEmail() + "#" + testEntity.getUserSmartspace());
         UserEntity userEntity = rdbUserDao.create(testEntity);
         userEntity.setPoints(2000);
         rdbUserDao.update(userEntity);

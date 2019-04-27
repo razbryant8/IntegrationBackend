@@ -1,5 +1,6 @@
 package smartspace.dao.rdb;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,6 +25,11 @@ public class RdbActionDaoTest {
     @Before
     public void setUp() {
         actionEntity = new ActionEntity();
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        rdbActionDao.deleteAll();
     }
 
     @Test
