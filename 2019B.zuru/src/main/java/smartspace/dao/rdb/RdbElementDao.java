@@ -117,6 +117,18 @@ public class RdbElementDao implements EnhancedElementDao<String> {
         return elementCrud.save(elementEntity);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<ElementEntity> getAllElementsByType(int size, int page, String type) {
+        return this.elementCrud.findAllByType(type, PageRequest.of(page, size, Sort.Direction.ASC, "creationTimestamp"));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ElementEntity> getAllElementsByName(int size, int page, String name) {
+        return this.elementCrud.findAllByName(name, PageRequest.of(page, size, Sort.Direction.ASC, "creationTimestamp"));
+    }
+
     @Value("${spring.application.name}")
     public void setSmartspace(String smartspace) {
         this.smartspace = smartspace;

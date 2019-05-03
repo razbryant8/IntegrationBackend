@@ -8,6 +8,7 @@ import smartspace.dao.EnhancedElementDao;
 import smartspace.data.ElementEntity;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ElementServiceImpl implements ElementService {
@@ -36,6 +37,34 @@ public class ElementServiceImpl implements ElementService {
         }
     }
 
+    @Override
+    @Transactional
+    public ElementEntity create(ElementEntity elementEntity) {
+        if (validateCreation(elementEntity)) {
+            return this.enhancedElementDao.create(elementEntity);
+        } else {
+            throw new RuntimeException("Invalid element input");
+        }
+    }
+
+    @Override
+    public List<ElementEntity> getByType(int size, int page, String type) {
+        return this.enhancedElementDao.getAllElementsByType(size, page, type);
+    }
+
+    @Override
+    public List<ElementEntity> getByName(int size, int page, String name) {
+        return this.enhancedElementDao.getAllElementsByName(size, page, name);
+    }
+
+    @Override
+    public Optional<ElementEntity> getById(String elementId, String elementSmartspace) {
+        ElementEntity elementEntity = new ElementEntity();
+        elementEntity.setElementId(elementId);
+        elementEntity.setElementSmartspace(elementSmartspace);
+        return this.enhancedElementDao.readById(elementEntity.getKey());
+    }
+
     private boolean validate(ElementEntity elementEntity) {
         return elementEntity.getLocation() != null &&
                 elementEntity.getMoreAttributes() != null &&
@@ -53,6 +82,21 @@ public class ElementServiceImpl implements ElementService {
                 elementEntity.getElementId() != null &&
                 !elementEntity.getElementId().trim().isEmpty();
 
+    }
+
+    private boolean validateCreation(ElementEntity elementEntity) {
+        return elementEntity.getLocation() != null &&
+                elementEntity.getMoreAttributes() != null &&
+                elementEntity.getType() != null &&
+                !elementEntity.getType().trim().isEmpty() &&
+                elementEntity.getName() != null &&
+                !elementEntity.getName().trim().isEmpty() &&
+                elementEntity.getCreatorEmail() != null &&
+                !elementEntity.getCreatorEmail().trim().isEmpty() &&
+                elementEntity.getCreatorSmartspace() != null &&
+                !elementEntity.getCreatorSmartspace().trim().isEmpty() &&
+                elementEntity.getElementSmartspace() == null &&
+                elementEntity.getElementId() == null;
     }
 
     @Value("${spring.application.name}")
