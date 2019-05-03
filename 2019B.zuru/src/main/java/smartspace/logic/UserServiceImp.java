@@ -1,13 +1,13 @@
 package smartspace.logic;
 
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.transaction.annotation.Transactional;
+import org.hibernate.validator.internal.constraintvalidators.bv.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
 import smartspace.dao.EnhancedUserDao;
 import smartspace.data.UserEntity;
+import smartspace.data.UserRole;
 
 import java.util.List;
 import java.util.Optional;
@@ -77,5 +77,46 @@ public class UserServiceImp implements UserService {
     @Override
     public String getCurrentSmartspace() {
         return currentSmartspace;
+    }
+
+    @Override
+    public UserEntity create(UserEntity user) {
+
+        if (CheckingEmailAndRole(user)) {
+            return this.userDao.create(user);
+
+        }
+        return null;
+    }
+
+
+
+
+    @Override
+    // maybe we need to add AOP annotation to this code
+    public void update(String userSmartspace, String userEmail, UserEntity user) {
+        user.setUserSmartspace(userSmartspace);
+        user.setUserEmail(userEmail);
+        this.userDao.update(user);
+
+    }
+
+    //need to complete how to checking if user mail contain "@." with EmailValidator
+    // Eyal says that he gives some jar that does it -> I thing that is the jar.
+
+    private boolean CheckingEmailAndRole(UserEntity user) {
+
+        EmailValidator validator = new EmailValidator();
+
+        if ((user.getRole().equals(UserRole.ADMIN) ||
+                user.getRole().equals(UserRole.MANAGER) ||
+                user.getRole().equals(UserRole.PLAYER)) &&
+               (user.getUserSmartspace().equals(this.currentSmartspace))){
+               // &&(validator.isValid("@.",user.getUserEmail()))) {
+            return true;
+        }
+        return false;
+
+
     }
 }

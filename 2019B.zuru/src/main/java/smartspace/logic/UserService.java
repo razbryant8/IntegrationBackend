@@ -17,4 +17,8 @@ public interface UserService {
 
     public String getCurrentSmartspace();
 
+    public UserEntity create(UserEntity user);
+
+    public void update(String userSmartspace,String userEmail, UserEntity convertToEntity);
+
 }

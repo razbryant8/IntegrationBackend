@@ -69,9 +69,41 @@ public class UserController {
     }
 
 
+
+    @Transactional
+    @RequestMapping(
+            method = RequestMethod.POST,
+            path = "/smartspace/users",
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    public UserBoundary create(
+            @RequestBody NewUserFormBoundary user) {
+
+        return
+                new UserBoundary(
+                        this.userService
+                                .create(user
+                                        .convertToEntity()));
+    }
+
+
+
+    @RequestMapping(
+            method=RequestMethod.PUT,
+            path="/smartspace/users/login/{userSmartspace}/{userEmail}",
+            produces=MediaType.APPLICATION_JSON_VALUE)
+    public void updateUser(
+            @PathVariable("userSmartspace") String userSmartspace,
+            @PathVariable("userEmail") String userEmail,
+            @RequestBody UserBoundary update) {
+        this.userService
+                .update(userSmartspace,userEmail,update.convertToEntity());
+    }
+
+
     private boolean validate(String adminSmartspace, String adminEmail) {
-        Optional<UserEntity> dbUser = userService.getUserByMailAndSmartSpace(adminEmail,adminSmartspace);
-        if(!dbUser.isPresent() || !dbUser.get().getRole().equals(UserRole.ADMIN) ||
+        Optional<UserEntity> dbUser = userService.getUserByMailAndSmartSpace(adminEmail, adminSmartspace);
+        if (!dbUser.isPresent() || !dbUser.get().getRole().equals(UserRole.ADMIN) ||
                 adminSmartspace.equals(this.userService.getCurrentSmartspace()))
             return false;
         return true;
