@@ -13,6 +13,7 @@ import smartspace.dao.EnhancedElementDao;
 import smartspace.data.ElementEntity;
 import smartspace.data.Location;
 import smartspace.data.util.EntityFactory;
+import smartspace.layout.ElementBoundary;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -237,6 +238,84 @@ public class RdbElementDaoTest {
         // THEN we receive 5 elements exactly
         assertThat(actual)
                 .hasSize(5);
+
+    }
+
+    @Test
+    public void testReadAllbyTypeUsingPaginationPageZeroSizeFive (){
+        // GIVEN the database contains 1 elements with type scooter
+        String type = "scooter";
+        enhancedDao.create(factory.createNewElement("name",type,new Location(5,4),new Date(),null,null,false,new HashMap<>()));
+
+
+
+        // WHEN we read up to 1 element by type from the beginning
+        List<ElementEntity> actual = this.enhancedDao.getAllElementsByType(5, 0, type);
+
+        // THEN we receive 1 elements exactly
+        assertThat(actual)
+                .hasSize(1);
+
+    }
+
+    @Test
+    public void testReadAllbyTypeUsingPaginationPageZeroSize2 (){
+        // GIVEN the database contains 2 elements with type scooter and one with another type
+        String type = "scooter";
+        ElementEntity entity1 = enhancedDao.create(factory.createNewElement("name",type,new Location(5,4),new Date(),null,null,false,new HashMap<>()));
+        ElementEntity entity2 = enhancedDao.create(factory.createNewElement("name",type,new Location(5,4),new Date(),null,null,false,new HashMap<>()));
+        ElementEntity entity3 = enhancedDao.create(factory.createNewElement("name","blabla",new Location(5,4),new Date(),null,null,false,new HashMap<>()));
+
+
+
+        // WHEN we read up to 3 element by type from the beginning
+        List<ElementEntity> actual = this.enhancedDao.getAllElementsByType(3, 0, type);
+
+        // THEN we receive 2 elements exactly
+        assertThat(actual)
+                .hasSize(2);
+        assertThat(actual).usingElementComparatorOnFields("key").contains(entity1);
+        assertThat(actual).usingElementComparatorOnFields("key").contains(entity2);
+
+
+    }
+
+    @Test
+    public void testReadAllbyNameUsingPaginationPageZeroSizeFive (){
+        // GIVEN the database contains 1 elements with type scooter
+        String name = "name";
+        enhancedDao.create(factory.createNewElement(name,null,new Location(5,4),new Date(),null,null,false,new HashMap<>()));
+
+
+
+        // WHEN we read up to 1 element by type from the beginning
+        List<ElementEntity> actual = this.enhancedDao.getAllElementsByName(5, 0, name);
+
+        // THEN we receive 1 elements exactly
+        assertThat(actual)
+                .hasSize(1);
+
+    }
+
+    @Test
+    public void testReadAllbyNameUsingPaginationPageZeroSize2 (){
+        // GIVEN the database contains 2 elements with name nameand one with another type
+        String name = "name";
+        ElementEntity entity1 = enhancedDao.create(factory.createNewElement(name,null,new Location(5,4),new Date(),null,null,false,new HashMap<>()));
+        ElementEntity entity2 = enhancedDao.create(factory.createNewElement(name,null,new Location(5,4),new Date(),null,null,false,new HashMap<>()));
+        ElementEntity entity3 = enhancedDao.create(factory.createNewElement("Notname","blabla",new Location(5,4),new Date(),null,null,false,new HashMap<>()));
+
+
+
+        // WHEN we read up to 3 element by type from the beginning
+        List<ElementEntity> actual = this.enhancedDao.getAllElementsByName(3, 0, name);
+
+        // THEN we receive 2 elements exactly
+        assertThat(actual)
+                .hasSize(2);
+        assertThat(actual).usingElementComparatorOnFields("key").contains(entity1);
+        assertThat(actual).usingElementComparatorOnFields("key").contains(entity2);
+
 
     }
 }
