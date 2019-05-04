@@ -11,6 +11,8 @@ import smartspace.data.UserRole;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 @Service
@@ -106,17 +108,27 @@ public class UserServiceImp implements UserService {
 
     private boolean CheckingEmailAndRole(UserEntity user) {
 
-        EmailValidator validator = new EmailValidator();
+  //      EmailValidator validator = new EmailValidator();
 
         if ((user.getRole().equals(UserRole.ADMIN) ||
                 user.getRole().equals(UserRole.MANAGER) ||
                 user.getRole().equals(UserRole.PLAYER)) &&
-               (user.getUserSmartspace().equals(this.currentSmartspace))){
-               // &&(validator.isValid("@.",user.getUserEmail()))) {
+               (user.getUserSmartspace().equals(this.currentSmartspace))
+                && validateEmailAddress(user.getUserEmail())){
+               // &&(validator.isValid(user.getUserEmail()))) {
             return true;
         }
         return false;
 
 
+    }
+
+    //check if emil is validate email with regular expression
+    public static final Pattern VALID_EMAIL_ADDRESS_REGEX =
+            Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
+
+    public static boolean validateEmailAddress(String emailStr) {
+        Matcher matcher = VALID_EMAIL_ADDRESS_REGEX .matcher(emailStr);
+        return matcher.find();
     }
 }

@@ -19,6 +19,7 @@ import smartspace.data.util.EntityFactory;
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -269,6 +270,42 @@ public class UserControllerTest {
     }
 
 
+    @Test
+    public void testValidCreateNewUserForm(){
+        // GIVEN the database empty
+        this.enhancedUserDao.deleteAll();
+        String url = "http://localhost:" + port + "/smartspace/users/";
 
+        // WHEN create new user with newUserFormBoundary
+        NewUserFormBoundary newUserForm = new NewUserFormBoundary("test@this.now","test1","PLAYER",":-)");
+        UserBoundary createdUserNewForm = this.restTemplate
+                .postForObject(url,
+                        newUserForm
+                        ,UserBoundary.class);
 
+        //THEN the only new user will be in the DB
+        Optional<UserEntity> rv = this.enhancedUserDao.readById(newUserForm.getEmail()+"#2019b.zuru");
+
+        if (rv.isPresent()){
+            UserEntity rvEntity = rv.get();
+            assertThat(rvEntity).isEqualToComparingOnlyGivenFields(newUserForm.convertToEntity(),
+                    "key","username","avatar","role","points");
+        }
+    }
+
+    @Test(expected = Throwable.class)
+    public void testInvalidCreateNewUserFormWithInvalidEmail(){
+        // GIVEN the database empty
+        this.enhancedUserDao.deleteAll();
+        String url = "http://localhost:" + port + "/smartspace/users/";
+
+        // WHEN create new user with newUserFormBoundary with invalid email address
+        NewUserFormBoundary newUserForm = new NewUserFormBoundary("test_this.now","test1","PLAYER",":-)");
+        UserBoundary createdUserNewForm = this.restTemplate
+                .postForObject(url,
+                        newUserForm
+                        ,UserBoundary.class);
+
+        //THEN Exception will be thrown
+    }
 }
