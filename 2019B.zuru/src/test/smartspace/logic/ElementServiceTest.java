@@ -208,4 +208,131 @@ public class ElementServiceTest {
 
         // THEN we expect Exception to be thrown
     }
+
+    @Test(expected = Throwable.class)
+    public void getElementByIlligalElement(){
+        // GIVEN nothing
+
+        // WHEN we get element by id that does not exists
+        elementService.getById("id","smartspace");
+
+        // THEN we expect Exception to be thrown
+    }
+
+    @Test(expected = Throwable.class)
+    public void getElementByIlligalSmartspace(){
+        // GIVEN the database contains 2 elements
+        ElementEntity elementEntity1 = enhancedDao.create(factory.createNewElement("name","type",new Location(5,4),new Date(),null,null,false,new HashMap<>()));
+
+        // WHEN we get element by smartspace that does not exists
+        elementService.getById(elementEntity1.getElementId(),"test");
+
+        // THEN we expect Exception to be thrown
+    }
+
+    @Test
+    public void getElementByID(){
+        // GIVEN the database contains 2 elements
+        ElementEntity elementEntity1 = enhancedDao.create(factory.createNewElement("name","type",new Location(5,4),new Date(),null,null,false,new HashMap<>()));
+        ElementEntity elementEntity2 = enhancedDao.create(factory.createNewElement("name","type",new Location(5,4),new Date(),null,null,false,new HashMap<>()));
+
+        // WHEN we get element by smartspace and ID
+        ElementEntity entity = elementService.getById(elementEntity1.getElementId(),elementEntity2.getElementSmartspace());
+
+        // THEN we expect to get the element
+        assertEquals(elementEntity1.getKey(),entity.getKey());
+    }
+
+    @Test
+    public void getElementByTypeUsingPagination(){
+        // GIVEN the database contains 2 elements
+        String type = "type";
+        int size = 5;
+        int page = 0;
+        ElementEntity elementEntity1 = enhancedDao.create(factory.createNewElement("name",type,new Location(5,4),new Date(),null,null,false,new HashMap<>()));
+        ElementEntity elementEntity2 = enhancedDao.create(factory.createNewElement("name",type,new Location(5,4),new Date(),null,null,false,new HashMap<>()));
+
+        // WHEN we get elements by type
+        List<ElementEntity> entities = elementService.getByType(size,page,type);
+
+        // THEN we expect to get 2 elements
+        assertEquals(entities.size(),2);
+        assertThat(entities).usingElementComparatorOnFields("key").contains(elementEntity1);
+        assertThat(entities).usingElementComparatorOnFields("key").contains(elementEntity2);
+    }
+
+    @Test
+    public void getElementByWrongTypeUsingPagination(){
+        // GIVEN nothing
+        String type = "type";
+        int size = 5;
+        int page = 0;
+
+        // WHEN we get elements by type
+        List<ElementEntity> entities = elementService.getByType(size,page,type);
+
+        // THEN we expect to get 0 elements
+        assertEquals(entities.size(),0);
+    }
+
+    @Test
+    public void getElementByNameUsingPagination(){
+        // GIVEN the database contains 2 elements
+        String name = "name";
+        int size = 5;
+        int page = 0;
+        ElementEntity elementEntity1 = enhancedDao.create(factory.createNewElement(name,"type",new Location(5,4),new Date(),null,null,false,new HashMap<>()));
+        ElementEntity elementEntity2 = enhancedDao.create(factory.createNewElement(name,"type",new Location(5,4),new Date(),null,null,false,new HashMap<>()));
+
+        // WHEN we get elements by name
+        List<ElementEntity> entities = elementService.getByName(size,page,name);
+
+        // THEN we expect to get 2 elements
+        assertEquals(entities.size(),2);
+        assertThat(entities).usingElementComparatorOnFields("key").contains(elementEntity1);
+        assertThat(entities).usingElementComparatorOnFields("key").contains(elementEntity2);
+    }
+
+    @Test
+    public void getElementByWrongNameUsingPagination(){
+        // GIVEN nothing
+        String name = "name";
+        int size = 5;
+        int page = 0;
+
+        // WHEN we get elements by name
+        List<ElementEntity> entities = elementService.getByName(size,page,name);
+
+        // THEN we expect to get 0 elements
+        assertEquals(entities.size(),0);
+    }
+
+    @Test(expected = Throwable.class)
+    public void createBadElement(){
+        // GIVEN nothing
+
+        // WHEN we get create new element without location
+        ElementEntity elmentEntity = factory.createNewElement("name","type",null,new Date(),"zur@gmail.com","test",false,new HashMap<>());
+        elementService.create(elmentEntity);
+
+        // THEN we expect Exception to be thrown
+    }
+
+    @Test
+    public void createElement(){
+        // GIVEN nothing
+
+        // WHEN we get create new element
+        ElementEntity elementEntity1 = factory.createNewElement("name","type",new Location(),new Date(),"zur@gmail.com","test",false,new HashMap<>());
+        elementService.create(elementEntity1);
+
+        // THEN we expect one element to be created
+        int size = 5;
+        int page = 0;
+        List<ElementEntity> entities = enhancedDao.readAll(size,page);
+        assertEquals(entities.size(),1);
+        assertThat(entities).usingElementComparatorOnFields("key").contains(elementEntity1);
+    }
+
+
 }

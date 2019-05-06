@@ -112,14 +112,14 @@ public class ElementController {
             @RequestParam(name = "size", required = false, defaultValue = "10") int size,
             @RequestParam(name = "page", required = false, defaultValue = "0") int page) {
         if (validate(userSmartspace,userEmail,UserRole.MANAGER) || validate(userSmartspace,userEmail,UserRole.PLAYER)) {
-            if (search.equals(Search.type)) {
+            if (search.equals(Search.TYPE.toString())) {
                 return this.elementService
                         .getByType(size, page, value)
                         .stream()
                         .map(ElementBoundary::new)
                         .collect(Collectors.toList())
                         .toArray(new ElementBoundary[0]);
-            } else if (search.equals((Search.name))) {
+            } else if (search.equals((Search.NAME.toString()))) {
                 return this.elementService
                         .getByName(size, page, value)
                         .stream()
