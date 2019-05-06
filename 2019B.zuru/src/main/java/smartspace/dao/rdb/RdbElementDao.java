@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import smartspace.dao.ElementNotFoundException;
 import smartspace.dao.EnhancedElementDao;
 import smartspace.data.ElementEntity;
 
@@ -54,7 +55,7 @@ public class RdbElementDao implements EnhancedElementDao<String> {
     @Transactional
     public void update(ElementEntity elementEntity) {
         ElementEntity existing = this.readById(elementEntity.getKey())
-                .orElseThrow(() -> new RuntimeException("No element with this ID: "
+                .orElseThrow(() -> new ElementNotFoundException("No element with this ID: "
                         + elementEntity.getElementId()));
 
         if (elementEntity.getLocation() != null) {
@@ -113,6 +114,7 @@ public class RdbElementDao implements EnhancedElementDao<String> {
     }
 
     @Override
+    @Transactional
     public ElementEntity upsert(ElementEntity elementEntity) {
         return elementCrud.save(elementEntity);
     }

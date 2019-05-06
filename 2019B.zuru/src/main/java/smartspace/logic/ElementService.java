@@ -16,5 +16,5 @@ public interface ElementService {
 
     public List<ElementEntity> getByName(int size, int page, String name);
 
-    public Optional<ElementEntity> getById (String elementId, String elementSmartspace);
+    public ElementEntity getById (String elementId, String elementSmartspace);
 }

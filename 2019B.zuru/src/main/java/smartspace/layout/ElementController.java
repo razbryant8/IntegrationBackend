@@ -1,9 +1,11 @@
 package smartspace.layout;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import smartspace.dao.ElementNotFoundException;
 import smartspace.data.UserEntity;
 import smartspace.data.UserRole;
 import smartspace.logic.ElementService;
@@ -92,54 +94,57 @@ public class ElementController {
             @PathVariable("elementSmartspace") String elementSmartspace,
             @PathVariable("elementId") String elementId) {
 
-        return new ElementBoundary(this.elementService.getById(elementId, elementSmartspace).orElse(null));
-    }
-
-
-    @RequestMapping(
-            method = RequestMethod.GET,
-            path = "/smartspace/elements/{userSmartspace}/{userEmail}",
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    public ElementBoundary[] getByName(
-            @PathVariable("userSmartspace") String userSmartspace,
-            @PathVariable("userEmail") String userEmail,
-            @RequestParam(name = "search") Search search,
-            @RequestParam(name = "value") String value,
-            @RequestParam(name = "size", required = false, defaultValue = "10") int size,
-            @RequestParam(name = "page", required = false, defaultValue = "0") int page) {
-        if (search.equals(Search.name)) {
-            return this.elementService
-                    .getByName(size, page, value)
-                    .stream()
-                    .map(ElementBoundary::new)
-                    .collect(Collectors.toList())
-                    .toArray(new ElementBoundary[0]);
-        } else
-            throw new RuntimeException("Invalid search value");
+        if (validate(userSmartspace,userEmail,UserRole.MANAGER) || validate(userSmartspace,userEmail,UserRole.PLAYER))
+            return new ElementBoundary(this.elementService.getById(elementId, elementSmartspace));
+        else
+            throw new RuntimeException("Unauthorized operation");
     }
 
     @RequestMapping(
             method = RequestMethod.GET,
             path = "/smartspace/elements/{userSmartspace}/{userEmail}",
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ElementBoundary[] getByType(
+    public ElementBoundary[] getByAttribute(
             @PathVariable("userSmartspace") String userSmartspace,
             @PathVariable("userEmail") String userEmail,
             @RequestParam(name = "search") Search search,
             @RequestParam(name = "value") String value,
             @RequestParam(name = "size", required = false, defaultValue = "10") int size,
             @RequestParam(name = "page", required = false, defaultValue = "0") int page) {
-        if (search.equals(Search.type)) {
-            return this.elementService
-                    .getByType(size, page, value)
-                    .stream()
-                    .map(ElementBoundary::new)
-                    .collect(Collectors.toList())
-                    .toArray(new ElementBoundary[0]);
-        } else
-            throw new RuntimeException("Invalid search value");
+        if (validate(userSmartspace,userEmail,UserRole.MANAGER) || validate(userSmartspace,userEmail,UserRole.PLAYER)) {
+            if (search.equals(Search.type)) {
+                return this.elementService
+                        .getByType(size, page, value)
+                        .stream()
+                        .map(ElementBoundary::new)
+                        .collect(Collectors.toList())
+                        .toArray(new ElementBoundary[0]);
+            } else if (search.equals((Search.name))) {
+                return this.elementService
+                        .getByName(size, page, value)
+                        .stream()
+                        .map(ElementBoundary::new)
+                        .collect(Collectors.toList())
+                        .toArray(new ElementBoundary[0]);
+            }
+            //TODO else if search.equals(Search.location)...
+            else
+                throw new RuntimeException("Invalid search value");
+        }
+        else
+            throw new RuntimeException("Unauthorized operation");
     }
 
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorMessage handleException (ElementNotFoundException e) {
+        String message = e.getMessage();
+        if (message == null) {
+            message = "message not found";
+        }
+        return new ErrorMessage(message);
+    }
 
     private boolean validate(String smartspace, String email, UserRole userRole) {
         Optional<UserEntity> dbUser = userService.getUserByMailAndSmartSpace(email, smartspace);

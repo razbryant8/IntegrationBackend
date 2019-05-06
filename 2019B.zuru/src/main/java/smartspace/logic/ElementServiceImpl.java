@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import smartspace.dao.ElementNotFoundException;
 import smartspace.dao.EnhancedElementDao;
 import smartspace.data.ElementEntity;
 
@@ -58,11 +59,12 @@ public class ElementServiceImpl implements ElementService {
     }
 
     @Override
-    public Optional<ElementEntity> getById(String elementId, String elementSmartspace) {
+    public ElementEntity getById(String elementId, String elementSmartspace) {
         ElementEntity elementEntity = new ElementEntity();
         elementEntity.setElementId(elementId);
         elementEntity.setElementSmartspace(elementSmartspace);
-        return this.enhancedElementDao.readById(elementEntity.getKey());
+        return this.enhancedElementDao.readById(elementEntity.getKey()).orElseThrow(() -> new ElementNotFoundException("No element with this ID: "
+                + elementEntity.getKey()));
     }
 
     private boolean validate(ElementEntity elementEntity) {
