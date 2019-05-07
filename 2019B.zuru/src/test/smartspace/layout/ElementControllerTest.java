@@ -344,13 +344,13 @@ public class ElementControllerTest {
     public void testCreateElement() {
         // GIVEN the database contain one Admin user, one Manager User and one Player
         UserEntity managerUser = userDao.create(factory.createNewUser("zur@gmail.com", currentSmartspace, "Zur", "haha", UserRole.MANAGER, 0));
-        UserEntity playerUser = userDao.create(factory.createNewUser("zur@gmail.com", currentSmartspace, "Zur", "haha", UserRole.PLAYER, 0));
+        //UserEntity playerUser = userDao.create(factory.createNewUser("zur@gmail.com", currentSmartspace, "Zur", "haha", UserRole.PLAYER, 0));
 
         // WHEN I create element As Manager
 
         ElementBoundary newElementBoundary = new ElementBoundary();
         newElementBoundary.setCreated(new Date());
-        newElementBoundary.setCreator(new UserKeyType("zur@gmail.com", currentSmartspace));
+        newElementBoundary.setCreator(new UserKeyType(managerUser.getUserEmail(), managerUser.getUserSmartspace()));
         newElementBoundary.setElementProperties(new HashMap<>());
         newElementBoundary.setExpired(false);
         newElementBoundary.setElementType("scooter");
@@ -361,10 +361,10 @@ public class ElementControllerTest {
 
         ElementBoundary actualResult = this.restTemplate
                 .postForObject(
-                        this.baseUrl + managerUser.getUserSmartspace() + "/" + managerUser.getUserEmail(),
+                        //this.baseUrl +"http://localhost:" + port +
+                        "http://localhost:" + port + "/smartspace/elements/" + managerUser.getUserSmartspace() + "/" + managerUser.getUserEmail(),
                         newElementBoundary,
                         ElementBoundary.class);
-
         // THEN the element is created with another id
         assertNotEquals(actualResult.getKey(), newElementBoundary.getKey());
     }

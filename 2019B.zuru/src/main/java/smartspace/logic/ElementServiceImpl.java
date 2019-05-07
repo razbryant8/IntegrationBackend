@@ -63,8 +63,12 @@ public class ElementServiceImpl implements ElementService {
         ElementEntity elementEntity = new ElementEntity();
         elementEntity.setElementId(elementId);
         elementEntity.setElementSmartspace(elementSmartspace);
-        return this.enhancedElementDao.readById(elementEntity.getKey()).orElseThrow(() -> new ElementNotFoundException("No element with this ID: "
-                + elementEntity.getKey()));
+        Optional<ElementEntity> receivedEntity = this.enhancedElementDao.readById(elementEntity.getKey());
+        if (receivedEntity.isPresent() && !receivedEntity.get().isExpired())
+            return receivedEntity.get();
+        else
+            throw new ElementNotFoundException("No element with this ID: "
+                + elementEntity.getKey());
     }
 
     private boolean validate(ElementEntity elementEntity) {
@@ -96,9 +100,7 @@ public class ElementServiceImpl implements ElementService {
                 elementEntity.getCreatorEmail() != null &&
                 !elementEntity.getCreatorEmail().trim().isEmpty() &&
                 elementEntity.getCreatorSmartspace() != null &&
-                !elementEntity.getCreatorSmartspace().trim().isEmpty() &&
-                elementEntity.getElementSmartspace() == null &&
-                elementEntity.getElementId() == null;
+                !elementEntity.getCreatorSmartspace().trim().isEmpty();
     }
 
     @Value("${spring.application.name}")

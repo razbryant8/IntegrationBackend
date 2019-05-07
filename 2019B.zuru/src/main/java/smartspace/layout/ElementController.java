@@ -107,19 +107,19 @@ public class ElementController {
     public ElementBoundary[] getByAttribute(
             @PathVariable("userSmartspace") String userSmartspace,
             @PathVariable("userEmail") String userEmail,
-            @RequestParam(name = "search") Search search,
+            @RequestParam(name = "search") String search,
             @RequestParam(name = "value") String value,
             @RequestParam(name = "size", required = false, defaultValue = "10") int size,
             @RequestParam(name = "page", required = false, defaultValue = "0") int page) {
         if (validate(userSmartspace,userEmail,UserRole.MANAGER) || validate(userSmartspace,userEmail,UserRole.PLAYER)) {
-            if (search.equals(Search.TYPE.toString())) {
+            if (search.toLowerCase().equals(Search.TYPE.toString().toLowerCase())) {
                 return this.elementService
                         .getByType(size, page, value)
                         .stream()
                         .map(ElementBoundary::new)
                         .collect(Collectors.toList())
                         .toArray(new ElementBoundary[0]);
-            } else if (search.equals((Search.NAME.toString()))) {
+            } else if (search.toLowerCase().equals((Search.NAME.toString().toLowerCase()))) {
                 return this.elementService
                         .getByName(size, page, value)
                         .stream()
@@ -129,7 +129,7 @@ public class ElementController {
             }
             //TODO else if search.equals(Search.location)...
             else
-                throw new RuntimeException("Invalid search value");
+                throw new ElementNotFoundException("Invalid search value");
         }
         else
             throw new RuntimeException("Unauthorized operation");
@@ -148,8 +148,6 @@ public class ElementController {
 
     private boolean validate(String smartspace, String email, UserRole userRole) {
         Optional<UserEntity> dbUser = userService.getUserByMailAndSmartSpace(email, smartspace);
-        if (dbUser.isPresent() && dbUser.get().getRole().equals(userRole))
-            return true;
-        return false;
+        return dbUser.isPresent() && dbUser.get().getRole().equals(userRole);
     }
 }
