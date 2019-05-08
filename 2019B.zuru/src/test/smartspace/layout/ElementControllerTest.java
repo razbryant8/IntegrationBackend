@@ -37,6 +37,10 @@ public class ElementControllerTest {
 
     private String baseUrl;
 
+    private String adminURL;
+
+    private String relativeURL;
+
     private int port;
 
     private EnhancedElementDao elementDao;
@@ -48,6 +52,10 @@ public class ElementControllerTest {
     private RestTemplate restTemplate;
 
     private UserEntity adminUser;
+
+    private UserEntity managerUser;
+
+    private UserEntity playerUser;
 
     private EntityFactory factory;
 
@@ -86,13 +94,17 @@ public class ElementControllerTest {
 
     @PostConstruct
     public void init() {
-        this.baseUrl = "http://localhost:" + port + "/smartspace/admin/elements/";
+        this.baseUrl = "http://localhost:" + port + "/smartspace/";
+        this.adminURL = "admin/";
+        this.relativeURL = "elements/";
         this.restTemplate = new RestTemplate();
     }
 
     @Before
     public void setUp() {
         adminUser = userDao.create(factory.createNewUser("zur@gmail.com", currentSmartspace, "Zur", "haha", UserRole.ADMIN, 0));
+        managerUser = userDao.create(factory.createNewUser("manager@gmail.com", currentSmartspace, "Zur", "haha", UserRole.MANAGER, 0));
+        playerUser = userDao.create(factory.createNewUser("player@gmail.com", currentSmartspace, "Zur", "haha", UserRole.PLAYER, 0));
     }
 
     @After
@@ -124,7 +136,7 @@ public class ElementControllerTest {
 
         ElementBoundary[] actualResult = this.restTemplate
                 .postForObject(
-                        this.baseUrl + "badSmartSpace/badEmail",
+                        this.baseUrl + this.adminURL + this.relativeURL + "badSmartSpace/badEmail",
                         boundryArr,
                         ElementBoundary[].class);
 
@@ -142,7 +154,7 @@ public class ElementControllerTest {
         ElementBoundary[] result =
                 this.restTemplate
                         .getForObject(
-                                this.baseUrl + "badSmartSpace/BadEmail?size={size}&page={page}",
+                                this.baseUrl + this.adminURL + this.relativeURL + "badSmartSpace/BadEmail?size={size}&page={page}",
                                 ElementBoundary[].class,
                                 size, page);
 
@@ -170,7 +182,7 @@ public class ElementControllerTest {
 
         ElementBoundary[] actualResult = this.restTemplate
                 .postForObject(
-                        this.baseUrl + adminUser.getUserSmartspace() + "/" + adminUser.getUserEmail(),
+                        this.baseUrl + this.adminURL + this.relativeURL + adminUser.getUserSmartspace() + "/" + adminUser.getUserEmail(),
                         boundryArr,
                         ElementBoundary[].class);
 
@@ -198,7 +210,7 @@ public class ElementControllerTest {
 
         ElementBoundary[] actualResult = this.restTemplate
                 .postForObject(
-                        this.baseUrl + adminUser.getUserSmartspace() + "/" + adminUser.getUserEmail(),
+                        this.baseUrl + this.adminURL + this.relativeURL + adminUser.getUserSmartspace() + "/" + adminUser.getUserEmail(),
                         boundryArr.toArray(),
                         ElementBoundary[].class);
 
@@ -240,7 +252,7 @@ public class ElementControllerTest {
 
         ElementBoundary[] actualResult1 = this.restTemplate
                 .postForObject(
-                        this.baseUrl + "/" + adminUser.getUserSmartspace() + "/" + adminUser.getUserEmail(),
+                        this.baseUrl + this.adminURL + this.relativeURL + adminUser.getUserSmartspace() + "/" + adminUser.getUserEmail(),
                         boundryArr,
                         ElementBoundary[].class);
 
@@ -273,7 +285,7 @@ public class ElementControllerTest {
         ElementBoundary[] result =
                 this.restTemplate
                         .getForObject(
-                                this.baseUrl + adminUser.getUserSmartspace() + "/" + adminUser.getUserEmail() + "?size={size}&page={page}",
+                                this.baseUrl + this.adminURL + this.relativeURL + adminUser.getUserSmartspace() + "/" + adminUser.getUserEmail() + "?size={size}&page={page}",
                                 ElementBoundary[].class,
                                 size, page);
 
@@ -287,8 +299,7 @@ public class ElementControllerTest {
     @Test(expected = Throwable.class)
     public void testCreateUserAsAdmin() {
         // GIVEN the database contain one Admin user, one Manager User and one Player
-        UserEntity managerUser = userDao.create(factory.createNewUser("zur@gmail.com", currentSmartspace, "Zur", "haha", UserRole.MANAGER, 0));
-        UserEntity playerUser = userDao.create(factory.createNewUser("zur@gmail.com", currentSmartspace, "Zur", "haha", UserRole.PLAYER, 0));
+
 
         // WHEN I create element As Admin
         ArrayList<ElementBoundary> boundryArr = new ArrayList<ElementBoundary>();
@@ -306,7 +317,7 @@ public class ElementControllerTest {
 
         ElementBoundary actualResult = this.restTemplate
                 .postForObject(
-                        this.baseUrl + adminUser.getUserSmartspace() + "/" + adminUser.getUserEmail(),
+                        this.baseUrl + this.relativeURL + adminUser.getUserSmartspace() + "/" + adminUser.getUserEmail(),
                         newElementBoundary,
                         ElementBoundary.class);
 
@@ -316,8 +327,6 @@ public class ElementControllerTest {
     @Test(expected = Throwable.class)
     public void testCreateUserAsPlayer() {
         // GIVEN the database contain one Admin user, one Manager User and one Player
-        UserEntity managerUser = userDao.create(factory.createNewUser("zur@gmail.com", currentSmartspace, "Zur", "haha", UserRole.MANAGER, 0));
-        UserEntity playerUser = userDao.create(factory.createNewUser("zur@gmail.com", currentSmartspace, "Zur", "haha", UserRole.PLAYER, 0));
 
         // WHEN I create element As Player
         ElementBoundary newElementBoundary = new ElementBoundary();
@@ -333,7 +342,7 @@ public class ElementControllerTest {
 
         ElementBoundary actualResult = this.restTemplate
                 .postForObject(
-                        this.baseUrl + playerUser.getUserSmartspace() + "/" + playerUser.getUserEmail(),
+                        this.baseUrl + this.relativeURL + playerUser.getUserSmartspace() + "/" + playerUser.getUserEmail(),
                         newElementBoundary,
                         ElementBoundary.class);
 
@@ -343,8 +352,6 @@ public class ElementControllerTest {
     @Test
     public void testCreateElement() {
         // GIVEN the database contain one Admin user, one Manager User and one Player
-        UserEntity managerUser = userDao.create(factory.createNewUser("zur@gmail.com", currentSmartspace, "Zur", "haha", UserRole.MANAGER, 0));
-        //UserEntity playerUser = userDao.create(factory.createNewUser("zur@gmail.com", currentSmartspace, "Zur", "haha", UserRole.PLAYER, 0));
 
         // WHEN I create element As Manager
 
@@ -362,7 +369,7 @@ public class ElementControllerTest {
         ElementBoundary actualResult = this.restTemplate
                 .postForObject(
                         //this.baseUrl +"http://localhost:" + port +
-                        "http://localhost:" + port + "/smartspace/elements/" + managerUser.getUserSmartspace() + "/" + managerUser.getUserEmail(),
+                        this.baseUrl + this.relativeURL + managerUser.getUserSmartspace() + "/" + managerUser.getUserEmail(),
                         newElementBoundary,
                         ElementBoundary.class);
         // THEN the element is created with another id
@@ -373,32 +380,45 @@ public class ElementControllerTest {
     @Test(expected = Throwable.class)
     public void testGetElementAsAdmin() {
         // GIVEN the database contain one Admin user, one Manager User and one Player and one Element
-        UserEntity managerUser = userDao.create(factory.createNewUser("zur@gmail.com", currentSmartspace, "Zur", "haha", UserRole.MANAGER, 0));
-        UserEntity playerUser = userDao.create(factory.createNewUser("zur@gmail.com", currentSmartspace, "Zur", "haha", UserRole.PLAYER, 0));
+        UserEntity managerUser = userDao.create(factory.createNewUser("manager@gmail.com", currentSmartspace, "Zur", "haha", UserRole.MANAGER, 0));
+        UserEntity playerUser = userDao.create(factory.createNewUser("player@gmail.com", currentSmartspace, "Zur", "haha", UserRole.PLAYER, 0));
         ElementEntity elementEntity = elementDao.create(factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", currentSmartspace, false, new HashMap<>()));
 
         // WHEN I Get element As Admin
         ElementBoundary result =
                 this.restTemplate
                         .getForObject(
-                                this.baseUrl + playerUser.getUserSmartspace() + "/" + playerUser.getUserEmail() + "/" + elementEntity.getElementSmartspace() + "/" + elementEntity.getElementId(),
+                                this.baseUrl + this.relativeURL + adminUser.getUserSmartspace() + "/" + adminUser.getUserEmail() + "/" + elementEntity.getElementSmartspace() + "/" + elementEntity.getElementId(),
                                 ElementBoundary.class);
 
         // THEN the exception is thrown
     }
 
-    @Test(expected = Throwable.class)
-    public void testGetElementAsPlayer() {
+    @Test
+    public void testGetNotExpiredElementAsPlayer() {
         // GIVEN the database contain one Admin user, one Manager User and one Player and one Element
-        UserEntity managerUser = userDao.create(factory.createNewUser("zur@gmail.com", currentSmartspace, "Zur", "haha", UserRole.MANAGER, 0));
-        UserEntity playerUser = userDao.create(factory.createNewUser("zur@gmail.com", currentSmartspace, "Zur", "haha", UserRole.PLAYER, 0));
         ElementEntity elementEntity = elementDao.create(factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", currentSmartspace, false, new HashMap<>()));
 
         // WHEN I Get element As Player
         ElementBoundary result =
                 this.restTemplate
                         .getForObject(
-                                this.baseUrl + playerUser.getUserSmartspace() + "/" + playerUser.getUserEmail() + "/" + elementEntity.getElementSmartspace() + "/" + elementEntity.getElementId(),
+                                this.baseUrl + this.relativeURL + playerUser.getUserSmartspace() + "/" + playerUser.getUserEmail() + "/" + elementEntity.getElementSmartspace() + "/" + elementEntity.getElementId(),
+                                ElementBoundary.class);
+
+        // THEN the exception is thrown
+    }
+
+    @Test(expected = ElementNotFoundException.class)
+    public void testGetExpiredElementAsPlayer() {
+        // GIVEN the database contain one Admin user, one Manager User and one Player and one Element
+        ElementEntity elementEntity = elementDao.create(factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", currentSmartspace, true, new HashMap<>()));
+
+        // WHEN I Get element As Player
+        ElementBoundary result =
+                this.restTemplate
+                        .getForObject(
+                                this.baseUrl + this.relativeURL + playerUser.getUserSmartspace() + "/" + playerUser.getUserEmail() + "/" + elementEntity.getElementSmartspace() + "/" + elementEntity.getElementId(),
                                 ElementBoundary.class);
 
         // THEN the exception is thrown
@@ -407,15 +427,13 @@ public class ElementControllerTest {
     @Test(expected = ElementNotFoundException.class)
     public void testNotExistsElementsmartspace() {
         // GIVEN the database contain one Admin user, one Manager User and one Player and one Element
-        UserEntity managerUser = userDao.create(factory.createNewUser("zur@gmail.com", currentSmartspace, "Zur", "haha", UserRole.MANAGER, 0));
-        UserEntity playerUser = userDao.create(factory.createNewUser("zur@gmail.com", currentSmartspace, "Zur", "haha", UserRole.PLAYER, 0));
         ElementEntity elementEntity = elementDao.create(factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", currentSmartspace, false, new HashMap<>()));
 
         // WHEN I Get element As Player
         ElementBoundary result =
                 this.restTemplate
                         .getForObject(
-                                this.baseUrl + managerUser.getUserSmartspace() + "/" + managerUser.getUserEmail() + "/testSpace/" + elementEntity.getElementId(),
+                                this.baseUrl + this.relativeURL + managerUser.getUserSmartspace() + "/" + managerUser.getUserEmail() + "/testSpace/" + elementEntity.getElementId(),
                                 ElementBoundary.class);
 
         // THEN the exception is thrown
@@ -424,32 +442,44 @@ public class ElementControllerTest {
     @Test(expected = ElementNotFoundException.class)
     public void testNotExistsElementID() {
         // GIVEN the database contain one Admin user, one Manager User and one Player and one Element
-        UserEntity managerUser = userDao.create(factory.createNewUser("zur@gmail.com", currentSmartspace, "Zur", "haha", UserRole.MANAGER, 0));
-        UserEntity playerUser = userDao.create(factory.createNewUser("zur@gmail.com", currentSmartspace, "Zur", "haha", UserRole.PLAYER, 0));
         ElementEntity elementEntity = elementDao.create(factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", currentSmartspace, false, new HashMap<>()));
 
         // WHEN I Get element As Player
         ElementBoundary result =
                 this.restTemplate
                         .getForObject(
-                                this.baseUrl + managerUser.getUserSmartspace() + "/" + managerUser.getUserEmail() + "/" + elementEntity.getElementSmartspace() + "/-1",
+                                this.baseUrl + this.relativeURL + managerUser.getUserSmartspace() + "/" + managerUser.getUserEmail() + "/" + elementEntity.getElementSmartspace() + "/-1",
                                 ElementBoundary.class);
 
         // THEN the exception is thrown
     }
 
     @Test
-    public void testGetElement() {
+    public void testGetNotExpiredElementAsManager() {
         // GIVEN the database contain one Admin user, one Manager User and one Player and one Element
-        UserEntity managerUser = userDao.create(factory.createNewUser("zur@gmail.com", currentSmartspace, "Zur", "haha", UserRole.MANAGER, 0));
-        UserEntity playerUser = userDao.create(factory.createNewUser("zur@gmail.com", currentSmartspace, "Zur", "haha", UserRole.PLAYER, 0));
         ElementEntity elementEntity = elementDao.create(factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", currentSmartspace, false, new HashMap<>()));
 
-        // WHEN I Get element As Player
+        // WHEN I Get element As Manager
         ElementBoundary result =
                 this.restTemplate
                         .getForObject(
-                                this.baseUrl + managerUser.getUserSmartspace() + "/" + managerUser.getUserEmail() + "/" + elementEntity.getElementSmartspace() + "/" + elementEntity.getElementId(),
+                                this.baseUrl + this.relativeURL + managerUser.getUserSmartspace() + "/" + managerUser.getUserEmail() + "/" + elementEntity.getElementSmartspace() + "/" + elementEntity.getElementId(),
+                                ElementBoundary.class);
+
+        // THEN the element is retrieved
+        assertEquals(elementEntity.getKey(), result.convertToEntity().getKey());
+    }
+
+    @Test
+    public void testGetExpiredElementAsManager() {
+        // GIVEN the database contain one Admin user, one Manager User and one Player and one Element
+        ElementEntity elementEntity = elementDao.create(factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", currentSmartspace, true, new HashMap<>()));
+
+        // WHEN I Get element As Manager
+        ElementBoundary result =
+                this.restTemplate
+                        .getForObject(
+                                this.baseUrl + this.relativeURL + managerUser.getUserSmartspace() + "/" + managerUser.getUserEmail() + "/" + elementEntity.getElementSmartspace() + "/" + elementEntity.getElementId(),
                                 ElementBoundary.class);
 
         // THEN the element is retrieved
@@ -459,8 +489,6 @@ public class ElementControllerTest {
     @Test(expected = Throwable.class)
     public void testGetElementDetailsAsAdmin() {
         // GIVEN the database contain one Admin user, one Manager User and one Player and one Element
-        UserEntity managerUser = userDao.create(factory.createNewUser("zur@gmail.com", currentSmartspace, "Zur", "haha", UserRole.MANAGER, 0));
-        UserEntity playerUser = userDao.create(factory.createNewUser("zur@gmail.com", currentSmartspace, "Zur", "haha", UserRole.PLAYER, 0));
         ElementEntity elementEntity = elementDao.create(factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", currentSmartspace, false, new HashMap<>()));
 
         // WHEN I Get Details as admin
@@ -471,7 +499,7 @@ public class ElementControllerTest {
         ElementBoundary[] result =
                 this.restTemplate
                         .getForObject(
-                                this.baseUrl + adminUser.getUserSmartspace() + "/" + adminUser.getUserEmail() + "?search={search}&value={value}&size={size}&page={page}",
+                                this.baseUrl + this.relativeURL + adminUser.getUserSmartspace() + "/" + adminUser.getUserEmail() + "?search={search}&value={value}&size={size}&page={page}",
                                 ElementBoundary[].class,
                                 search, value, size, page);
 
@@ -481,8 +509,6 @@ public class ElementControllerTest {
     @Test
     public void testGetNotExistsElementDetailsByName() {
         // GIVEN the database contain one Admin user, one Manager User and one Player and one Element
-        UserEntity managerUser = userDao.create(factory.createNewUser("zur@gmail.com", currentSmartspace, "Zur", "haha", UserRole.MANAGER, 0));
-        UserEntity playerUser = userDao.create(factory.createNewUser("zur@gmail.com", currentSmartspace, "Zur", "haha", UserRole.PLAYER, 0));
         ElementEntity elementEntity = elementDao.create(factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", currentSmartspace, false, new HashMap<>()));
 
         // WHEN I Get Details of not exists name as manager
@@ -493,7 +519,7 @@ public class ElementControllerTest {
         ElementBoundary[] result =
                 this.restTemplate
                         .getForObject(
-                                this.baseUrl + managerUser.getUserSmartspace() + "/" + managerUser.getUserEmail() + "?search={search}&value={value}&size={size}&page={page}",
+                                this.baseUrl + this.relativeURL + managerUser.getUserSmartspace() + "/" + managerUser.getUserEmail() + "?search={search}&value={value}&size={size}&page={page}",
                                 ElementBoundary[].class,
                                 search, value, size, page);
 
@@ -504,8 +530,6 @@ public class ElementControllerTest {
     @Test
     public void testGetNotExistsElementDetailsByType() {
         // GIVEN the database contain one Admin user, one Manager User and one Player and one Element
-        UserEntity managerUser = userDao.create(factory.createNewUser("zur@gmail.com", currentSmartspace, "Zur", "haha", UserRole.MANAGER, 0));
-        UserEntity playerUser = userDao.create(factory.createNewUser("zur@gmail.com", currentSmartspace, "Zur", "haha", UserRole.PLAYER, 0));
         ElementEntity elementEntity = elementDao.create(factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", currentSmartspace, false, new HashMap<>()));
 
         // WHEN I Get Details details of not exists type as manager
@@ -516,7 +540,7 @@ public class ElementControllerTest {
         ElementBoundary[] result =
                 this.restTemplate
                         .getForObject(
-                                this.baseUrl + managerUser.getUserSmartspace() + "/" + managerUser.getUserEmail() + "?search={search}&value={value}&size={size}&page={page}",
+                                this.baseUrl + this.relativeURL + managerUser.getUserSmartspace() + "/" + managerUser.getUserEmail() + "?search={search}&value={value}&size={size}&page={page}",
                                 ElementBoundary[].class,
                                 search, value, size, page);
 
@@ -525,13 +549,11 @@ public class ElementControllerTest {
     }
 
     @Test
-    public void testGetElementsDetailsByName() {
+    public void testGetElementsAsManagerDetailsByName() {
         // GIVEN the database contain one Admin user, one Manager User and one Player and three Elements
-        UserEntity managerUser = userDao.create(factory.createNewUser("zur@gmail.com", currentSmartspace, "Zur", "haha", UserRole.MANAGER, 0));
-        UserEntity playerUser = userDao.create(factory.createNewUser("zur@gmail.com", currentSmartspace, "Zur", "haha", UserRole.PLAYER, 0));
-        ElementEntity elementEntity1 = elementDao.create(factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", currentSmartspace, false, new HashMap<>()));
+        ElementEntity elementEntity1 = elementDao.create(factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", currentSmartspace, true, new HashMap<>()));
         ElementEntity elementEntity2 = elementDao.create(factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", currentSmartspace, false, new HashMap<>()));
-        ElementEntity elementEntity3 = elementDao.create(factory.createNewElement("notHere", "type", new Location(5, 4), new Date(), "zur@gmail.com", currentSmartspace, false, new HashMap<>()));
+        ElementEntity elementEntity3 = elementDao.create(factory.createNewElement("notHere", "type", new Location(5, 4), new Date(), "zur@gmail.com", currentSmartspace, true, new HashMap<>()));
 
         // WHEN I Get Details by name as manager
         int size = 5;
@@ -541,7 +563,7 @@ public class ElementControllerTest {
         ElementBoundary[] result =
                 this.restTemplate
                         .getForObject(
-                                this.baseUrl + managerUser.getUserSmartspace() + "/" + managerUser.getUserEmail() + "?search={search}&value={value}&size={size}&page={page}",
+                                this.baseUrl + this.relativeURL + managerUser.getUserSmartspace() + "/" + managerUser.getUserEmail() + "?search={search}&value={value}&size={size}&page={page}",
                                 ElementBoundary[].class,
                                 search, value, size, page);
 
@@ -552,11 +574,9 @@ public class ElementControllerTest {
     }
 
     @Test
-    public void testGetElementsDetailsByType() {
+    public void testGetElementsAsManagerDetailsByType() {
         // GIVEN the database contain one Admin user, one Manager User and one Player and three Elements
-        UserEntity managerUser = userDao.create(factory.createNewUser("zur@gmail.com", currentSmartspace, "Zur", "haha", UserRole.MANAGER, 0));
-        UserEntity playerUser = userDao.create(factory.createNewUser("zur@gmail.com", currentSmartspace, "Zur", "haha", UserRole.PLAYER, 0));
-        ElementEntity elementEntity1 = elementDao.create(factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", currentSmartspace, false, new HashMap<>()));
+        ElementEntity elementEntity1 = elementDao.create(factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", currentSmartspace, true, new HashMap<>()));
         ElementEntity elementEntity2 = elementDao.create(factory.createNewElement("name", "notHere", new Location(5, 4), new Date(), "zur@gmail.com", currentSmartspace, false, new HashMap<>()));
         ElementEntity elementEntity3 = elementDao.create(factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", currentSmartspace, false, new HashMap<>()));
 
@@ -568,7 +588,7 @@ public class ElementControllerTest {
         ElementBoundary[] result =
                 this.restTemplate
                         .getForObject(
-                                this.baseUrl + managerUser.getUserSmartspace() + "/" + managerUser.getUserEmail() + "?search={search}&value={value}&size={size}&page={page}",
+                                this.baseUrl + this.relativeURL + managerUser.getUserSmartspace() + "/" + managerUser.getUserEmail() + "?search={search}&value={value}&size={size}&page={page}",
                                 ElementBoundary[].class,
                                 search, value, size, page);
 
@@ -579,14 +599,12 @@ public class ElementControllerTest {
     }
 
     @Test
-    public void testGetElementsDetailsByTypeWithPagination() {
+    public void testGetElementsAsManagerDetailsByTypeWithPagination() {
         // GIVEN the database contain one Admin user, one Manager User and one Player and three Elements
-        UserEntity managerUser = userDao.create(factory.createNewUser("zur@gmail.com", currentSmartspace, "Zur", "haha", UserRole.MANAGER, 0));
-        UserEntity playerUser = userDao.create(factory.createNewUser("zur@gmail.com", currentSmartspace, "Zur", "haha", UserRole.PLAYER, 0));
-        ElementEntity elementEntity1 = elementDao.create(factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", currentSmartspace, false, new HashMap<>()));
+        ElementEntity elementEntity1 = elementDao.create(factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", currentSmartspace, true, new HashMap<>()));
         ElementEntity elementEntity2 = elementDao.create(factory.createNewElement("name", "notHere", new Location(5, 4), new Date(), "zur@gmail.com", currentSmartspace, false, new HashMap<>()));
         ElementEntity elementEntity3 = elementDao.create(factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", currentSmartspace, false, new HashMap<>()));
-        ElementEntity elementEntity4 = elementDao.create(factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", currentSmartspace, false, new HashMap<>()));
+        ElementEntity elementEntity4 = elementDao.create(factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", currentSmartspace, true, new HashMap<>()));
         ElementEntity elementEntity5 = elementDao.create(factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", currentSmartspace, false, new HashMap<>()));
 
         // WHEN I Get Details by type as manager with page 0 size 2
@@ -597,7 +615,7 @@ public class ElementControllerTest {
         ElementBoundary[] result =
                 this.restTemplate
                         .getForObject(
-                                this.baseUrl + managerUser.getUserSmartspace() + "/" + managerUser.getUserEmail() + "?search={search}&value={value}&size={size}&page={page}",
+                                this.baseUrl + this.relativeURL + managerUser.getUserSmartspace() + "/" + managerUser.getUserEmail() + "?search={search}&value={value}&size={size}&page={page}",
                                 ElementBoundary[].class,
                                 search, value, size, page);
 
@@ -605,6 +623,80 @@ public class ElementControllerTest {
         assertEquals(result.length, 2);
         assertThat(result).usingElementComparatorOnFields("key").contains(new ElementBoundary(elementEntity1));
         assertThat(result).usingElementComparatorOnFields("key").contains(new ElementBoundary(elementEntity3));
+    }
+
+    @Test
+    public void testGetElementsAsPlayerDetailsByName() {
+        // GIVEN the database contain one Admin user, one Manager User and one Player and three Elements
+        ElementEntity elementEntity1 = elementDao.create(factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", currentSmartspace, true, new HashMap<>()));
+        ElementEntity elementEntity2 = elementDao.create(factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", currentSmartspace, false, new HashMap<>()));
+        ElementEntity elementEntity3 = elementDao.create(factory.createNewElement("notHere", "type", new Location(5, 4), new Date(), "zur@gmail.com", currentSmartspace, true, new HashMap<>()));
+
+        // WHEN I Get Details by name as player
+        int size = 5;
+        int page = 0;
+        String search = Search.NAME.toString();
+        String value = "name";
+        ElementBoundary[] result =
+                this.restTemplate
+                        .getForObject(
+                                this.baseUrl + this.relativeURL + playerUser.getUserSmartspace() + "/" + playerUser.getUserEmail() + "?search={search}&value={value}&size={size}&page={page}",
+                                ElementBoundary[].class,
+                                search, value, size, page);
+
+        // THEN we recieve array of one elements with name name -- only one not expired
+        assertEquals(result.length, 1);
+        assertThat(result).usingElementComparatorOnFields("key").contains(new ElementBoundary(elementEntity2));
+    }
+
+    @Test
+    public void testGetElementsAsPlayerDetailsByType() {
+        // GIVEN the database contain one Admin user, one Manager User and one Player and three Elements
+        ElementEntity elementEntity1 = elementDao.create(factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", currentSmartspace, true, new HashMap<>()));
+        ElementEntity elementEntity2 = elementDao.create(factory.createNewElement("name", "notHere", new Location(5, 4), new Date(), "zur@gmail.com", currentSmartspace, false, new HashMap<>()));
+        ElementEntity elementEntity3 = elementDao.create(factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", currentSmartspace, false, new HashMap<>()));
+
+        // WHEN I Get Details by type as player
+        int size = 5;
+        int page = 0;
+        String search = Search.TYPE.toString();
+        String value = "type";
+        ElementBoundary[] result =
+                this.restTemplate
+                        .getForObject(
+                                this.baseUrl + this.relativeURL + playerUser.getUserSmartspace() + "/" + playerUser.getUserEmail() + "?search={search}&value={value}&size={size}&page={page}",
+                                ElementBoundary[].class,
+                                search, value, size, page);
+
+        // THEN we recieve array of one elements with type name -- one is expired
+        assertEquals(result.length, 1);
+        assertThat(result).usingElementComparatorOnFields("key").contains(new ElementBoundary(elementEntity3));
+    }
+
+    @Test
+    public void testGetElementsAsPlayerDetailsByTypeWithPagination() {
+        // GIVEN the database contain one Admin user, one Manager User and one Player and three Elements
+        ElementEntity elementEntity1 = elementDao.create(factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", currentSmartspace, false, new HashMap<>()));
+        ElementEntity elementEntity2 = elementDao.create(factory.createNewElement("name", "notHere", new Location(5, 4), new Date(), "zur@gmail.com", currentSmartspace, false, new HashMap<>()));
+        ElementEntity elementEntity3 = elementDao.create(factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", currentSmartspace, true, new HashMap<>()));
+        ElementEntity elementEntity4 = elementDao.create(factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", currentSmartspace, true, new HashMap<>()));
+        ElementEntity elementEntity5 = elementDao.create(factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", currentSmartspace, true, new HashMap<>()));
+
+        // WHEN I Get Details by type as player with page 0 size 2
+        int size = 2;
+        int page = 0;
+        String search = Search.TYPE.toString();
+        String value = "type";
+        ElementBoundary[] result =
+                this.restTemplate
+                        .getForObject(
+                                this.baseUrl + this.relativeURL + playerUser.getUserSmartspace() + "/" + playerUser.getUserEmail() + "?search={search}&value={value}&size={size}&page={page}",
+                                ElementBoundary[].class,
+                                search, value, size, page);
+
+        // THEN we recieve array of one elements with type name -- only one not expired
+        assertEquals(result.length, 1);
+        assertThat(result).usingElementComparatorOnFields("key").contains(new ElementBoundary(elementEntity1));
     }
 
 
