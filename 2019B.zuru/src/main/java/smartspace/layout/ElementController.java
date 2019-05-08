@@ -36,15 +36,13 @@ public class ElementController {
             @PathVariable("adminEmail") String adminEmail,
             @RequestParam(name = "size", required = false, defaultValue = "10") int size,
             @RequestParam(name = "page", required = false, defaultValue = "0") int page) {
-        if (validate(adminSmartspace, adminEmail, UserRole.ADMIN)) {
-            return this.elementService
-                    .getAll(size, page)
-                    .stream()
-                    .map(ElementBoundary::new)
-                    .collect(Collectors.toList())
-                    .toArray(new ElementBoundary[0]);
-        } else
-            throw new RuntimeException("Unauthorized operation");
+        return this.elementService
+                .getAll(size, page, getUserRole(adminSmartspace, adminEmail))
+                .stream()
+                .map(ElementBoundary::new)
+                .collect(Collectors.toList())
+                .toArray(new ElementBoundary[0]);
+
     }
 
     @Transactional
@@ -57,15 +55,12 @@ public class ElementController {
             @PathVariable("adminSmartspace") String adminSmartspace,
             @PathVariable("adminEmail") String adminEmail,
             @RequestBody ElementBoundary[] elementBoundary) {
-        if (validate(adminSmartspace, adminEmail, UserRole.ADMIN))
-            return IntStream.range(0, elementBoundary.length)
-                    .mapToObj(i -> elementBoundary[i].convertToEntity())
-                    .map(this.elementService::store)
-                    .map(ElementBoundary::new)
-                    .collect(Collectors.toList())
-                    .toArray(new ElementBoundary[0]);
-        else
-            throw new RuntimeException("Unauthorized operation");
+        return IntStream.range(0, elementBoundary.length)
+                .mapToObj(i -> elementBoundary[i].convertToEntity())
+                .map(x -> this.elementService.store(x, getUserRole(adminSmartspace, adminEmail)))
+                .map(ElementBoundary::new)
+                .collect(Collectors.toList())
+                .toArray(new ElementBoundary[0]);
     }
 
     @Transactional
@@ -78,10 +73,8 @@ public class ElementController {
             @PathVariable("managerSmartspace") String managerSmartspace,
             @PathVariable("managerEmail") String managerEmail,
             @RequestBody ElementBoundary elementBoundary) {
-        if (validate(managerSmartspace, managerEmail, UserRole.MANAGER))
-            return new ElementBoundary(this.elementService.create(elementBoundary.convertToEntity()));
-        else
-            throw new RuntimeException("Unauthorized operation");
+        return new ElementBoundary(this.elementService
+                .create(elementBoundary.convertToEntity(), getUserRole(managerSmartspace, managerEmail)));
     }
 
     @RequestMapping(
@@ -93,11 +86,8 @@ public class ElementController {
             @PathVariable("userEmail") String userEmail,
             @PathVariable("elementSmartspace") String elementSmartspace,
             @PathVariable("elementId") String elementId) {
-
-        if (validate(userSmartspace,userEmail,UserRole.MANAGER) || validate(userSmartspace,userEmail,UserRole.PLAYER))
-            return new ElementBoundary(this.elementService.getById(elementId, elementSmartspace));
-        else
-            throw new RuntimeException("Unauthorized operation");
+        return new ElementBoundary(this.elementService.
+                getById(elementId, elementSmartspace, getUserRole(userSmartspace, userEmail)));
     }
 
     @RequestMapping(
@@ -111,34 +101,30 @@ public class ElementController {
             @RequestParam(name = "value") String value,
             @RequestParam(name = "size", required = false, defaultValue = "10") int size,
             @RequestParam(name = "page", required = false, defaultValue = "0") int page) {
-        if (validate(userSmartspace,userEmail,UserRole.MANAGER) || validate(userSmartspace,userEmail,UserRole.PLAYER)) {
-            if (search.toLowerCase().equals(Search.TYPE.toString().toLowerCase())) {
-                return this.elementService
-                        .getByType(size, page, value)
-                        .stream()
-                        .map(ElementBoundary::new)
-                        .collect(Collectors.toList())
-                        .toArray(new ElementBoundary[0]);
-            } else if (search.toLowerCase().equals((Search.NAME.toString().toLowerCase()))) {
-                return this.elementService
-                        .getByName(size, page, value)
-                        .stream()
-                        .map(ElementBoundary::new)
-                        .collect(Collectors.toList())
-                        .toArray(new ElementBoundary[0]);
-            }
-            //TODO else if search.equals(Search.location)...
-            else
-                throw new ElementNotFoundException("Invalid search value");
+        if (search.toLowerCase().equals(Search.TYPE.toString().toLowerCase())) {
+            return this.elementService
+                    .getByType(size, page, value, getUserRole(userSmartspace, userEmail))
+                    .stream()
+                    .map(ElementBoundary::new)
+                    .collect(Collectors.toList())
+                    .toArray(new ElementBoundary[0]);
+        } else if (search.toLowerCase().equals((Search.NAME.toString().toLowerCase()))) {
+            return this.elementService
+                    .getByName(size, page, value, getUserRole(userSmartspace, userEmail))
+                    .stream()
+                    .map(ElementBoundary::new)
+                    .collect(Collectors.toList())
+                    .toArray(new ElementBoundary[0]);
         }
+        //TODO else if search.equals(Search.location)...
         else
-            throw new RuntimeException("Unauthorized operation");
+            throw new ElementNotFoundException("Invalid search value");
     }
 
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorMessage handleException (ElementNotFoundException e) {
+    public ErrorMessage handleException(ElementNotFoundException e) {
         String message = e.getMessage();
         if (message == null) {
             message = "message not found";
@@ -146,8 +132,10 @@ public class ElementController {
         return new ErrorMessage(message);
     }
 
-    private boolean validate(String smartspace, String email, UserRole userRole) {
-        Optional<UserEntity> dbUser = userService.getUserByMailAndSmartSpace(email, smartspace);
-        return dbUser.isPresent() && dbUser.get().getRole().equals(userRole);
+    private UserRole getUserRole(String smartspace, String email) {
+        //If the user does not exist there should be an exception in the userService
+        //and it shouldn't reach this point
+        return userService.getUserByMailAndSmartSpace(email, smartspace).get().getRole();
+        //return dbUser.isPresent() && dbUser.get().getRole().equals(userRole);
     }
 }

@@ -7,9 +7,11 @@ import org.springframework.transaction.annotation.Transactional;
 import smartspace.dao.ElementNotFoundException;
 import smartspace.dao.EnhancedElementDao;
 import smartspace.data.ElementEntity;
+import smartspace.data.UserRole;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ElementServiceImpl implements ElementService {
@@ -23,52 +25,98 @@ public class ElementServiceImpl implements ElementService {
     }
 
     @Override
-    public List<ElementEntity> getAll(int size, int page) {
-        return this.enhancedElementDao.readAll(size, page, "creationTimestamp");
-    }
-
-    @Override
-    @Transactional
-    public ElementEntity store(ElementEntity elementEntity) {
-        if (validate(elementEntity)) {
-            return this.enhancedElementDao
-                    .upsert(elementEntity);
-        } else {
-            throw new RuntimeException("Invalid element input");
-        }
-    }
-
-    @Override
-    @Transactional
-    public ElementEntity create(ElementEntity elementEntity) {
-        if (validateCreation(elementEntity)) {
-            return this.enhancedElementDao.create(elementEntity);
-        } else {
-            throw new RuntimeException("Invalid element input");
-        }
-    }
-
-    @Override
-    public List<ElementEntity> getByType(int size, int page, String type) {
-        return this.enhancedElementDao.getAllElementsByType(size, page, type);
-    }
-
-    @Override
-    public List<ElementEntity> getByName(int size, int page, String name) {
-        return this.enhancedElementDao.getAllElementsByName(size, page, name);
-    }
-
-    @Override
-    public ElementEntity getById(String elementId, String elementSmartspace) {
-        ElementEntity elementEntity = new ElementEntity();
-        elementEntity.setElementId(elementId);
-        elementEntity.setElementSmartspace(elementSmartspace);
-        Optional<ElementEntity> receivedEntity = this.enhancedElementDao.readById(elementEntity.getKey());
-        if (receivedEntity.isPresent() && !receivedEntity.get().isExpired())
-            return receivedEntity.get();
+    public List<ElementEntity> getAll(int size, int page, UserRole userRole) {
+        if (userRole.equals(UserRole.ADMIN))
+            return this.enhancedElementDao.readAll(size, page, "creationTimestamp");
         else
-            throw new ElementNotFoundException("No element with this ID: "
-                + elementEntity.getKey());
+            throw new RuntimeException("Unauthorized action");
+    }
+
+    @Override
+    @Transactional
+    public ElementEntity store(ElementEntity elementEntity, UserRole userRole) {
+        if (userRole.equals(UserRole.ADMIN)) {
+            if (validate(elementEntity)) {
+                return this.enhancedElementDao
+                        .upsert(elementEntity);
+            } else {
+                throw new RuntimeException("Invalid element input");
+            }
+        }
+        else
+            throw new RuntimeException("Unauthorized Operation");
+    }
+
+    @Override
+    @Transactional
+    public ElementEntity create(ElementEntity elementEntity, UserRole userRole) {
+        if (userRole.equals(UserRole.MANAGER)) {
+            if (validateCreation(elementEntity)) {
+                return this.enhancedElementDao.create(elementEntity);
+            } else {
+                throw new RuntimeException("Invalid element input");
+            }
+        }
+        else
+            throw new RuntimeException("Unauthorized operation");
+    }
+
+    @Override
+    public List<ElementEntity> getByType(int size, int page, String type, UserRole userRole) {
+        if (userRole.equals(UserRole.PLAYER))
+            return this.enhancedElementDao.
+                    getAllElementsByType(size, page, type)
+                    .stream()
+                    .filter(elementEntity -> !elementEntity.isExpired())
+                    .collect(Collectors.toList());
+        else if (userRole.equals((UserRole.MANAGER)))
+            return this.enhancedElementDao.getAllElementsByType(size, page, type);
+        else
+            throw new ElementNotFoundException("Unauthorized request");
+    }
+
+    @Override
+    public List<ElementEntity> getByName(int size, int page, String name, UserRole userRole) {
+        if (userRole.equals(UserRole.PLAYER))
+            return this.enhancedElementDao.
+                    getAllElementsByName(size, page, name)
+                    .stream()
+                    .filter(elementEntity -> !elementEntity.isExpired())
+                    .collect(Collectors.toList());
+        else if (userRole.equals((UserRole.MANAGER)))
+            return this.enhancedElementDao.getAllElementsByName(size, page, name);
+        else
+            throw new ElementNotFoundException("Unauthorized request");
+
+    }
+
+    @Override
+    public ElementEntity getById(String elementId, String elementSmartspace, UserRole userRole) {
+        if (userRole.equals(UserRole.PLAYER)) {
+            ElementEntity elementEntity = new ElementEntity();
+            elementEntity.setElementId(elementId);
+            elementEntity.setElementSmartspace(elementSmartspace);
+            Optional<ElementEntity> receivedEntity = this.enhancedElementDao.readById(elementEntity.getKey());
+            if (receivedEntity.isPresent() && !receivedEntity.get().isExpired())
+                return receivedEntity.get();
+            else
+                throw new ElementNotFoundException("No element with this ID: "
+                        + elementEntity.getKey());
+        }
+        else if (userRole.equals(UserRole.MANAGER)) {
+            ElementEntity elementEntity = new ElementEntity();
+            elementEntity.setElementId(elementId);
+            elementEntity.setElementSmartspace(elementSmartspace);
+            Optional<ElementEntity> receivedEntity = this.enhancedElementDao.readById(elementEntity.getKey());
+            if (receivedEntity.isPresent())
+                return receivedEntity.get();
+            else
+                throw new ElementNotFoundException("No element with this ID: "
+                        + elementEntity.getKey());
+        }
+        else
+            throw new ElementNotFoundException("Unauthorized request");
+
     }
 
     private boolean validate(ElementEntity elementEntity) {
