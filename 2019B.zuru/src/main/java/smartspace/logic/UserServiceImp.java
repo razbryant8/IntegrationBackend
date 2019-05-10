@@ -1,11 +1,11 @@
 package smartspace.logic;
 
-import org.hibernate.validator.internal.constraintvalidators.bv.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import smartspace.dao.EnhancedUserDao;
+import smartspace.dao.UserNotFoundException;
 import smartspace.data.UserEntity;
 import smartspace.data.UserRole;
 
@@ -47,6 +47,7 @@ public class UserServiceImp implements UserService {
     @Override
     @Transactional(readOnly = true)
     public Optional<UserEntity> getUserByKey(String key) {
+        // maybe we need to check if key is a valid key
         return this.userDao
                 .readById(key);
     }
@@ -56,7 +57,14 @@ public class UserServiceImp implements UserService {
         UserEntity user = new UserEntity();
         user.setUserSmartspace(smartSpace);
         user.setUserEmail(email);
-        return this.userDao.readById(user.getKey());
+        if (userDao.readById(user.getKey()) != null) {
+            return this.userDao.readById(user.getKey());
+        } else {
+            throw new UserNotFoundException("No user with this key: "
+                    + user.getKey());
+
+        }
+
 
     }
 
@@ -92,8 +100,6 @@ public class UserServiceImp implements UserService {
     }
 
 
-
-
     @Override
     // maybe we need to add AOP annotation to this code
     public void update(String userSmartspace, String userEmail, UserEntity user) {
@@ -103,19 +109,17 @@ public class UserServiceImp implements UserService {
 
     }
 
-    //need to complete how to checking if user mail contain "@." with EmailValidator
-    // Eyal says that he gives some jar that does it -> I thing that is the jar.
 
     private boolean CheckingEmailAndRole(UserEntity user) {
 
-  //      EmailValidator validator = new EmailValidator();
+        //      EmailValidator validator = new EmailValidator();
 
         if ((user.getRole().equals(UserRole.ADMIN) ||
                 user.getRole().equals(UserRole.MANAGER) ||
                 user.getRole().equals(UserRole.PLAYER)) &&
-               (user.getUserSmartspace().equals(this.currentSmartspace))
-                && validateEmailAddress(user.getUserEmail())){
-               // &&(validator.isValid(user.getUserEmail()))) {
+                (user.getUserSmartspace().equals(this.currentSmartspace))
+                && validateEmailAddress(user.getUserEmail())) {
+            // &&(validator.isValid(user.getUserEmail()))) {
             return true;
         }
         return false;
@@ -128,7 +132,7 @@ public class UserServiceImp implements UserService {
             Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
 
     public static boolean validateEmailAddress(String emailStr) {
-        Matcher matcher = VALID_EMAIL_ADDRESS_REGEX .matcher(emailStr);
+        Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(emailStr);
         return matcher.find();
     }
 }

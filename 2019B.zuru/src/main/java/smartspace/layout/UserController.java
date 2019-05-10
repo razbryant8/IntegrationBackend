@@ -86,7 +86,24 @@ public class UserController {
                                         .convertToEntity()));
     }
 
+   // need to complete -- check if usr is valid user
 
+//    @RequestMapping(
+//            method = RequestMethod.GET,
+//            path = "/smartspace/users/login/{userSmartspace}/{userEmail}",
+//            produces = MediaType.APPLICATION_JSON_VALUE)
+//    public UserBoundary getUser(
+//            @PathVariable("userSmartspace") String userSmartspace,
+//            @PathVariable("userEmail") String userEmail{
+//        return new UserBoundary(this.userService.getUserByMailAndSmartSpace(
+//                userSmartspace, userEmail)));
+//
+//
+//    }
+
+
+
+// need to check about the point
 
     @RequestMapping(
             method=RequestMethod.PUT,

@@ -21,4 +21,6 @@ public interface UserService {
 
     public void update(String userSmartspace,String userEmail, UserEntity convertToEntity);
 
+
+
 }
