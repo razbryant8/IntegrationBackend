@@ -250,7 +250,7 @@ public class RdbElementDaoTest {
 
 
         // WHEN we read up to 1 element by type from the beginning
-        List<ElementEntity> actual = this.enhancedDao.getAllElementsByType(5, 0, type);
+        List<ElementEntity> actual = this.enhancedDao.getAllElementsByType(5, 0, type,"creationTimestamp");
 
         // THEN we receive 1 elements exactly
         assertThat(actual)
@@ -269,7 +269,7 @@ public class RdbElementDaoTest {
 
 
         // WHEN we read up to 3 element by type from the beginning
-        List<ElementEntity> actual = this.enhancedDao.getAllElementsByType(3, 0, type);
+        List<ElementEntity> actual = this.enhancedDao.getAllElementsByType(3, 0, type,"creationTimestamp");
 
         // THEN we receive 2 elements exactly
         assertThat(actual)
@@ -289,7 +289,7 @@ public class RdbElementDaoTest {
 
 
         // WHEN we read up to 1 element by type from the beginning
-        List<ElementEntity> actual = this.enhancedDao.getAllElementsByName(5, 0, name);
+        List<ElementEntity> actual = this.enhancedDao.getAllElementsByName(5, 0, name,"creationTimestamp");
 
         // THEN we receive 1 elements exactly
         assertThat(actual)
@@ -308,7 +308,7 @@ public class RdbElementDaoTest {
 
 
         // WHEN we read up to 3 element by type from the beginning
-        List<ElementEntity> actual = this.enhancedDao.getAllElementsByName(3, 0, name);
+        List<ElementEntity> actual = this.enhancedDao.getAllElementsByName(3, 0, name,"creationTimestamp");
 
         // THEN we receive 2 elements exactly
         assertThat(actual)

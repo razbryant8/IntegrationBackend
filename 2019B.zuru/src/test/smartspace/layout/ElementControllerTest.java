@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import smartspace.dao.ElementNotFoundException;
 import smartspace.dao.EnhancedElementDao;
@@ -409,7 +410,7 @@ public class ElementControllerTest {
         // THEN the exception is thrown
     }
 
-    @Test(expected = ElementNotFoundException.class)
+    @Test(expected = HttpClientErrorException.NotFound.class)
     public void testGetExpiredElementAsPlayer() {
         // GIVEN the database contain one Admin user, one Manager User and one Player and one Element
         ElementEntity elementEntity = elementDao.create(factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", currentSmartspace, true, new HashMap<>()));
@@ -424,7 +425,7 @@ public class ElementControllerTest {
         // THEN the exception is thrown
     }
 
-    @Test(expected = ElementNotFoundException.class)
+    @Test(expected = HttpClientErrorException.NotFound.class)
     public void testNotExistsElementsmartspace() {
         // GIVEN the database contain one Admin user, one Manager User and one Player and one Element
         ElementEntity elementEntity = elementDao.create(factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", currentSmartspace, false, new HashMap<>()));
@@ -439,7 +440,7 @@ public class ElementControllerTest {
         // THEN the exception is thrown
     }
 
-    @Test(expected = ElementNotFoundException.class)
+    @Test(expected = HttpClientErrorException.NotFound.class)
     public void testNotExistsElementID() {
         // GIVEN the database contain one Admin user, one Manager User and one Player and one Element
         ElementEntity elementEntity = elementDao.create(factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", currentSmartspace, false, new HashMap<>()));
@@ -599,13 +600,18 @@ public class ElementControllerTest {
     }
 
     @Test
-    public void testGetElementsAsManagerDetailsByTypeWithPagination() {
+    public void testGetElementsAsManagerDetailsByTypeWithPagination() throws InterruptedException {
         // GIVEN the database contain one Admin user, one Manager User and one Player and three Elements
         ElementEntity elementEntity1 = elementDao.create(factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", currentSmartspace, true, new HashMap<>()));
+        Thread.sleep(100);
         ElementEntity elementEntity2 = elementDao.create(factory.createNewElement("name", "notHere", new Location(5, 4), new Date(), "zur@gmail.com", currentSmartspace, false, new HashMap<>()));
+        Thread.sleep(100);
         ElementEntity elementEntity3 = elementDao.create(factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", currentSmartspace, false, new HashMap<>()));
+        Thread.sleep(100);
         ElementEntity elementEntity4 = elementDao.create(factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", currentSmartspace, true, new HashMap<>()));
+        Thread.sleep(100);
         ElementEntity elementEntity5 = elementDao.create(factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", currentSmartspace, false, new HashMap<>()));
+        Thread.sleep(100);
 
         // WHEN I Get Details by type as manager with page 0 size 2
         int size = 2;
@@ -674,13 +680,18 @@ public class ElementControllerTest {
     }
 
     @Test
-    public void testGetElementsAsPlayerDetailsByTypeWithPagination() {
+    public void testGetElementsAsPlayerDetailsByTypeWithPagination() throws InterruptedException {
         // GIVEN the database contain one Admin user, one Manager User and one Player and three Elements
         ElementEntity elementEntity1 = elementDao.create(factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", currentSmartspace, false, new HashMap<>()));
+        Thread.sleep(100);
         ElementEntity elementEntity2 = elementDao.create(factory.createNewElement("name", "notHere", new Location(5, 4), new Date(), "zur@gmail.com", currentSmartspace, false, new HashMap<>()));
+        Thread.sleep(100);
         ElementEntity elementEntity3 = elementDao.create(factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", currentSmartspace, true, new HashMap<>()));
+        Thread.sleep(100);
         ElementEntity elementEntity4 = elementDao.create(factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", currentSmartspace, true, new HashMap<>()));
+        Thread.sleep(100);
         ElementEntity elementEntity5 = elementDao.create(factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", currentSmartspace, true, new HashMap<>()));
+        Thread.sleep(100);
 
         // WHEN I Get Details by type as player with page 0 size 2
         int size = 2;

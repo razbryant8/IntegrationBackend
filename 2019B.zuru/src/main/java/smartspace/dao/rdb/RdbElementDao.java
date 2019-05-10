@@ -121,14 +121,14 @@ public class RdbElementDao implements EnhancedElementDao<String> {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ElementEntity> getAllElementsByType(int size, int page, String type) {
-        return this.elementCrud.findAllByType(type, PageRequest.of(page, size, Sort.Direction.ASC, "creationTimestamp"));
+    public List<ElementEntity> getAllElementsByType(int size, int page, String type, String sortBy) {
+        return this.elementCrud.findAllByType(type, PageRequest.of(page, size, Sort.Direction.ASC, sortBy));
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<ElementEntity> getAllElementsByName(int size, int page, String name) {
-        return this.elementCrud.findAllByName(name, PageRequest.of(page, size, Sort.Direction.ASC, "creationTimestamp"));
+    public List<ElementEntity> getAllElementsByName(int size, int page, String name, String sortBy) {
+        return this.elementCrud.findAllByName(name, PageRequest.of(page, size, Sort.Direction.ASC, sortBy));
     }
 
     @Value("${spring.application.name}")

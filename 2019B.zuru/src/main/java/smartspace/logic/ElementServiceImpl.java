@@ -42,8 +42,7 @@ public class ElementServiceImpl implements ElementService {
             } else {
                 throw new RuntimeException("Invalid element input");
             }
-        }
-        else
+        } else
             throw new RuntimeException("Unauthorized Operation");
     }
 
@@ -56,8 +55,7 @@ public class ElementServiceImpl implements ElementService {
             } else {
                 throw new RuntimeException("Invalid element input");
             }
-        }
-        else
+        } else
             throw new RuntimeException("Unauthorized operation");
     }
 
@@ -65,12 +63,12 @@ public class ElementServiceImpl implements ElementService {
     public List<ElementEntity> getByType(int size, int page, String type, UserRole userRole) {
         if (userRole.equals(UserRole.PLAYER))
             return this.enhancedElementDao.
-                    getAllElementsByType(size, page, type)
+                    getAllElementsByType(size, page, type, "creationTimestamp")
                     .stream()
                     .filter(elementEntity -> !elementEntity.isExpired())
                     .collect(Collectors.toList());
         else if (userRole.equals((UserRole.MANAGER)))
-            return this.enhancedElementDao.getAllElementsByType(size, page, type);
+            return this.enhancedElementDao.getAllElementsByType(size, page, type, "creationTimestamp");
         else
             throw new ElementNotFoundException("Unauthorized request");
     }
@@ -79,12 +77,12 @@ public class ElementServiceImpl implements ElementService {
     public List<ElementEntity> getByName(int size, int page, String name, UserRole userRole) {
         if (userRole.equals(UserRole.PLAYER))
             return this.enhancedElementDao.
-                    getAllElementsByName(size, page, name)
+                    getAllElementsByName(size, page, name, "creationTimestamp")
                     .stream()
                     .filter(elementEntity -> !elementEntity.isExpired())
                     .collect(Collectors.toList());
         else if (userRole.equals((UserRole.MANAGER)))
-            return this.enhancedElementDao.getAllElementsByName(size, page, name);
+            return this.enhancedElementDao.getAllElementsByName(size, page, name, "creationTimestamp");
         else
             throw new ElementNotFoundException("Unauthorized request");
 
@@ -102,8 +100,7 @@ public class ElementServiceImpl implements ElementService {
             else
                 throw new ElementNotFoundException("No element with this ID: "
                         + elementEntity.getKey());
-        }
-        else if (userRole.equals(UserRole.MANAGER)) {
+        } else if (userRole.equals(UserRole.MANAGER)) {
             ElementEntity elementEntity = new ElementEntity();
             elementEntity.setElementId(elementId);
             elementEntity.setElementSmartspace(elementSmartspace);
@@ -113,8 +110,7 @@ public class ElementServiceImpl implements ElementService {
             else
                 throw new ElementNotFoundException("No element with this ID: "
                         + elementEntity.getKey());
-        }
-        else
+        } else
             throw new ElementNotFoundException("Unauthorized request");
 
     }

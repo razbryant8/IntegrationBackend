@@ -11,9 +11,9 @@ public interface EnhancedElementDao<ElementKey> extends ElementDao<ElementKey> {
 
     public ElementEntity upsert(ElementEntity elementEntity);
 
-    public List<ElementEntity> getAllElementsByType(int size, int page, String type);
+    public List<ElementEntity> getAllElementsByType(int size, int page, String type, String sortBy);
 
-    public List<ElementEntity> getAllElementsByName(int size, int page, String name);
+    public List<ElementEntity> getAllElementsByName(int size, int page, String name, String sortBy);
     /*public List<ElementEntity> getMessagesContainigText (
             String pattern, int size, int page);
     public List<ElementEntity> getMessagesWithTimestampRange(

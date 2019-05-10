@@ -11,6 +11,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
 
+import smartspace.dao.ElementNotFoundException;
 import smartspace.dao.EnhancedElementDao;
 import smartspace.data.ElementEntity;
 import smartspace.data.Location;
@@ -73,22 +74,22 @@ public class ElementServiceTest {
     }
 
     @Test()
-    public void checkGetAllInEmptyPage() {
+    public void checkGetAllInEmptyPageAsAdmin() {
         // GIVEN The database contains one element
         ElementEntity elementEntity = enhancedDao.create(factory.createNewElement("name", "type", new Location(5, 4), new Date(), null, null, false, new HashMap<>()));
 
-        // WHEN getAll elements in an empty page
+        // WHEN getAll elements in an empty page as admin
         int size = 5;
         int page = 1;
         List<ElementEntity> elementEntities = elementService
-                .getAll(size, page, getUserRole(elementEntity.getCreatorSmartspace(), elementEntity.getCreatorEmail()));
+                .getAll(size, page, UserRole.ADMIN);
 
         // THEN the List is empty
         assertEquals(0, elementEntities.size());
     }
 
     @Test()
-    public void checkGetAllInPageWithOneElement() {
+    public void checkGetAllInPageWithOneElementAsAdmin() {
         // GIVEN The database contains one element
         ElementEntity elementEntity = enhancedDao.create(factory.createNewElement("name", "type", new Location(5, 4), new Date(), null, null, false, new HashMap<>()));
 
@@ -96,7 +97,7 @@ public class ElementServiceTest {
         int size = 5;
         int page = 0;
         List<ElementEntity> elementEntities = elementService.
-                getAll(size, page, getUserRole(elementEntity.getCreatorSmartspace(), elementEntity.getCreatorEmail()));
+                getAll(size, page, UserRole.ADMIN);
 
         // THEN the List contains exactly one element
         assertEquals(1, elementEntities.size());
@@ -114,7 +115,7 @@ public class ElementServiceTest {
         int size = 5;
         int page = 0;
         List<ElementEntity> elementEntities = elementService
-                .getAll(size, page);
+                .getAll(size, page, UserRole.ADMIN);
 
         // THEN the List contains exactly the three created elements
         assertEquals(3, elementEntities.size());
@@ -124,15 +125,14 @@ public class ElementServiceTest {
     }
 
     @Test()
-    public void checkStore() {
+    public void checkStoreAsAdmin() {
         // GIVEN Valid Element Entity
         ElementEntity elementEntity = factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", "test", false, new HashMap<>());
         elementEntity.setKey("1#anotherTeam");
 
-        // WHEN we store the entity using ElementService Logic
+        // WHEN we store the entity using ElementService Logic as admin
         elementService.
-                store(elementEntity, getUserRole(elementEntity.getCreatorSmartspace(), elementEntity.
-                        getCreatorEmail()));
+                store(elementEntity, UserRole.ADMIN);
 
         // THEN the entity is stored
         List<ElementEntity> entities = this.enhancedDao.readAll();
@@ -146,89 +146,86 @@ public class ElementServiceTest {
         ElementEntity elementEntity = factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", "test", false, new HashMap<>());
         elementEntity.setKey("1#" + this.currentSmartSpace);
 
-        // WHEN we store the entity using ElementService Logic
+        // WHEN we store the entity using ElementService Logic As Admin
         elementService.
-                store(elementEntity, getUserRole(elementEntity.getCreatorSmartspace(), elementEntity.getCreatorEmail()));
+                store(elementEntity, UserRole.ADMIN);
 
         // THEN we expect Exception to be thrown
     }
 
     @Test(expected = Throwable.class)
-    public void checkValidateIlligalMoreAttributes() {
+    public void checkValidateIlligalMoreAttributesAsAdmin() {
         // GIVEN Entity with null more attributes
         ElementEntity elementEntity = factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", "test", false, null);
         elementEntity.setKey("1#" + this.currentSmartSpace);
 
-        // WHEN we store the entity using ElementService Logic
+        // WHEN we store the entity using ElementService Logic As Admin
         elementService.
-                store(elementEntity, getUserRole(elementEntity.getCreatorSmartspace(), elementEntity.getCreatorEmail()));
+                store(elementEntity, UserRole.ADMIN);
 
         // THEN we expect Exception to be thrown
     }
 
     @Test(expected = Throwable.class)
-    public void checkValidateIlligalCreatorSmartSpace() {
+    public void checkValidateIlligalCreatorSmartSpaceAsAdmin() {
         // GIVEN Entity with null creatorSmartspace
         ElementEntity elementEntity = factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", null, false, new HashMap<>());
         elementEntity.setKey("1#" + this.currentSmartSpace);
 
-        // WHEN we store the entity using ElementService Logic
+        // WHEN we store the entity using ElementService LogicAs Admin
         elementService.
-                store(elementEntity, getUserRole(elementEntity.getCreatorSmartspace(), elementEntity.getCreatorEmail()));
+                store(elementEntity, UserRole.ADMIN);
 
         // THEN we expect Exception to be thrown
     }
 
     @Test(expected = Throwable.class)
-    public void checkValidateIlligalCreatorMail() {
+    public void checkValidateIlligalCreatorMailAsAdmin() {
         // GIVEN Entity with bad CreatorMail
         ElementEntity elementEntity = factory.createNewElement("name", "type", new Location(5, 4), new Date(), "      ", "test", false, new HashMap<>());
         elementEntity.setKey("1#" + this.currentSmartSpace);
 
-        // WHEN we store the entity using ElementService Logic
-        elementService.store(elementEntity,
-                getUserRole(elementEntity.getCreatorSmartspace(), elementEntity.getCreatorEmail()));
+        // WHEN we store the entity using ElementService Logic as admin
+        elementService.store(elementEntity, UserRole.ADMIN);
 
         // THEN we expect Exception to be thrown
     }
 
     @Test(expected = Throwable.class)
-    public void checkValidateIlligalType() {
+    public void checkValidateIlligalTypeAsAdmin() {
         // GIVEN Entity with Bad Type
         ElementEntity elementEntity = factory.createNewElement("name", "            ", new Location(5, 4), new Date(), "zur@gmail.com", "test", false, new HashMap<>());
         elementEntity.setKey("1#" + this.currentSmartSpace);
 
-        // WHEN we store the entity using ElementService Logic
+        // WHEN we store the entity using ElementService Logic as admin
         elementService.
-                store(elementEntity, getUserRole(elementEntity.getCreatorSmartspace(), elementEntity.getCreatorEmail()));
+                store(elementEntity, UserRole.ADMIN);
 
         // THEN we expect Exception to be thrown
     }
 
     @Test(expected = Throwable.class)
-    public void checkValidateIlligalName() {
+    public void checkValidateIlligalNameAsAdmin() {
         // GIVEN Entity with Bad Name
         ElementEntity elementEntity = factory.createNewElement("              ", "type", new Location(5, 4), new Date(), "zur@gmail.com", "test", false, new HashMap<>());
         elementEntity.setKey("1#test");
 
-        // WHEN we store the entity using ElementService Logic
+        // WHEN we store the entity using ElementService Logic As Admin
         elementService.
-                store(elementEntity, getUserRole(elementEntity.getCreatorSmartspace(),
-                        elementEntity.getCreatorEmail()));
+                store(elementEntity, UserRole.ADMIN);
 
         // THEN we expect Exception to be thrown
     }
 
     @Test(expected = Throwable.class)
-    public void checkValidateIlligalLocation() {
+    public void checkValidateIlligalLocationAsAdmin() {
         // GIVEN Entity without location
         ElementEntity elementEntity = factory.createNewElement("name", "type", null, new Date(), "zur@gmail.com", "test", false, new HashMap<>());
         elementEntity.setKey("1#test");
 
-        // WHEN we store the entity using ElementService Logic
+        // WHEN we store the entity using ElementService Logic AsAdmin
         elementService.
-                store(elementEntity, getUserRole(elementEntity.getCreatorSmartspace(),
-                        elementEntity.getCreatorEmail()));
+                store(elementEntity, UserRole.ADMIN);
 
         // THEN we expect Exception to be thrown
     }
@@ -237,8 +234,8 @@ public class ElementServiceTest {
     public void getElementByIlligalElement() {
         // GIVEN nothing
 
-        // WHEN we get element by id that does not exists
-        elementService.getById("id", "smartspace");
+        // WHEN we get element by id that does not exists as player
+        elementService.getById("id", "smartspace", UserRole.PLAYER);
 
         // THEN we expect Exception to be thrown
     }
@@ -248,40 +245,83 @@ public class ElementServiceTest {
         // GIVEN the database contains 2 elements
         ElementEntity elementEntity1 = enhancedDao.create(factory.createNewElement("name", "type", new Location(5, 4), new Date(), null, null, false, new HashMap<>()));
 
-        // WHEN we get element by smartspace that does not exists
-        elementService.getById(elementEntity1.getElementId(), "test");
+        // WHEN we get element by smartspace that does not exists as player
+        elementService.getById(elementEntity1.getElementId(), "test", UserRole.PLAYER);
 
         // THEN we expect Exception to be thrown
     }
 
     @Test
-    public void getElementByID() {
+    public void getElementByIDByManager() {
         // GIVEN the database contains 2 elements
-        ElementEntity elementEntity1 = enhancedDao.create(factory.createNewElement("name", "type", new Location(5, 4), new Date(), null, null, false, new HashMap<>()));
+        ElementEntity elementEntity1 = enhancedDao.create(factory.createNewElement("name", "type", new Location(5, 4), new Date(), null, null, true, new HashMap<>()));
         ElementEntity elementEntity2 = enhancedDao.create(factory.createNewElement("name", "type", new Location(5, 4), new Date(), null, null, false, new HashMap<>()));
 
-        // WHEN we get element by smartspace and ID
-        ElementEntity entity = elementService.getById(elementEntity1.getElementId(), elementEntity2.getElementSmartspace());
+        // WHEN we get element by smartspace and ID as manager
+        ElementEntity entity = elementService.getById(elementEntity1.getElementId(), elementEntity2.getElementSmartspace(), UserRole.MANAGER);
+
+        // THEN we expect to get the element
+        assertEquals(elementEntity1.getKey(), entity.getKey());
+    }
+
+    @Test(expected = ElementNotFoundException.class)
+    public void getExpiredElementByIDByPlayer() {
+        // GIVEN the database contains 2 elements
+        ElementEntity elementEntity1 = enhancedDao.create(factory.createNewElement("name", "type", new Location(5, 4), new Date(), null, null, true, new HashMap<>()));
+        ElementEntity elementEntity2 = enhancedDao.create(factory.createNewElement("name", "type", new Location(5, 4), new Date(), null, null, false, new HashMap<>()));
+
+        // WHEN we get element by smartspace and ID as player
+        ElementEntity entity = elementService.getById(elementEntity1.getElementId(), elementEntity1.getElementSmartspace(), UserRole.PLAYER);
 
         // THEN we expect to get the element
         assertEquals(elementEntity1.getKey(), entity.getKey());
     }
 
     @Test
-    public void getElementByTypeUsingPagination() {
+    public void getElementByIDByPlayer() {
+        // GIVEN the database contains 2 elements
+        ElementEntity elementEntity1 = enhancedDao.create(factory.createNewElement("name", "type", new Location(5, 4), new Date(), null, null, true, new HashMap<>()));
+        ElementEntity elementEntity2 = enhancedDao.create(factory.createNewElement("name", "type", new Location(5, 4), new Date(), null, null, false, new HashMap<>()));
+
+        // WHEN we get element by smartspace and ID as player
+        ElementEntity entity = elementService.getById(elementEntity2.getElementId(), elementEntity2.getElementSmartspace(), UserRole.PLAYER);
+
+        // THEN we expect to get the element
+        assertEquals(elementEntity2.getKey(), entity.getKey());
+    }
+
+    @Test
+    public void getElementByTypeUsingPaginationAsManager() {
         // GIVEN the database contains 2 elements
         String type = "type";
         int size = 5;
         int page = 0;
-        ElementEntity elementEntity1 = enhancedDao.create(factory.createNewElement("name", type, new Location(5, 4), new Date(), null, null, false, new HashMap<>()));
+        ElementEntity elementEntity1 = enhancedDao.create(factory.createNewElement("name", type, new Location(5, 4), new Date(), null, null, true, new HashMap<>()));
         ElementEntity elementEntity2 = enhancedDao.create(factory.createNewElement("name", type, new Location(5, 4), new Date(), null, null, false, new HashMap<>()));
 
-        // WHEN we get elements by type
-        List<ElementEntity> entities = elementService.getByType(size, page, type);
+        // WHEN we get elements by type as manager
+        List<ElementEntity> entities = elementService.getByType(size, page, type, UserRole.MANAGER);
 
         // THEN we expect to get 2 elements
         assertEquals(entities.size(), 2);
         assertThat(entities).usingElementComparatorOnFields("key").contains(elementEntity1);
+        assertThat(entities).usingElementComparatorOnFields("key").contains(elementEntity2);
+    }
+
+    @Test
+    public void getElementByTypeUsingPaginationAsPlayer() {
+        // GIVEN the database contains 2 elements
+        String type = "type";
+        int size = 5;
+        int page = 0;
+        ElementEntity elementEntity1 = enhancedDao.create(factory.createNewElement("name", type, new Location(5, 4), new Date(), null, null, true, new HashMap<>()));
+        ElementEntity elementEntity2 = enhancedDao.create(factory.createNewElement("name", type, new Location(5, 4), new Date(), null, null, false, new HashMap<>()));
+
+        // WHEN we get elements by type as player
+        List<ElementEntity> entities = elementService.getByType(size, page, type, UserRole.PLAYER);
+
+        // THEN we expect to get 1 elements
+        assertEquals(entities.size(), 1);
         assertThat(entities).usingElementComparatorOnFields("key").contains(elementEntity2);
     }
 
@@ -293,27 +333,44 @@ public class ElementServiceTest {
         int page = 0;
 
         // WHEN we get elements by type
-        List<ElementEntity> entities = elementService.getByType(size, page, type);
+        List<ElementEntity> entities = elementService.getByType(size, page, type, UserRole.MANAGER);
 
         // THEN we expect to get 0 elements
         assertEquals(entities.size(), 0);
     }
 
     @Test
-    public void getElementByNameUsingPagination() {
+    public void getElementByNameUsingPaginationAsManager() {
         // GIVEN the database contains 2 elements
         String name = "name";
         int size = 5;
         int page = 0;
-        ElementEntity elementEntity1 = enhancedDao.create(factory.createNewElement(name, "type", new Location(5, 4), new Date(), null, null, false, new HashMap<>()));
+        ElementEntity elementEntity1 = enhancedDao.create(factory.createNewElement(name, "type", new Location(5, 4), new Date(), null, null, true, new HashMap<>()));
         ElementEntity elementEntity2 = enhancedDao.create(factory.createNewElement(name, "type", new Location(5, 4), new Date(), null, null, false, new HashMap<>()));
 
-        // WHEN we get elements by name
-        List<ElementEntity> entities = elementService.getByName(size, page, name);
+        // WHEN we get elements by name as manager
+        List<ElementEntity> entities = elementService.getByName(size, page, name, UserRole.MANAGER);
 
         // THEN we expect to get 2 elements
         assertEquals(entities.size(), 2);
         assertThat(entities).usingElementComparatorOnFields("key").contains(elementEntity1);
+        assertThat(entities).usingElementComparatorOnFields("key").contains(elementEntity2);
+    }
+
+    @Test
+    public void getElementByNameUsingPaginationAsPlayer() {
+        // GIVEN the database contains 2 elements
+        String name = "name";
+        int size = 5;
+        int page = 0;
+        ElementEntity elementEntity1 = enhancedDao.create(factory.createNewElement(name, "type", new Location(5, 4), new Date(), null, null, true, new HashMap<>()));
+        ElementEntity elementEntity2 = enhancedDao.create(factory.createNewElement(name, "type", new Location(5, 4), new Date(), null, null, false, new HashMap<>()));
+
+        // WHEN we get elements by name as player
+        List<ElementEntity> entities = elementService.getByName(size, page, name, UserRole.PLAYER);
+
+        // THEN we expect to get 1 elements
+        assertEquals(entities.size(), 1);
         assertThat(entities).usingElementComparatorOnFields("key").contains(elementEntity2);
     }
 
@@ -324,31 +381,31 @@ public class ElementServiceTest {
         int size = 5;
         int page = 0;
 
-        // WHEN we get elements by name
-        List<ElementEntity> entities = elementService.getByName(size, page, name);
+        // WHEN we get elements by name as manager
+        List<ElementEntity> entities = elementService.getByName(size, page, name, UserRole.MANAGER);
 
         // THEN we expect to get 0 elements
         assertEquals(entities.size(), 0);
     }
 
     @Test(expected = Throwable.class)
-    public void createBadElement() {
+    public void createBadElementAsManager() {
         // GIVEN nothing
 
-        // WHEN we get create new element without location
+        // WHEN we get create new element without location as manager
         ElementEntity elmentEntity = factory.createNewElement("name", "type", null, new Date(), "zur@gmail.com", "test", false, new HashMap<>());
-        elementService.create(elmentEntity);
+        elementService.create(elmentEntity, UserRole.MANAGER);
 
         // THEN we expect Exception to be thrown
     }
 
     @Test
-    public void createElement() {
+    public void createElementAsManager() {
         // GIVEN nothing
 
         // WHEN we get create new element
         ElementEntity elementEntity1 = factory.createNewElement("name", "type", new Location(), new Date(), "zur@gmail.com", "test", false, new HashMap<>());
-        elementService.create(elementEntity1);
+        elementService.create(elementEntity1, UserRole.MANAGER);
 
         // THEN we expect one element to be created
         int size = 5;
@@ -356,10 +413,6 @@ public class ElementServiceTest {
         List<ElementEntity> entities = enhancedDao.readAll(size, page);
         assertEquals(entities.size(), 1);
         assertThat(entities).usingElementComparatorOnFields("key").contains(elementEntity1);
-    }
-
-    private UserRole getUserRole(String smartspace, String email) {
-        return userService.getUserByMailAndSmartSpace(email, smartspace).get().getRole();
     }
 
 }
