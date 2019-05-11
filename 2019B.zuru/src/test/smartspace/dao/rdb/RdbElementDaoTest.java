@@ -315,7 +315,51 @@ public class RdbElementDaoTest {
                 .hasSize(2);
         assertThat(actual).usingElementComparatorOnFields("key").contains(entity1);
         assertThat(actual).usingElementComparatorOnFields("key").contains(entity2);
+    }
 
+    @Test
+    public void testGetAllElementsByLocation() {
+        // GIVEN the database contains 3 elements within the specified location "rectangle"
+        ElementEntity entity1 = enhancedDao.create(factory.createNewElement("mark1",null,new Location(50,50),new Date(),null,null,false,new HashMap<>()));
+        ElementEntity entity2 = enhancedDao.create(factory.createNewElement("mark2",null,new Location(45,45),new Date(),null,null,false,new HashMap<>()));
+        ElementEntity entity3 = enhancedDao.create(factory.createNewElement("mark3","blabla",new Location(40,40),new Date(),null,null,false,new HashMap<>()));
 
+        // WHEN we read all elements by location nearby to those 3
+        List<ElementEntity> actual = this.enhancedDao.getAllElementsByLocation(3, 0, 46, 46, 10, "creationTimestamp");
+
+        // THEN we receive the 3 elements since they are actually nearby the specified "rectangle" radius.
+        assertThat(actual).hasSize(3);
+        assertThat(actual).usingElementComparatorOnFields("key").contains(entity1);
+        assertThat(actual).usingElementComparatorOnFields("key").contains(entity2);
+        assertThat(actual).usingElementComparatorOnFields("key").contains(entity3);
+    }
+
+    @Test
+    public void testGetAllElementsByLocation2() {
+        // GIVEN the database contains 3 elements within the specified location "rectangle"
+        enhancedDao.create(factory.createNewElement("mark1",null,new Location(50,50),new Date(),null,null,false,new HashMap<>()));
+        enhancedDao.create(factory.createNewElement("mark2",null,new Location(45,45),new Date(),null,null,false,new HashMap<>()));
+        enhancedDao.create(factory.createNewElement("mark3","blabla",new Location(40,40),new Date(),null,null,false,new HashMap<>()));
+
+        // WHEN we read all elements by location which are not near the specified "rectangle" radius.
+        List<ElementEntity> actual = this.enhancedDao.getAllElementsByLocation(3, 0, 70, 70, 10, "creationTimestamp");
+
+        // THEN we receive an empty list.
+        assertThat(actual).hasSize(0);
+    }
+
+    @Test
+    public void testGetAllElementsByLocation3() {
+        // GIVEN the database contains 3 elements within the specified location "rectangle"
+        ElementEntity entity1 = enhancedDao.create(factory.createNewElement("mark1",null,new Location(50,50),new Date(),null,null,false,new HashMap<>()));
+        ElementEntity entity2 = enhancedDao.create(factory.createNewElement("mark2",null,new Location(45,45),new Date(),null,null,false,new HashMap<>()));
+        ElementEntity entity3 = enhancedDao.create(factory.createNewElement("mark3","blabla",new Location(40,40),new Date(),null,null,false,new HashMap<>()));
+
+        // WHEN we read all elements by location where only 1 of them is nearby the specified "rectangle".
+        List<ElementEntity> actual = this.enhancedDao.getAllElementsByLocation(3, 0, 55, 55, 7, "creationTimestamp");
+
+        // THEN we receive only the nearby element.
+        assertThat(actual).hasSize(1);
+        assertThat(actual).usingElementComparatorOnFields("key").contains(entity1);
     }
 }
