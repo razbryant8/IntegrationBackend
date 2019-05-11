@@ -28,6 +28,7 @@ public class ElementController {
     }
 
     @RequestMapping(
+            
             method = RequestMethod.GET,
             path = "/smartspace/admin/elements/{adminSmartspace}/{adminEmail}",
             produces = MediaType.APPLICATION_JSON_VALUE)
