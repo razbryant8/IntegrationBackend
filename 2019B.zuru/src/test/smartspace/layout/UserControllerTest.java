@@ -107,12 +107,10 @@ public class UserControllerTest {
         // WHEN someone that is not admin Export using REST API
         int page = 0;
         int size = 5;
-        ElementBoundary[] result =
-                this.restTemplate
-                        .getForObject(
-                                this.baseUrl + "badSmartSpace/BadEmail?size={size}&page={page}",
-                                ElementBoundary[].class,
-                                size, page);
+        this.restTemplate
+            .getForObject(
+            this.baseUrl + "badSmartSpace/BadEmail?size={size}&page={page}",
+            ElementBoundary[].class, size, page);
 
         // THEN exception is thrown
     }
@@ -123,7 +121,7 @@ public class UserControllerTest {
         // GIVEN the database contain one Admin user
 
         // WHEN someone that is Import using REST API
-        ArrayList<UserBoundary> UserBoundryArr = new ArrayList<UserBoundary>();
+        ArrayList<UserBoundary> UserBoundaryArr = new ArrayList<UserBoundary>();
 
         UserBoundary newUserBoundary = new UserBoundary();
         newUserBoundary.setUserKey(new UserKeyType("test_import@mail", "2019b.test"));
@@ -132,12 +130,12 @@ public class UserControllerTest {
         newUserBoundary.setRole("PLAYER");
         newUserBoundary.setPoints(200);
 
-        UserBoundryArr.add(newUserBoundary);
+        UserBoundaryArr.add(newUserBoundary);
 
         UserBoundary[] actualResult = this.restTemplate
                 .postForObject(
                         this.baseUrl + adminUser.getUserSmartspace() + "/" + adminUser.getUserEmail(),
-                        UserBoundryArr,
+                        UserBoundaryArr,
                         UserBoundary[].class);
 
         // THEN the database contain those two users (admin + new user)
@@ -152,7 +150,7 @@ public class UserControllerTest {
         // GIVEN the database contain one Admin user
 
         // WHEN someone that is Import using REST API
-        ArrayList<UserBoundary> UserBoundryArr = new ArrayList<UserBoundary>();
+        ArrayList<UserBoundary> UserBoundaryArr = new ArrayList<UserBoundary>();
 
         UserBoundary newUserBoundary1 = new UserBoundary();
         newUserBoundary1.setUserKey(new UserKeyType("test_import1@mail", "2019b.test"));
@@ -161,7 +159,7 @@ public class UserControllerTest {
         newUserBoundary1.setRole("PLAYER");
         newUserBoundary1.setPoints(200);
 
-        UserBoundryArr.add(newUserBoundary1);
+        UserBoundaryArr.add(newUserBoundary1);
 
         UserBoundary newUserBoundary2 = new UserBoundary();
         newUserBoundary2.setUserKey(new UserKeyType("test_import2@mail", "2019b.test"));
@@ -170,12 +168,12 @@ public class UserControllerTest {
         newUserBoundary2.setRole("MANAGER");
         newUserBoundary2.setPoints(1000);
 
-        UserBoundryArr.add(newUserBoundary2);
+        UserBoundaryArr.add(newUserBoundary2);
 
         UserBoundary[] actualResult = this.restTemplate
                 .postForObject(
                         this.baseUrl + adminUser.getUserSmartspace() + "/" + adminUser.getUserEmail(),
-                        UserBoundryArr,
+                        UserBoundaryArr,
                         UserBoundary[].class);
 
         // THEN the database contain those two users (admin + new user)
@@ -213,13 +211,13 @@ public class UserControllerTest {
     @Test
     public void testExportUsingPagination() {
         // GIVEN the database contain one Admin user and two elements
-        UserEntity userEntity1 = enhancedUserDao.create(new UserEntity
+        enhancedUserDao.create(new UserEntity
                 ("user1@mail","2019b.nba","user1","Q1",UserRole.PLAYER,40));
         UserEntity userEntity2 = enhancedUserDao.create(new UserEntity
                 ("user2@mail","2019b.nba","user2","Q2",UserRole.MANAGER,4000));
         UserEntity userEntity3 = enhancedUserDao.create(new UserEntity
                 ("user3@mail","2019b.nba","user3","Q3",UserRole.MANAGER,200));
-        UserEntity userEntity4 = enhancedUserDao.create(new UserEntity
+        enhancedUserDao.create(new UserEntity
                 ("user4@mail","2019b.nba","user4","Q4",UserRole.PLAYER,100));
 
 
@@ -267,8 +265,4 @@ public class UserControllerTest {
         assertThat(result).usingElementComparatorOnFields("key").contains(new UserBoundary(userEntity3));
         assertThat(result).usingElementComparatorOnFields("key").contains(new UserBoundary(userEntity4));
     }
-
-
-
-
 }
