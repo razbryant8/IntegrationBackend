@@ -289,7 +289,7 @@ public class RdbElementDaoTest {
         ElementEntity entity1 = enhancedDao.create(factory.createNewElement(name,null,new Location(5,4),new Date(),null,null,false,new HashMap<>()));
         ElementEntity entity2 = enhancedDao.create(factory.createNewElement(name,null,new Location(5,4),new Date(),null,null,false,new HashMap<>()));
         ElementEntity entity3 = enhancedDao.create(factory.createNewElement("Notname","blabla",new Location(5,4),new Date(),null,null,false,new HashMap<>()));
-        
+
         // WHEN we read up to 3 element by type from the beginning
         List<ElementEntity> actual = this.enhancedDao.getAllElementsByName(3, 0, name,"creationTimestamp");
 
@@ -335,8 +335,8 @@ public class RdbElementDaoTest {
     public void testGetAllElementsByLocation3() {
         // GIVEN the database contains 3 elements within the specified location "rectangle"
         ElementEntity entity1 = enhancedDao.create(factory.createNewElement("mark1",null,new Location(50,50),new Date(),null,null,false,new HashMap<>()));
-        ElementEntity entity2 = enhancedDao.create(factory.createNewElement("mark2",null,new Location(45,45),new Date(),null,null,false,new HashMap<>()));
-        ElementEntity entity3 = enhancedDao.create(factory.createNewElement("mark3","blabla",new Location(40,40),new Date(),null,null,false,new HashMap<>()));
+        enhancedDao.create(factory.createNewElement("mark2",null,new Location(45,45),new Date(),null,null,false,new HashMap<>()));
+        enhancedDao.create(factory.createNewElement("mark3","blabla",new Location(40,40),new Date(),null,null,false,new HashMap<>()));
 
         // WHEN we read all elements by location where only 1 of them is nearby the specified "rectangle".
         List<ElementEntity> actual = this.enhancedDao.getAllElementsByLocation(3, 0, 55, 55, 7, "creationTimestamp");
