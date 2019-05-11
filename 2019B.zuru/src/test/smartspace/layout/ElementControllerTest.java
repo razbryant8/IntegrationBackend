@@ -806,4 +806,57 @@ public class ElementControllerTest {
 
         // THEN we expect to receive an exception for unauthorized access
     }
+
+    @Test
+    public void testGetAllElementsAsPlayer() {
+        // GIVEN the database contain one Admin user, one Manager User and one Player and three Elements
+
+        ElementEntity elementEntity1 = elementDao.create(factory.createNewElement("name", "type", new Location(50, 50), new Date(), "zur@gmail.com", currentSmartspace, false, new HashMap<>()));
+        ElementEntity elementEntity2 = elementDao.create(factory.createNewElement("name", "notHere", new Location(45, 45), new Date(), "zur@gmail.com", currentSmartspace, false, new HashMap<>()));
+        ElementEntity elementEntity3 = elementDao.create(factory.createNewElement("name", "type", new Location(40, 40), new Date(), "zur@gmail.com", currentSmartspace, true, new HashMap<>()));
+        ElementEntity elementEntity4 = elementDao.create(factory.createNewElement("name", "type", new Location(35, 35), new Date(), "zur@gmail.com", currentSmartspace, false, new HashMap<>()));
+        ElementEntity elementEntity5 = elementDao.create(factory.createNewElement("name", "type", new Location(30, 30), new Date(), "zur@gmail.com", currentSmartspace, true, new HashMap<>()));
+
+        // WHEN we search by given location as a user
+        int size = 5, page = 0;
+        ElementBoundary[] result = this.restTemplate
+                .getForObject(
+                        this.baseUrl + this.relativeURL + playerUser.getUserSmartspace() + "/" + playerUser.getUserEmail() +
+                                "?page={page}&size={size}",
+                        ElementBoundary[].class, page, size);
+
+        // THEN we expect to receive all entities which are not expired
+        assertThat(result).hasSize(3);
+        assertThat(result).usingElementComparatorOnFields("key").contains(new ElementBoundary(elementEntity1));
+        assertThat(result).usingElementComparatorOnFields("key").contains(new ElementBoundary(elementEntity2));
+        assertThat(result).usingElementComparatorOnFields("key").contains(new ElementBoundary(elementEntity4));
+    }
+
+    @Test
+    public void testGetAllElementsAsManager() {
+        // GIVEN the database contain one Admin user, one Manager User and one Player and three Elements
+
+        ElementEntity elementEntity1 = elementDao.create(factory.createNewElement("name", "type", new Location(50, 50), new Date(), "zur@gmail.com", currentSmartspace, false, new HashMap<>()));
+        ElementEntity elementEntity2 = elementDao.create(factory.createNewElement("name", "notHere", new Location(45, 45), new Date(), "zur@gmail.com", currentSmartspace, false, new HashMap<>()));
+        ElementEntity elementEntity3 = elementDao.create(factory.createNewElement("name", "type", new Location(40, 40), new Date(), "zur@gmail.com", currentSmartspace, true, new HashMap<>()));
+        ElementEntity elementEntity4 = elementDao.create(factory.createNewElement("name", "type", new Location(35, 35), new Date(), "zur@gmail.com", currentSmartspace, false, new HashMap<>()));
+        ElementEntity elementEntity5 = elementDao.create(factory.createNewElement("name", "type", new Location(30, 30), new Date(), "zur@gmail.com", currentSmartspace, true, new HashMap<>()));
+
+        // WHEN we search by given location as a user
+        int size = 5, page = 0;
+        ElementBoundary[] result = this.restTemplate
+                .getForObject(
+                        this.baseUrl + this.relativeURL + managerUser.getUserSmartspace() + "/" + managerUser.getUserEmail() +
+                                "?page={page}&size={size}",
+                        ElementBoundary[].class, page, size);
+
+        // THEN we expect to receive entities in radius which are not expired
+        assertThat(result).hasSize(5);
+        assertThat(result).usingElementComparatorOnFields("key").contains(new ElementBoundary(elementEntity1));
+        assertThat(result).usingElementComparatorOnFields("key").contains(new ElementBoundary(elementEntity2));
+        assertThat(result).usingElementComparatorOnFields("key").contains(new ElementBoundary(elementEntity3));
+        assertThat(result).usingElementComparatorOnFields("key").contains(new ElementBoundary(elementEntity4));
+        assertThat(result).usingElementComparatorOnFields("key").contains(new ElementBoundary(elementEntity5));
+    }
+
 }
