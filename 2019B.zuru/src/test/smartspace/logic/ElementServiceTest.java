@@ -459,4 +459,53 @@ public class ElementServiceTest {
         // THEN we expect an exception
     }
 
+    @Test
+    public void checkGetAllElementsAsPlayer() {
+        // GIVEN we have 3 elements when 1 is expired
+        enhancedDao.create(factory.createNewElement("name", "type", new Location(50, 50), new Date(), null, null, true, new HashMap<>()));
+        ElementEntity elementEntity2 = enhancedDao.create(factory.createNewElement("name", "type", new Location(45, 45), new Date(), null, null, false, new HashMap<>()));
+        ElementEntity elementEntity3 = enhancedDao.create(factory.createNewElement("name", "type", new Location(450, 45), new Date(), null, null, false, new HashMap<>()));
+
+        // WHEN we try to get them as a user.
+        List<ElementEntity> entities = elementService.getAllElements(3, 0,UserRole.PLAYER);
+
+        // THEN we expect to have only the second and third elements.
+        assertThat(entities).hasSize(2);
+        assertThat(entities).usingElementComparatorOnFields("key").contains(elementEntity2);
+        assertThat(entities).usingElementComparatorOnFields("key").contains(elementEntity3);
+    }
+
+    @Test
+    public void checkGetAllElementsAsManager() {
+        // GIVEN we have 3 elements when 1 is expired
+        ElementEntity elementEntity1 = enhancedDao.create(factory.createNewElement("name", "type", new Location(50, 50), new Date(), null, null, true, new HashMap<>()));
+        ElementEntity elementEntity2 = enhancedDao.create(factory.createNewElement("name", "type", new Location(45, 45), new Date(), null, null, false, new HashMap<>()));
+        ElementEntity elementEntity3 = enhancedDao.create(factory.createNewElement("name", "type", new Location(450, 45), new Date(), null, null, false, new HashMap<>()));
+
+        // WHEN we try to get them as a user.
+        List<ElementEntity> entities = elementService.getAllElements(3, 0,UserRole.MANAGER);
+
+        // THEN we expect to have all 3
+        assertThat(entities).hasSize(3);
+        assertThat(entities).usingElementComparatorOnFields("key").contains(elementEntity1);
+        assertThat(entities).usingElementComparatorOnFields("key").contains(elementEntity2);
+        assertThat(entities).usingElementComparatorOnFields("key").contains(elementEntity3);
+    }
+
+    @Test(expected = Throwable.class)
+    public void checkGetAllElementsAsUnAuthorized() {
+        // GIVEN we have 3 elements when 1 is expired
+        ElementEntity elementEntity1 = enhancedDao.create(factory.createNewElement("name", "type", new Location(50, 50), new Date(), null, null, true, new HashMap<>()));
+        ElementEntity elementEntity2 = enhancedDao.create(factory.createNewElement("name", "type", new Location(45, 45), new Date(), null, null, false, new HashMap<>()));
+        ElementEntity elementEntity3 = enhancedDao.create(factory.createNewElement("name", "type", new Location(450, 45), new Date(), null, null, false, new HashMap<>()));
+
+        // WHEN we try to get them as a user.
+        List<ElementEntity> entities = elementService.getAllElements(3, 0,null);
+
+        // THEN we expect to have all 3
+        assertThat(entities).hasSize(3);
+        assertThat(entities).usingElementComparatorOnFields("key").contains(elementEntity1);
+        assertThat(entities).usingElementComparatorOnFields("key").contains(elementEntity2);
+        assertThat(entities).usingElementComparatorOnFields("key").contains(elementEntity3);
+    }
 }
