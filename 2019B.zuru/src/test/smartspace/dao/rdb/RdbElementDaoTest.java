@@ -13,7 +13,6 @@ import smartspace.dao.EnhancedElementDao;
 import smartspace.data.ElementEntity;
 import smartspace.data.Location;
 import smartspace.data.util.EntityFactory;
-import smartspace.layout.ElementBoundary;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -142,7 +141,6 @@ public class RdbElementDaoTest {
         // THEN the row name has changed
         Optional<ElementEntity> elementEntity1 = elementDao.readById(elementEntity.getKey());
         elementEntity1.ifPresent(elementEntity2 -> assertEquals("Name field was not updated", elementEntity.getName(), elementEntity2.getName()));
-
     }
 
     @Test
@@ -219,7 +217,6 @@ public class RdbElementDaoTest {
                                 .sorted((m1,m2)->m1.getKey().compareTo(m2.getKey()))
                                 .limit(5)
                                 .collect(Collectors.toList()));
-
     }
 
     @Test
@@ -231,14 +228,12 @@ public class RdbElementDaoTest {
         elementDao.create(factory.createNewElement("name","type",new Location(5,4),new Date(),null,null,false,new HashMap<>()));
         elementDao.create(factory.createNewElement("name","type",new Location(5,4),new Date(),null,null,false,new HashMap<>()));
 
-
         // WHEN we read up to 5 elements from the beginning
         List<ElementEntity> actual = this.enhancedDao.readAll(5, 0);
 
         // THEN we receive 5 elements exactly
         assertThat(actual)
                 .hasSize(5);
-
     }
 
     @Test
@@ -247,15 +242,12 @@ public class RdbElementDaoTest {
         String type = "scooter";
         enhancedDao.create(factory.createNewElement("name",type,new Location(5,4),new Date(),null,null,false,new HashMap<>()));
 
-
-
         // WHEN we read up to 1 element by type from the beginning
         List<ElementEntity> actual = this.enhancedDao.getAllElementsByType(5, 0, type,"creationTimestamp");
 
         // THEN we receive 1 elements exactly
         assertThat(actual)
                 .hasSize(1);
-
     }
 
     @Test
@@ -266,8 +258,6 @@ public class RdbElementDaoTest {
         ElementEntity entity2 = enhancedDao.create(factory.createNewElement("name",type,new Location(5,4),new Date(),null,null,false,new HashMap<>()));
         ElementEntity entity3 = enhancedDao.create(factory.createNewElement("name","blabla",new Location(5,4),new Date(),null,null,false,new HashMap<>()));
 
-
-
         // WHEN we read up to 3 element by type from the beginning
         List<ElementEntity> actual = this.enhancedDao.getAllElementsByType(3, 0, type,"creationTimestamp");
 
@@ -276,8 +266,6 @@ public class RdbElementDaoTest {
                 .hasSize(2);
         assertThat(actual).usingElementComparatorOnFields("key").contains(entity1);
         assertThat(actual).usingElementComparatorOnFields("key").contains(entity2);
-
-
     }
 
     @Test
@@ -286,15 +274,12 @@ public class RdbElementDaoTest {
         String name = "name";
         enhancedDao.create(factory.createNewElement(name,null,new Location(5,4),new Date(),null,null,false,new HashMap<>()));
 
-
-
         // WHEN we read up to 1 element by type from the beginning
         List<ElementEntity> actual = this.enhancedDao.getAllElementsByName(5, 0, name,"creationTimestamp");
 
         // THEN we receive 1 elements exactly
         assertThat(actual)
                 .hasSize(1);
-
     }
 
     @Test
@@ -304,9 +289,7 @@ public class RdbElementDaoTest {
         ElementEntity entity1 = enhancedDao.create(factory.createNewElement(name,null,new Location(5,4),new Date(),null,null,false,new HashMap<>()));
         ElementEntity entity2 = enhancedDao.create(factory.createNewElement(name,null,new Location(5,4),new Date(),null,null,false,new HashMap<>()));
         ElementEntity entity3 = enhancedDao.create(factory.createNewElement("Notname","blabla",new Location(5,4),new Date(),null,null,false,new HashMap<>()));
-
-
-
+        
         // WHEN we read up to 3 element by type from the beginning
         List<ElementEntity> actual = this.enhancedDao.getAllElementsByName(3, 0, name,"creationTimestamp");
 
