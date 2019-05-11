@@ -98,21 +98,21 @@ public class ElementController {
     public ElementBoundary[] getAllElementsBy(
             @PathVariable("userSmartspace") String userSmartspace,
             @PathVariable("userEmail") String userEmail,
-            @RequestParam(name = "search",required = false , defaultValue = "") String search,
+            @RequestParam(name = "search",required = false) String search,
             @RequestParam(name = "value" ,required = false) String value,
-            @RequestParam(name = "x" ,required = false) double x,
-            @RequestParam(name = "y" ,required = false) double y,
-            @RequestParam(name = "distance" ,required = false) int distance,
+            @RequestParam(name = "x" ,required = false) String x,
+            @RequestParam(name = "y" ,required = false) String y,
+            @RequestParam(name = "distance" ,required = false) String distance,
             @RequestParam(name = "size", required = false, defaultValue = "10") int size,
             @RequestParam(name = "page", required = false, defaultValue = "0") int page) {
-        if(search.equals("")){
+        if(search == null) {
             return this.elementService
                     .getAllElements(size,page,getUserRole(userSmartspace,userEmail))
                     .stream()
                     .map(ElementBoundary::new)
                     .collect(Collectors.toList())
                     .toArray(new ElementBoundary[0]);
-        }else{
+        } else{
             if (search.toLowerCase().equals(Search.TYPE.toString().toLowerCase())) {
                 return this.elementService
                         .getByType(size, page, value, getUserRole(userSmartspace, userEmail))
@@ -129,8 +129,11 @@ public class ElementController {
                         .toArray(new ElementBoundary[0]);
             }
             else if(search.toLowerCase().equals((Search.LOCATION.toString().toLowerCase()))){
+                if (x == null || y == null || distance == null) {
+                    throw new ElementNotFoundException("Invalid search value");
+                }
                 return this.elementService
-                        .getByLocation(size, page, x, y, distance, getUserRole(userSmartspace, userEmail))
+                        .getByLocation(size, page, Double.parseDouble(x), Double.parseDouble(y), Integer.parseInt(distance), getUserRole(userSmartspace, userEmail))
                         .stream()
                         .map(ElementBoundary::new).toArray(ElementBoundary[]::new);
             }
