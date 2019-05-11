@@ -362,7 +362,6 @@ public class ElementControllerTest {
         newElementBoundary.setElementProperties(new HashMap<>());
         newElementBoundary.setExpired(false);
         newElementBoundary.setElementType("scooter");
-        newElementBoundary.setKey(new KeyType("-1", currentSmartspace));
         newElementBoundary.setName("Name");
         newElementBoundary.setLatlng(new ElementLatLngType(35, 35));
 
@@ -374,7 +373,7 @@ public class ElementControllerTest {
                         newElementBoundary,
                         ElementBoundary.class);
         // THEN the element is created with another id
-        assertNotEquals(actualResult.getKey(), newElementBoundary.getKey());
+        assertEquals("1", actualResult.getKey().getId());
     }
 
 

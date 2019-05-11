@@ -249,15 +249,40 @@ public class ActionServiceImplTest {
         // THEN we expect Exception to be thrown
     }
 
-//    @Test(expected = Throwable.class)
-//    public void checkValidateIllegalSmartspacesForActionElementPlayer(){
-//        // GIVEN Entity with not equal smart spaces between the 3 entities : Player, Element & Action.
-//        ActionEntity actionEntity = enhancedActionDao.create(factory.createNewAction("someID", "marktest", "someType", new Date(), "mark@gmail.com", this.currentSmartSpace, new HashMap<>()));
-//        actionEntity.setKey("1#"+this.currentSmartSpace);
-//
-//        // WHEN we store the entity using ActionService Logic
-//        actionService.store(actionEntity);
-//
-//        // THEN we expect Exception to be thrown
-//    }
+    @Test()
+    public void checkInvoke(){
+        // GIVEN Valid Element Entity exists on db
+        ElementEntity newElement = factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", "test", false, new HashMap<>());
+        newElement.setKey("5#"+"anotherTeam");
+        enhancedElementDao.upsert(newElement);
+
+        ActionEntity actionEntity = factory.createNewAction("5#anotherTeam", "anotherTeam", "someType", new Date(), "mark@gmail.com", "anotherTeam", new HashMap<>());
+
+        // WHEN we invoke the entity using ActionService Logic
+        actionService.invoke(actionEntity);
+
+        // THEN the entity is created with a generated action key
+        List<ActionEntity> entities = this.enhancedActionDao.readAll();
+        assertEquals(1,entities.size());
+        assertEquals("1",entities.get(0).getActionId());
+    }
+
+
+    @Test(expected = Throwable.class)
+    public void checkIllegalInvoke(){
+        // GIVEN Valid Element Entity exists on db
+        ElementEntity newElement = factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", "test", false, new HashMap<>());
+        newElement.setKey("5#"+"anotherTeam");
+        enhancedElementDao.upsert(newElement);
+
+        ActionEntity actionEntity = factory.createNewAction("4#anotherTeam", "anotherTeam", "someType", new Date(), "mark@gmail.com", "anotherTeam", new HashMap<>());
+
+        // WHEN we invoke an entity with element id that is not found in db using ActionService Logic
+        actionService.invoke(actionEntity);
+
+        // THEN we expect Exception to be thrown
+
+    }
+
+
 }
