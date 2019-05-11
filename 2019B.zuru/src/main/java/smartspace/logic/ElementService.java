@@ -19,6 +19,8 @@ public interface ElementService {
 
     public ElementEntity getById(String elementId, String elementSmartspace, UserRole userRole);
 
+    public List<ElementEntity> getByLocation(int size, int page, double x, double y, int distance, UserRole userRole);
+
     void update(ElementEntity elementEntity , String elementId, String elementSmartspace, UserRole userRole);
 
     List<ElementEntity> getAllElements(int size, int page, UserRole userRole);

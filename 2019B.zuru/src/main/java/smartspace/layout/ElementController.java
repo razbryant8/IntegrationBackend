@@ -100,8 +100,8 @@ public class ElementController {
             @PathVariable("userEmail") String userEmail,
             @RequestParam(name = "search",required = false , defaultValue = "") String search,
             @RequestParam(name = "value" ,required = false) String value,
-            @RequestParam(name = "x" ,required = false) int x,
-            @RequestParam(name = "y" ,required = false) int y,
+            @RequestParam(name = "x" ,required = false) double x,
+            @RequestParam(name = "y" ,required = false) double y,
             @RequestParam(name = "distance" ,required = false) int distance,
             @RequestParam(name = "size", required = false, defaultValue = "10") int size,
             @RequestParam(name = "page", required = false, defaultValue = "0") int page) {
@@ -130,11 +130,9 @@ public class ElementController {
             }
             else if(search.toLowerCase().equals((Search.LOCATION.toString().toLowerCase()))){
                 return this.elementService
-                        .getByName(size, page, value, getUserRole(userSmartspace, userEmail))
+                        .getByLocation(size, page, x, y, distance, getUserRole(userSmartspace, userEmail))
                         .stream()
-                        .map(ElementBoundary::new)
-                        .collect(Collectors.toList())
-                        .toArray(new ElementBoundary[0]);
+                        .map(ElementBoundary::new).toArray(ElementBoundary[]::new);
             }
             else
                 throw new ElementNotFoundException("Invalid search value");

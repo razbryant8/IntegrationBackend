@@ -9,6 +9,7 @@ import smartspace.dao.EnhancedElementDao;
 import smartspace.data.ElementEntity;
 import smartspace.data.UserRole;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -112,7 +113,22 @@ public class ElementServiceImpl implements ElementService {
                         + elementEntity.getKey());
         } else
             throw new ElementNotFoundException("Unauthorized request");
+    }
 
+    @Override
+    public List<ElementEntity> getByLocation(int size, int page, double x, double y, int distance, UserRole userRole) {
+        if (userRole.equals(UserRole.PLAYER)) {
+            return this.enhancedElementDao
+                    .getAllElementsByLocation(size, page, x, y, distance, "creationTimestamp")
+                    .stream()
+                    .filter(elementEntity -> !elementEntity.isExpired())
+                    .collect(Collectors.toList());
+        } else if (userRole.equals(UserRole.MANAGER)) {
+                return this.enhancedElementDao
+                        .getAllElementsByLocation(size, page, x, y, distance, "creationTimestamp");
+        } else {
+            throw new ElementNotFoundException("Unauthorized operation");
+        }
     }
 
     @Override
