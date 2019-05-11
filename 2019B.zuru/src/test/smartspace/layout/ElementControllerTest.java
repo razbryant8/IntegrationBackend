@@ -709,5 +709,153 @@ public class ElementControllerTest {
         assertThat(result).usingElementComparatorOnFields("key").contains(new ElementBoundary(elementEntity1));
     }
 
+    @Test
+    public void testGetElementsAsPlayerDetailsByLocation() {
+        // GIVEN the database contain one Admin user, one Manager User and one Player and three Elements
+
+        // in radius , not expired
+        ElementEntity elementEntity1 = elementDao.create(factory.createNewElement("name", "type", new Location(50, 50), new Date(), "zur@gmail.com", currentSmartspace, false, new HashMap<>()));
+        // in radius , not expired
+        ElementEntity elementEntity2 = elementDao.create(factory.createNewElement("name", "notHere", new Location(45, 45), new Date(), "zur@gmail.com", currentSmartspace, false, new HashMap<>()));
+        // in radius , expired
+        ElementEntity elementEntity3 = elementDao.create(factory.createNewElement("name", "type", new Location(40, 40), new Date(), "zur@gmail.com", currentSmartspace, true, new HashMap<>()));
+        // outside radius , not expired
+        ElementEntity elementEntity4 = elementDao.create(factory.createNewElement("name", "type", new Location(35, 35), new Date(), "zur@gmail.com", currentSmartspace, false, new HashMap<>()));
+        // outside radius , expired
+        ElementEntity elementEntity5 = elementDao.create(factory.createNewElement("name", "type", new Location(30, 30), new Date(), "zur@gmail.com", currentSmartspace, true, new HashMap<>()));
+
+        // WHEN we search by given location as a user
+        int size = 5, page = 0;
+        String search = Search.LOCATION.toString();
+        double x = 45, y = 45;
+        int distance = 5;
+        ElementBoundary[] result = this.restTemplate
+                .getForObject(
+                        this.baseUrl + this.relativeURL + playerUser.getUserSmartspace() + "/" + playerUser.getUserEmail() +
+                        "?search={search}&x={x}&y={y}&distance={distance}&page={page}&size={size}",
+                        ElementBoundary[].class,
+                        search, x, y, distance, page, size);
+
+        // THEN we expect to receive entities in radius which are not expired
+        assertThat(result).hasSize(2);
+        assertThat(result).usingElementComparatorOnFields("key").contains(new ElementBoundary(elementEntity1));
+        assertThat(result).usingElementComparatorOnFields("key").contains(new ElementBoundary(elementEntity2));
+    }
+
+    @Test
+    public void testGetElementsAsManagerDetailsByLocation() {
+        // GIVEN the database contain one Admin user, one Manager User and one Player and three Elements
+
+        // in radius , not expired
+        ElementEntity elementEntity1 = elementDao.create(factory.createNewElement("name", "type", new Location(50, 50), new Date(), "zur@gmail.com", currentSmartspace, false, new HashMap<>()));
+        // in radius , not expired
+        ElementEntity elementEntity2 = elementDao.create(factory.createNewElement("name", "notHere", new Location(45, 45), new Date(), "zur@gmail.com", currentSmartspace, false, new HashMap<>()));
+        // in radius , expired
+        ElementEntity elementEntity3 = elementDao.create(factory.createNewElement("name", "type", new Location(40, 40), new Date(), "zur@gmail.com", currentSmartspace, true, new HashMap<>()));
+        // outside radius , not expired
+        ElementEntity elementEntity4 = elementDao.create(factory.createNewElement("name", "type", new Location(35, 35), new Date(), "zur@gmail.com", currentSmartspace, false, new HashMap<>()));
+        // outside radius , expired
+        ElementEntity elementEntity5 = elementDao.create(factory.createNewElement("name", "type", new Location(30, 30), new Date(), "zur@gmail.com", currentSmartspace, true, new HashMap<>()));
+
+        // WHEN we search by given location as a user
+        int size = 5, page = 0;
+        String search = Search.LOCATION.toString();
+        double x = 45, y = 45;
+        int distance = 5;
+        ElementBoundary[] result = this.restTemplate
+                .getForObject(
+                        this.baseUrl + this.relativeURL + managerUser.getUserSmartspace() + "/" + managerUser.getUserEmail() +
+                                "?search={search}&x={x}&y={y}&distance={distance}&page={page}&size={size}",
+                        ElementBoundary[].class,
+                        search, x, y, distance, page, size);
+
+        // THEN we expect to receive entities in radius (expired is seen by admin)
+        assertThat(result).hasSize(3);
+        assertThat(result).usingElementComparatorOnFields("key").contains(new ElementBoundary(elementEntity1));
+        assertThat(result).usingElementComparatorOnFields("key").contains(new ElementBoundary(elementEntity2));
+        assertThat(result).usingElementComparatorOnFields("key").contains(new ElementBoundary(elementEntity3));
+    }
+
+    @Test(expected = Throwable.class)
+    public void testGetElementsAsUnauthorizedDetailsByLocation() {
+        // GIVEN the database contain one Admin user, one Manager User and one Player and three Elements
+
+        // in radius , not expired
+        ElementEntity elementEntity1 = elementDao.create(factory.createNewElement("name", "type", new Location(50, 50), new Date(), "zur@gmail.com", currentSmartspace, false, new HashMap<>()));
+        // in radius , not expired
+        ElementEntity elementEntity2 = elementDao.create(factory.createNewElement("name", "notHere", new Location(45, 45), new Date(), "zur@gmail.com", currentSmartspace, false, new HashMap<>()));
+        // in radius , expired
+        ElementEntity elementEntity3 = elementDao.create(factory.createNewElement("name", "type", new Location(40, 40), new Date(), "zur@gmail.com", currentSmartspace, true, new HashMap<>()));
+        // outside radius , not expired
+        ElementEntity elementEntity4 = elementDao.create(factory.createNewElement("name", "type", new Location(35, 35), new Date(), "zur@gmail.com", currentSmartspace, false, new HashMap<>()));
+        // outside radius , expired
+        ElementEntity elementEntity5 = elementDao.create(factory.createNewElement("name", "type", new Location(30, 30), new Date(), "zur@gmail.com", currentSmartspace, true, new HashMap<>()));
+
+        // WHEN we search by given location as a user
+        int size = 5, page = 0;
+        String search = Search.LOCATION.toString();
+        double x = 45, y = 45;
+        int distance = 5;
+        ElementBoundary[] result = this.restTemplate
+                .getForObject(
+                        this.baseUrl + this.relativeURL + "hacker" + "/" + "notgonnasuccess" +
+                                "?search={search}&x={x}&y={y}&distance={distance}&page={page}&size={size}",
+                        ElementBoundary[].class,
+                        search, x, y, distance, page, size);
+
+        // THEN we expect to receive an exception for unauthorized access
+    }
+
+    @Test
+    public void testGetAllElementsAsPlayer() {
+        // GIVEN the database contain one Admin user, one Manager User and one Player and three Elements
+
+        ElementEntity elementEntity1 = elementDao.create(factory.createNewElement("name", "type", new Location(50, 50), new Date(), "zur@gmail.com", currentSmartspace, false, new HashMap<>()));
+        ElementEntity elementEntity2 = elementDao.create(factory.createNewElement("name", "notHere", new Location(45, 45), new Date(), "zur@gmail.com", currentSmartspace, false, new HashMap<>()));
+        ElementEntity elementEntity3 = elementDao.create(factory.createNewElement("name", "type", new Location(40, 40), new Date(), "zur@gmail.com", currentSmartspace, true, new HashMap<>()));
+        ElementEntity elementEntity4 = elementDao.create(factory.createNewElement("name", "type", new Location(35, 35), new Date(), "zur@gmail.com", currentSmartspace, false, new HashMap<>()));
+        ElementEntity elementEntity5 = elementDao.create(factory.createNewElement("name", "type", new Location(30, 30), new Date(), "zur@gmail.com", currentSmartspace, true, new HashMap<>()));
+
+        // WHEN we search by given location as a user
+        int size = 5, page = 0;
+        ElementBoundary[] result = this.restTemplate
+                .getForObject(
+                        this.baseUrl + this.relativeURL + playerUser.getUserSmartspace() + "/" + playerUser.getUserEmail() +
+                                "?page={page}&size={size}",
+                        ElementBoundary[].class, page, size);
+
+        // THEN we expect to receive all entities which are not expired
+        assertThat(result).hasSize(3);
+        assertThat(result).usingElementComparatorOnFields("key").contains(new ElementBoundary(elementEntity1));
+        assertThat(result).usingElementComparatorOnFields("key").contains(new ElementBoundary(elementEntity2));
+        assertThat(result).usingElementComparatorOnFields("key").contains(new ElementBoundary(elementEntity4));
+    }
+
+    @Test
+    public void testGetAllElementsAsManager() {
+        // GIVEN the database contain one Admin user, one Manager User and one Player and three Elements
+
+        ElementEntity elementEntity1 = elementDao.create(factory.createNewElement("name", "type", new Location(50, 50), new Date(), "zur@gmail.com", currentSmartspace, false, new HashMap<>()));
+        ElementEntity elementEntity2 = elementDao.create(factory.createNewElement("name", "notHere", new Location(45, 45), new Date(), "zur@gmail.com", currentSmartspace, false, new HashMap<>()));
+        ElementEntity elementEntity3 = elementDao.create(factory.createNewElement("name", "type", new Location(40, 40), new Date(), "zur@gmail.com", currentSmartspace, true, new HashMap<>()));
+        ElementEntity elementEntity4 = elementDao.create(factory.createNewElement("name", "type", new Location(35, 35), new Date(), "zur@gmail.com", currentSmartspace, false, new HashMap<>()));
+        ElementEntity elementEntity5 = elementDao.create(factory.createNewElement("name", "type", new Location(30, 30), new Date(), "zur@gmail.com", currentSmartspace, true, new HashMap<>()));
+
+        // WHEN we search by given location as a user
+        int size = 5, page = 0;
+        ElementBoundary[] result = this.restTemplate
+                .getForObject(
+                        this.baseUrl + this.relativeURL + managerUser.getUserSmartspace() + "/" + managerUser.getUserEmail() +
+                                "?page={page}&size={size}",
+                        ElementBoundary[].class, page, size);
+
+        // THEN we expect to receive entities in radius which are not expired
+        assertThat(result).hasSize(5);
+        assertThat(result).usingElementComparatorOnFields("key").contains(new ElementBoundary(elementEntity1));
+        assertThat(result).usingElementComparatorOnFields("key").contains(new ElementBoundary(elementEntity2));
+        assertThat(result).usingElementComparatorOnFields("key").contains(new ElementBoundary(elementEntity3));
+        assertThat(result).usingElementComparatorOnFields("key").contains(new ElementBoundary(elementEntity4));
+        assertThat(result).usingElementComparatorOnFields("key").contains(new ElementBoundary(elementEntity5));
+    }
 
 }

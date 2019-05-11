@@ -11,7 +11,6 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
-
 import smartspace.dao.EnhancedActionDao;
 import smartspace.dao.EnhancedElementDao;
 import smartspace.dao.EnhancedUserDao;
@@ -19,17 +18,14 @@ import smartspace.data.ActionEntity;
 import smartspace.data.UserEntity;
 import smartspace.data.UserRole;
 import smartspace.data.util.EntityFactory;
-import smartspace.logic.ActionService;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 import javax.annotation.PostConstruct;
-
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -361,11 +357,11 @@ public class ActionControllerTest {
     @Test
     public void testExportUsingPagination() throws InterruptedException {
         // GIVEN the database contain one Admin user and five actions
-        ActionEntity actionEntity = enhancedActionDao.create(entityFactory.createNewAction("1", "smart", "type", new Date(), "email", "space", new HashMap<>()));
+        enhancedActionDao.create(entityFactory.createNewAction("1", "smart", "type", new Date(), "email", "space", new HashMap<>()));
         Thread.sleep(100);
-        ActionEntity actionEntity1 = enhancedActionDao.create(entityFactory.createNewAction("2", "smart", "type", new Date(), "email", "space", new HashMap<>()));
+        enhancedActionDao.create(entityFactory.createNewAction("2", "smart", "type", new Date(), "email", "space", new HashMap<>()));
         Thread.sleep(100);
-        ActionEntity actionEntity2 = enhancedActionDao.create(entityFactory.createNewAction("3", "smart", "type", new Date(), "email", "space", new HashMap<>()));
+        enhancedActionDao.create(entityFactory.createNewAction("3", "smart", "type", new Date(), "email", "space", new HashMap<>()));
         Thread.sleep(100);
         ActionEntity actionEntity3 = enhancedActionDao.create(entityFactory.createNewAction("4", "smart", "type", new Date(), "email", "space", new HashMap<>()));
         Thread.sleep(100);

@@ -76,7 +76,7 @@ public class ElementServiceTest {
     @Test()
     public void checkGetAllInEmptyPageAsAdmin() {
         // GIVEN The database contains one element
-        ElementEntity elementEntity = enhancedDao.create(factory.createNewElement("name", "type", new Location(5, 4), new Date(), null, null, false, new HashMap<>()));
+        enhancedDao.create(factory.createNewElement("name", "type", new Location(5, 4), new Date(), null, null, false, new HashMap<>()));
 
         // WHEN getAll elements in an empty page as admin
         int size = 5;
@@ -141,7 +141,7 @@ public class ElementServiceTest {
     }
 
     @Test(expected = Throwable.class)
-    public void checkValidateIlligalSmartSpace() {
+    public void checkValidateIllegalSmartSpace() {
         // GIVEN Entity with the current Smartspace
         ElementEntity elementEntity = factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", "test", false, new HashMap<>());
         elementEntity.setKey("1#" + this.currentSmartSpace);
@@ -154,7 +154,7 @@ public class ElementServiceTest {
     }
 
     @Test(expected = Throwable.class)
-    public void checkValidateIlligalMoreAttributesAsAdmin() {
+    public void checkValidateIllegalMoreAttributesAsAdmin() {
         // GIVEN Entity with null more attributes
         ElementEntity elementEntity = factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", "test", false, null);
         elementEntity.setKey("1#" + this.currentSmartSpace);
@@ -167,7 +167,7 @@ public class ElementServiceTest {
     }
 
     @Test(expected = Throwable.class)
-    public void checkValidateIlligalCreatorSmartSpaceAsAdmin() {
+    public void checkValidateIllegalCreatorSmartSpaceAsAdmin() {
         // GIVEN Entity with null creatorSmartspace
         ElementEntity elementEntity = factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", null, false, new HashMap<>());
         elementEntity.setKey("1#" + this.currentSmartSpace);
@@ -180,7 +180,7 @@ public class ElementServiceTest {
     }
 
     @Test(expected = Throwable.class)
-    public void checkValidateIlligalCreatorMailAsAdmin() {
+    public void checkValidateIllegalCreatorMailAsAdmin() {
         // GIVEN Entity with bad CreatorMail
         ElementEntity elementEntity = factory.createNewElement("name", "type", new Location(5, 4), new Date(), "      ", "test", false, new HashMap<>());
         elementEntity.setKey("1#" + this.currentSmartSpace);
@@ -192,7 +192,7 @@ public class ElementServiceTest {
     }
 
     @Test(expected = Throwable.class)
-    public void checkValidateIlligalTypeAsAdmin() {
+    public void checkValidateIllegalTypeAsAdmin() {
         // GIVEN Entity with Bad Type
         ElementEntity elementEntity = factory.createNewElement("name", "            ", new Location(5, 4), new Date(), "zur@gmail.com", "test", false, new HashMap<>());
         elementEntity.setKey("1#" + this.currentSmartSpace);
@@ -205,7 +205,7 @@ public class ElementServiceTest {
     }
 
     @Test(expected = Throwable.class)
-    public void checkValidateIlligalNameAsAdmin() {
+    public void checkValidateIllegalNameAsAdmin() {
         // GIVEN Entity with Bad Name
         ElementEntity elementEntity = factory.createNewElement("              ", "type", new Location(5, 4), new Date(), "zur@gmail.com", "test", false, new HashMap<>());
         elementEntity.setKey("1#test");
@@ -218,7 +218,7 @@ public class ElementServiceTest {
     }
 
     @Test(expected = Throwable.class)
-    public void checkValidateIlligalLocationAsAdmin() {
+    public void checkValidateIllegalLocationAsAdmin() {
         // GIVEN Entity without location
         ElementEntity elementEntity = factory.createNewElement("name", "type", null, new Date(), "zur@gmail.com", "test", false, new HashMap<>());
         elementEntity.setKey("1#test");
@@ -231,7 +231,7 @@ public class ElementServiceTest {
     }
 
     @Test(expected = Throwable.class)
-    public void getElementByIlligalElement() {
+    public void getElementByIllegalElement() {
         // GIVEN nothing
 
         // WHEN we get element by id that does not exists as player
@@ -241,7 +241,7 @@ public class ElementServiceTest {
     }
 
     @Test(expected = Throwable.class)
-    public void getElementByIlligalSmartspace() {
+    public void getElementByIllegalSmartspace() {
         // GIVEN the database contains 2 elements
         ElementEntity elementEntity1 = enhancedDao.create(factory.createNewElement("name", "type", new Location(5, 4), new Date(), null, null, false, new HashMap<>()));
 
@@ -268,7 +268,7 @@ public class ElementServiceTest {
     public void getExpiredElementByIDByPlayer() {
         // GIVEN the database contains 2 elements
         ElementEntity elementEntity1 = enhancedDao.create(factory.createNewElement("name", "type", new Location(5, 4), new Date(), null, null, true, new HashMap<>()));
-        ElementEntity elementEntity2 = enhancedDao.create(factory.createNewElement("name", "type", new Location(5, 4), new Date(), null, null, false, new HashMap<>()));
+        enhancedDao.create(factory.createNewElement("name", "type", new Location(5, 4), new Date(), null, null, false, new HashMap<>()));
 
         // WHEN we get element by smartspace and ID as player
         ElementEntity entity = elementService.getById(elementEntity1.getElementId(), elementEntity1.getElementSmartspace(), UserRole.PLAYER);
@@ -280,7 +280,7 @@ public class ElementServiceTest {
     @Test
     public void getElementByIDByPlayer() {
         // GIVEN the database contains 2 elements
-        ElementEntity elementEntity1 = enhancedDao.create(factory.createNewElement("name", "type", new Location(5, 4), new Date(), null, null, true, new HashMap<>()));
+        enhancedDao.create(factory.createNewElement("name", "type", new Location(5, 4), new Date(), null, null, true, new HashMap<>()));
         ElementEntity elementEntity2 = enhancedDao.create(factory.createNewElement("name", "type", new Location(5, 4), new Date(), null, null, false, new HashMap<>()));
 
         // WHEN we get element by smartspace and ID as player
@@ -314,7 +314,7 @@ public class ElementServiceTest {
         String type = "type";
         int size = 5;
         int page = 0;
-        ElementEntity elementEntity1 = enhancedDao.create(factory.createNewElement("name", type, new Location(5, 4), new Date(), null, null, true, new HashMap<>()));
+        enhancedDao.create(factory.createNewElement("name", type, new Location(5, 4), new Date(), null, null, true, new HashMap<>()));
         ElementEntity elementEntity2 = enhancedDao.create(factory.createNewElement("name", type, new Location(5, 4), new Date(), null, null, false, new HashMap<>()));
 
         // WHEN we get elements by type as player
@@ -363,7 +363,7 @@ public class ElementServiceTest {
         String name = "name";
         int size = 5;
         int page = 0;
-        ElementEntity elementEntity1 = enhancedDao.create(factory.createNewElement(name, "type", new Location(5, 4), new Date(), null, null, true, new HashMap<>()));
+        enhancedDao.create(factory.createNewElement(name, "type", new Location(5, 4), new Date(), null, null, true, new HashMap<>()));
         ElementEntity elementEntity2 = enhancedDao.create(factory.createNewElement(name, "type", new Location(5, 4), new Date(), null, null, false, new HashMap<>()));
 
         // WHEN we get elements by name as player
@@ -415,4 +415,97 @@ public class ElementServiceTest {
         assertThat(entities).usingElementComparatorOnFields("key").contains(elementEntity1);
     }
 
+    @Test
+    public void checkGetByLocationAsPlayer() {
+        // GIVEN we have 3 elements, while one is expired and one is outside radius.
+        enhancedDao.create(factory.createNewElement("name", "type", new Location(50, 50), new Date(), null, null, true, new HashMap<>()));
+        ElementEntity elementEntity2 = enhancedDao.create(factory.createNewElement("name", "type", new Location(45, 45), new Date(), null, null, false, new HashMap<>()));
+        enhancedDao.create(factory.createNewElement("name", "type", new Location(450, 45), new Date(), null, null, false, new HashMap<>()));
+
+        // WHEN we try to get them as a user.
+        List<ElementEntity> entities = elementService.getByLocation(3, 0, 50, 50, 10, UserRole.PLAYER);
+
+        // THEN we expect to have only the second element returned.
+        assertThat(entities).hasSize(1);
+        assertThat(entities).usingElementComparatorOnFields("key").contains(elementEntity2);
+    }
+
+    @Test
+    public void checkGetByLocationAsManager() {
+        // GIVEN we have 3 elements, while one is expired and one is outside radius.
+        ElementEntity elementEntity1 = enhancedDao.create(factory.createNewElement("name", "type", new Location(50, 50), new Date(), null, null, true, new HashMap<>()));
+        ElementEntity elementEntity2 = enhancedDao.create(factory.createNewElement("name", "type", new Location(45, 45), new Date(), null, null, false, new HashMap<>()));
+        enhancedDao.create(factory.createNewElement("name", "type", new Location(450, 45), new Date(), null, null, false, new HashMap<>()));
+
+        // WHEN we try to get them as a user.
+        List<ElementEntity> entities = elementService.getByLocation(3, 0, 50, 50, 10, UserRole.MANAGER);
+
+        // THEN we expect to have element 1 and 2 returned.
+        assertThat(entities).hasSize(2);
+        assertThat(entities).usingElementComparatorOnFields("key").contains(elementEntity1);
+        assertThat(entities).usingElementComparatorOnFields("key").contains(elementEntity2);
+    }
+
+    @Test(expected = Throwable.class)
+    public void checkGetByLocationAsUnauthorized() {
+        // GIVEN we have 3 elements, while one is expired and one is outside radius.
+        enhancedDao.create(factory.createNewElement("name", "type", new Location(50, 50), new Date(), null, null, true, new HashMap<>()));
+        enhancedDao.create(factory.createNewElement("name", "type", new Location(45, 45), new Date(), null, null, false, new HashMap<>()));
+        enhancedDao.create(factory.createNewElement("name", "type", new Location(450, 45), new Date(), null, null, false, new HashMap<>()));
+
+        // WHEN we try to get them as an unauthorized user.
+        elementService.getByLocation(3, 0, 50, 50, 10, null);
+
+        // THEN we expect an exception
+    }
+
+    @Test
+    public void checkGetAllElementsAsPlayer() {
+        // GIVEN we have 3 elements when 1 is expired
+        enhancedDao.create(factory.createNewElement("name", "type", new Location(50, 50), new Date(), null, null, true, new HashMap<>()));
+        ElementEntity elementEntity2 = enhancedDao.create(factory.createNewElement("name", "type", new Location(45, 45), new Date(), null, null, false, new HashMap<>()));
+        ElementEntity elementEntity3 = enhancedDao.create(factory.createNewElement("name", "type", new Location(450, 45), new Date(), null, null, false, new HashMap<>()));
+
+        // WHEN we try to get them as a user.
+        List<ElementEntity> entities = elementService.getAllElements(3, 0,UserRole.PLAYER);
+
+        // THEN we expect to have only the second and third elements.
+        assertThat(entities).hasSize(2);
+        assertThat(entities).usingElementComparatorOnFields("key").contains(elementEntity2);
+        assertThat(entities).usingElementComparatorOnFields("key").contains(elementEntity3);
+    }
+
+    @Test
+    public void checkGetAllElementsAsManager() {
+        // GIVEN we have 3 elements when 1 is expired
+        ElementEntity elementEntity1 = enhancedDao.create(factory.createNewElement("name", "type", new Location(50, 50), new Date(), null, null, true, new HashMap<>()));
+        ElementEntity elementEntity2 = enhancedDao.create(factory.createNewElement("name", "type", new Location(45, 45), new Date(), null, null, false, new HashMap<>()));
+        ElementEntity elementEntity3 = enhancedDao.create(factory.createNewElement("name", "type", new Location(450, 45), new Date(), null, null, false, new HashMap<>()));
+
+        // WHEN we try to get them as a user.
+        List<ElementEntity> entities = elementService.getAllElements(3, 0,UserRole.MANAGER);
+
+        // THEN we expect to have all 3
+        assertThat(entities).hasSize(3);
+        assertThat(entities).usingElementComparatorOnFields("key").contains(elementEntity1);
+        assertThat(entities).usingElementComparatorOnFields("key").contains(elementEntity2);
+        assertThat(entities).usingElementComparatorOnFields("key").contains(elementEntity3);
+    }
+
+    @Test(expected = Throwable.class)
+    public void checkGetAllElementsAsUnAuthorized() {
+        // GIVEN we have 3 elements when 1 is expired
+        ElementEntity elementEntity1 = enhancedDao.create(factory.createNewElement("name", "type", new Location(50, 50), new Date(), null, null, true, new HashMap<>()));
+        ElementEntity elementEntity2 = enhancedDao.create(factory.createNewElement("name", "type", new Location(45, 45), new Date(), null, null, false, new HashMap<>()));
+        ElementEntity elementEntity3 = enhancedDao.create(factory.createNewElement("name", "type", new Location(450, 45), new Date(), null, null, false, new HashMap<>()));
+
+        // WHEN we try to get them as a user.
+        List<ElementEntity> entities = elementService.getAllElements(3, 0,null);
+
+        // THEN we expect to have all 3
+        assertThat(entities).hasSize(3);
+        assertThat(entities).usingElementComparatorOnFields("key").contains(elementEntity1);
+        assertThat(entities).usingElementComparatorOnFields("key").contains(elementEntity2);
+        assertThat(entities).usingElementComparatorOnFields("key").contains(elementEntity3);
+    }
 }
