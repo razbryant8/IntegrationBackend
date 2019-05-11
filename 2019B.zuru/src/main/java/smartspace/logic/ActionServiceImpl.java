@@ -7,10 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 import smartspace.dao.EnhancedActionDao;
 import smartspace.dao.EnhancedElementDao;
 import smartspace.data.ActionEntity;
-import smartspace.data.ElementEntity;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ActionServiceImpl implements ActionService {
@@ -40,6 +38,32 @@ public class ActionServiceImpl implements ActionService {
         } else {
             throw new RuntimeException("Invalid action input");
         }
+    }
+
+    @Override
+    public ActionEntity invoke(ActionEntity actionEntity) {
+        if (validateInvocation(actionEntity)) {
+            return this.enhancedActionDao
+                    .create(actionEntity);
+        } else {
+            throw new RuntimeException("Invalid action input");
+        }
+    }
+
+    private boolean validateInvocation(ActionEntity actionEntity) {
+        return actionEntity.getMoreAttributes() != null &&
+                actionEntity.getActionType() != null &&
+                !actionEntity.getActionType().trim().isEmpty() &&
+                actionEntity.getPlayerEmail() != null &&
+                !actionEntity.getPlayerEmail().trim().isEmpty() &&
+                actionEntity.getPlayerSmartspace() != null &&
+                !actionEntity.getPlayerSmartspace().trim().isEmpty() &&
+                actionEntity.getElementSmartspace() != null &&
+                !actionEntity.getElementSmartspace().trim().isEmpty() &&
+                !actionEntity.getElementSmartspace().equals(this.smartspace) &&
+                actionEntity.getElementId() != null &&
+                !actionEntity.getElementId().trim().isEmpty() &&
+                enhancedElementDao.readById(actionEntity.getElementId()).isPresent();
     }
 
     private boolean validate(ActionEntity actionEntity) {

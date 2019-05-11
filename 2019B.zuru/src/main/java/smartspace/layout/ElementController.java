@@ -105,9 +105,9 @@ public class ElementController {
             @RequestParam(name = "distance" ,required = false) int distance,
             @RequestParam(name = "size", required = false, defaultValue = "10") int size,
             @RequestParam(name = "page", required = false, defaultValue = "0") int page) {
-        if(search.isEmpty()){
+        if(search.equals("")){
             return this.elementService
-                    .getByType(size, page, value, getUserRole(userSmartspace, userEmail))
+                    .getAllElements(size,page,getUserRole(userSmartspace,userEmail))
                     .stream()
                     .map(ElementBoundary::new)
                     .collect(Collectors.toList())
@@ -139,7 +139,6 @@ public class ElementController {
             else
                 throw new ElementNotFoundException("Invalid search value");
         }
-
     }
 
 
