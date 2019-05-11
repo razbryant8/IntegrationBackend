@@ -86,24 +86,25 @@ public class UserController {
                                         .convertToEntity()));
     }
 
-   // need to complete -- check if usr is valid user
 
-//    @RequestMapping(
-//            method = RequestMethod.GET,
-//            path = "/smartspace/users/login/{userSmartspace}/{userEmail}",
-//            produces = MediaType.APPLICATION_JSON_VALUE)
-//    public UserBoundary getUser(
-//            @PathVariable("userSmartspace") String userSmartspace,
-//            @PathVariable("userEmail") String userEmail{
-//        return new UserBoundary(this.userService.getUserByMailAndSmartSpace(
-//                userSmartspace, userEmail)));
-//
-//
-//    }
+    @RequestMapping(
+            method = RequestMethod.GET,
+            path = "/smartspace/users/login/{userSmartspace}/{userEmail}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public UserBoundary getUser(
+            @PathVariable("userSmartspace") String userSmartspace,
+            @PathVariable("userEmail") String userEmail){
+        Optional<UserEntity> rv;
+        rv = this.userService.getUserByMailAndSmartSpace(userEmail, userSmartspace);
+        if(rv.isPresent())
+            return new UserBoundary(rv.get());
+        else
+            return null;
+    }
 
 
 
-// need to check about the point
+// need to check about the points
 
     @RequestMapping(
             method=RequestMethod.PUT,
@@ -112,9 +113,9 @@ public class UserController {
     public void updateUser(
             @PathVariable("userSmartspace") String userSmartspace,
             @PathVariable("userEmail") String userEmail,
-            @RequestBody UserBoundary update) {
+            @RequestBody UserBoundary updateBoundary) {
         this.userService
-                .update(userSmartspace,userEmail,update.convertToEntity());
+                .update(userSmartspace,userEmail,updateBoundary.convertToEntity());
     }
 
 

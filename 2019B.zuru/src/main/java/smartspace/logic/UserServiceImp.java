@@ -102,10 +102,20 @@ public class UserServiceImp implements UserService {
 
     @Override
     // maybe we need to add AOP annotation to this code
-    public void update(String userSmartspace, String userEmail, UserEntity user) {
-        user.setUserSmartspace(userSmartspace);
-        user.setUserEmail(userEmail);
-        this.userDao.update(user);
+    public void update(String userSmartspace, String userEmail, UserEntity updateDetails) {
+        Optional<UserEntity> ifExcistUser = getUserByMailAndSmartSpace(userEmail, userSmartspace);
+        if(ifExcistUser.isPresent()) {
+            UserEntity needToUpdateUserEntity = new UserEntity();
+
+            needToUpdateUserEntity.setKey(updateDetails.getKey());
+            needToUpdateUserEntity.setUsername(updateDetails.getUsername());
+            needToUpdateUserEntity.setAvatar(updateDetails.getAvatar());
+            needToUpdateUserEntity.setRole(updateDetails.getRole());
+            needToUpdateUserEntity.setPoints(ifExcistUser.get().getPoints());
+
+            this.userDao.update(needToUpdateUserEntity);
+        }
+        else throw new UserNotFoundException();
 
     }
 
