@@ -508,4 +508,36 @@ public class ElementServiceTest {
         assertThat(entities).usingElementComparatorOnFields("key").contains(elementEntity2);
         assertThat(entities).usingElementComparatorOnFields("key").contains(elementEntity3);
     }
+    @Test
+    public void testUpdateElementAsManager() {
+        // GIVEN we have an element in db
+        ElementEntity elementEntity1 = factory.createNewElement("name", "type", new Location(), new Date(), "zur@gmail.com", "test", false, new HashMap<>());
+        ElementEntity result = elementService.create(elementEntity1, UserRole.MANAGER);
+        elementEntity1.setName("Omri");
+
+        // WHEN we update that element
+        elementService.update(elementEntity1,result.getElementId(),result.getElementSmartspace() ,UserRole.MANAGER);
+
+        // THEN we expect one element to be updated
+        int size = 5;
+        int page = 0;
+        List<ElementEntity> entities = enhancedDao.readAll(size, page);
+        assertEquals(entities.size(), 1);
+        assertThat(entities).usingElementComparatorOnFields("key").contains(elementEntity1);
+    }
+
+
+    @Test(expected = Throwable.class)
+    public void testUpdateElementAsPlayer() {
+        // GIVEN we have an element in db
+        ElementEntity elementEntity1 = factory.createNewElement("name", "type", new Location(), new Date(), "zur@gmail.com", "test", false, new HashMap<>());
+        ElementEntity result = elementService.create(elementEntity1, UserRole.MANAGER);
+        elementEntity1.setName("Omri");
+
+        // WHEN we update that element
+        elementService.update(elementEntity1,result.getElementId(),result.getElementSmartspace() ,UserRole.PLAYER);
+
+        // THEN we expect Exception to be thrown
+    }
+
 }
