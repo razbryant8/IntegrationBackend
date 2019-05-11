@@ -22,4 +22,10 @@ public interface ElementCrud extends PagingAndSortingRepository<ElementEntity, S
             @Param("type") String type,
             Pageable pageable);
 
+    public List<ElementEntity>
+    findAllByLocation_xBetweenAndLocation_yBetween(
+            double minX, double maxX,
+            double minY, double maxY,
+            Pageable pageable);
+
 }

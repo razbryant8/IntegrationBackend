@@ -131,6 +131,14 @@ public class RdbElementDao implements EnhancedElementDao<String> {
         return this.elementCrud.findAllByName(name, PageRequest.of(page, size, Sort.Direction.ASC, sortBy));
     }
 
+    @Override
+    public List<ElementEntity> getAllElementsByLocation(int size, int page, double x, double y, int distance, String sortBy) {
+        return this.elementCrud.findAllByLocation_xBetweenAndLocation_yBetween(
+                x - distance, x + distance,
+                y - distance, y + distance,
+                PageRequest.of(page, size, Sort.Direction.ASC, sortBy));
+    }
+
     @Value("${spring.application.name}")
     public void setSmartspace(String smartspace) {
         this.smartspace = smartspace;
