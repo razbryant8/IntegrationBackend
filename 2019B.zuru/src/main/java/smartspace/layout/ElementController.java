@@ -95,31 +95,51 @@ public class ElementController {
             method = RequestMethod.GET,
             path = "/smartspace/elements/{userSmartspace}/{userEmail}",
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ElementBoundary[] getByAttribute(
+    public ElementBoundary[] getAllElementsBy(
             @PathVariable("userSmartspace") String userSmartspace,
             @PathVariable("userEmail") String userEmail,
-            @RequestParam(name = "search") String search,
+            @RequestParam(name = "search",required = false , defaultValue = "") String search,
             @RequestParam(name = "value" ,required = false) String value,
+            @RequestParam(name = "x" ,required = false) int x,
+            @RequestParam(name = "y" ,required = false) int y,
+            @RequestParam(name = "distance" ,required = false) int distance,
             @RequestParam(name = "size", required = false, defaultValue = "10") int size,
             @RequestParam(name = "page", required = false, defaultValue = "0") int page) {
-        if (search.toLowerCase().equals(Search.TYPE.toString().toLowerCase())) {
+        if(search.isEmpty()){
             return this.elementService
                     .getByType(size, page, value, getUserRole(userSmartspace, userEmail))
                     .stream()
                     .map(ElementBoundary::new)
                     .collect(Collectors.toList())
                     .toArray(new ElementBoundary[0]);
-        } else if (search.toLowerCase().equals((Search.NAME.toString().toLowerCase()))) {
-            return this.elementService
-                    .getByName(size, page, value, getUserRole(userSmartspace, userEmail))
-                    .stream()
-                    .map(ElementBoundary::new)
-                    .collect(Collectors.toList())
-                    .toArray(new ElementBoundary[0]);
+        }else{
+            if (search.toLowerCase().equals(Search.TYPE.toString().toLowerCase())) {
+                return this.elementService
+                        .getByType(size, page, value, getUserRole(userSmartspace, userEmail))
+                        .stream()
+                        .map(ElementBoundary::new)
+                        .collect(Collectors.toList())
+                        .toArray(new ElementBoundary[0]);
+            } else if (search.toLowerCase().equals((Search.NAME.toString().toLowerCase()))) {
+                return this.elementService
+                        .getByName(size, page, value, getUserRole(userSmartspace, userEmail))
+                        .stream()
+                        .map(ElementBoundary::new)
+                        .collect(Collectors.toList())
+                        .toArray(new ElementBoundary[0]);
+            }
+            else if(search.toLowerCase().equals((Search.LOCATION.toString().toLowerCase()))){
+                return this.elementService
+                        .getByName(size, page, value, getUserRole(userSmartspace, userEmail))
+                        .stream()
+                        .map(ElementBoundary::new)
+                        .collect(Collectors.toList())
+                        .toArray(new ElementBoundary[0]);
+            }
+            else
+                throw new ElementNotFoundException("Invalid search value");
         }
-        //TODO else if search.equals(Search.location)...
-        else
-            throw new ElementNotFoundException("Invalid search value");
+
     }
 
 
@@ -127,7 +147,6 @@ public class ElementController {
     @RequestMapping(
             method = RequestMethod.PUT,
             path = "/smartspace/elements/{managerSmartspace}/{managerEmail}/{elementSmartspace}/{elementId}",
-            produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     public void update(
             @PathVariable("managerSmartspace") String managerSmartspace,
