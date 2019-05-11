@@ -136,7 +136,7 @@ public class ElementServiceImpl implements ElementService {
         if (userRole.equals(UserRole.MANAGER)) {
             elementEntity.setElementId(elementId);
             elementEntity.setElementSmartspace(elementSmartspace);
-            if (validateCreation(elementEntity)) {
+            if (validate(elementEntity)) {
                 this.enhancedElementDao.update(elementEntity);
             } else {
                 throw new RuntimeException("Invalid element input");

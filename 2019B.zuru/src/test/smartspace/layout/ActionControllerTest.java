@@ -37,6 +37,8 @@ public class ActionControllerTest {
 
     private String elementBaseUrl;
 
+    private String invokeBaseUrl;
+
     private int port;
 
     private EnhancedActionDao enhancedActionDao;
@@ -88,6 +90,7 @@ public class ActionControllerTest {
     public void init() {
         this.baseUrl = "http://localhost:" + port + "/smartspace/admin/actions/";
         this.elementBaseUrl = "http://localhost:" + port + "/smartspace/admin/elements/";
+        this.invokeBaseUrl = "http://localhost:" + port + "/smartspace/actions/";
         this.restTemplate = new RestTemplate();
     }
 
@@ -279,6 +282,52 @@ public class ActionControllerTest {
         assert result != null;
         assertThat(actionEntities.get(0)).extracting("actionId").containsExactly(result[0].convertToEntity().getActionId());
         assertThat(actionEntities.get(1)).extracting("actionId").containsExactly(result[1].convertToEntity().getActionId());
+
+    }
+
+
+    @Test
+    public void testInvokeAction() {
+        // GIVEN there is a element that the following action is preformed on
+
+        ElementBoundary[] elementBoundaries = new ElementBoundary[1];
+        elementBoundaries[0] = new ElementBoundary();
+        elementBoundaries[0].setKey(new KeyType("1", "2019B.element"));
+        elementBoundaries[0].setLatlng(new ElementLatLngType(35, 35));
+        elementBoundaries[0].setName("Name");
+        elementBoundaries[0].setElementType("scooter");
+        elementBoundaries[0].setExpired(false);
+        elementBoundaries[0].setElementProperties(new HashMap<>());
+        elementBoundaries[0].setCreator(new UserKeyType("omri@gmail.com", "2019B.asdada"));
+        elementBoundaries[0].setCreated(new Date());
+
+        this.restTemplate.postForObject(
+                this.elementBaseUrl + adminUser.getUserSmartspace() + "/" + adminUser.getUserEmail(),
+                elementBoundaries,
+                ElementBoundary[].class);
+
+        // WHEN a new action is invoked to the server with action id null
+        ActionBoundary actionBoundary = new ActionBoundary();
+        actionBoundary.setActionProperties(new HashMap<>());
+        actionBoundary.setCreated(new Date());
+        actionBoundary.setElement(new KeyType("1", "2019B.element"));
+        actionBoundary.setType("actionType");
+        actionBoundary.setPlayer(new UserKeyType("omri@gmail.com", "2019B.other"));
+
+
+        ActionBoundary result = this.restTemplate.postForObject(
+                this.invokeBaseUrl,
+                actionBoundary,
+                ActionBoundary.class);
+
+        List<ActionEntity> actionEntities = this.enhancedActionDao.readAll();
+
+        assertEquals("Data base contains more than one action in it", actionEntities.size(), 1);
+
+
+        // THEN the database contains the new action with the generated key
+        assertEquals("1",result.getActionKey().getId());
+
 
     }
 

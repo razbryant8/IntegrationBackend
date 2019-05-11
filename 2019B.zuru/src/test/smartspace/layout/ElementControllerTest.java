@@ -1,5 +1,6 @@
 package smartspace.layout;
 
+import net.bytebuddy.implementation.bytecode.Throw;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,6 +38,8 @@ import static org.junit.Assert.assertNotEquals;
 public class ElementControllerTest {
 
     private String baseUrl;
+
+    private String updateUrl;
 
     private String adminURL;
 
@@ -98,6 +101,7 @@ public class ElementControllerTest {
         this.baseUrl = "http://localhost:" + port + "/smartspace/";
         this.adminURL = "admin/";
         this.relativeURL = "elements/";
+        this.updateUrl = baseUrl + relativeURL;
         this.restTemplate = new RestTemplate();
     }
 
@@ -362,7 +366,6 @@ public class ElementControllerTest {
         newElementBoundary.setElementProperties(new HashMap<>());
         newElementBoundary.setExpired(false);
         newElementBoundary.setElementType("scooter");
-        newElementBoundary.setKey(new KeyType("-1", currentSmartspace));
         newElementBoundary.setName("Name");
         newElementBoundary.setLatlng(new ElementLatLngType(35, 35));
 
@@ -374,7 +377,7 @@ public class ElementControllerTest {
                         newElementBoundary,
                         ElementBoundary.class);
         // THEN the element is created with another id
-        assertNotEquals(actualResult.getKey(), newElementBoundary.getKey());
+        assertEquals("1", actualResult.getKey().getId());
     }
 
 
@@ -851,6 +854,74 @@ public class ElementControllerTest {
         assertThat(result).usingElementComparatorOnFields("key").contains(new ElementBoundary(elementEntity3));
         assertThat(result).usingElementComparatorOnFields("key").contains(new ElementBoundary(elementEntity4));
         assertThat(result).usingElementComparatorOnFields("key").contains(new ElementBoundary(elementEntity5));
+    }
+    @Test
+    public void testUpdateElement() {
+        // GIVEN the database contain one Admin user, one Manager User and one Player and one element exists on db
+
+        ElementBoundary newElementBoundary = new ElementBoundary();
+        newElementBoundary.setCreated(new Date());
+        newElementBoundary.setCreator(new UserKeyType(managerUser.getUserEmail(), managerUser.getUserSmartspace()));
+        newElementBoundary.setElementProperties(new HashMap<>());
+        newElementBoundary.setExpired(false);
+        newElementBoundary.setElementType("scooter");
+        newElementBoundary.setName("Name");
+        newElementBoundary.setLatlng(new ElementLatLngType(35, 35));
+
+        ElementBoundary actualResult = this.restTemplate
+                .postForObject(
+                        //this.baseUrl +"http://localhost:" + port +
+                        this.baseUrl + this.relativeURL + managerUser.getUserSmartspace() + "/" + managerUser.getUserEmail(),
+                        newElementBoundary,
+                        ElementBoundary.class);
+
+        // WHEN I update the element As Manager
+        actualResult.setName("Omri");
+
+        this.restTemplate.put(this.baseUrl + this.relativeURL + managerUser.getUserSmartspace() + "/" + managerUser.getUserEmail()+ "/" +actualResult.getKey().getSmartspace() + "/" + actualResult.getKey().getId(),
+                actualResult);
+
+
+        // THEN the element is updated
+        ElementBoundary[] result =
+                this.restTemplate
+                        .getForObject(
+                                this.baseUrl + this.adminURL + this.relativeURL + adminUser.getUserSmartspace() + "/" + adminUser.getUserEmail(),
+                                ElementBoundary[].class);
+
+        assertEquals(1,result.length);
+        assertEquals("Omri",result[0].getName());
+    }
+
+    @Test(expected = Throwable.class)
+    public void testUpdateIllegalElement() {
+        // GIVEN the database contain one Admin user, one Manager User and one Player and one element exists on db
+
+        ElementBoundary newElementBoundary = new ElementBoundary();
+        newElementBoundary.setCreated(new Date());
+        newElementBoundary.setCreator(new UserKeyType(managerUser.getUserEmail(), managerUser.getUserSmartspace()));
+        newElementBoundary.setElementProperties(new HashMap<>());
+        newElementBoundary.setExpired(false);
+        newElementBoundary.setElementType("scooter");
+        newElementBoundary.setName("Name");
+        newElementBoundary.setLatlng(new ElementLatLngType(35, 35));
+
+        ElementBoundary actualResult = this.restTemplate
+                .postForObject(
+                        //this.baseUrl +"http://localhost:" + port +
+                        this.baseUrl + this.relativeURL + managerUser.getUserSmartspace() + "/" + managerUser.getUserEmail(),
+                        newElementBoundary,
+                        ElementBoundary.class);
+
+        // WHEN I update the element As Manager
+        actualResult.setName("Omri");
+
+        this.restTemplate.put(this.baseUrl + this.relativeURL + managerUser.getUserSmartspace() + "/" + managerUser.getUserEmail()+ "/" +"stamsmartspace" + "/" + actualResult.getKey().getId(),
+                actualResult);
+
+
+        // THEN exception is thrown
+
     }
 
 }
