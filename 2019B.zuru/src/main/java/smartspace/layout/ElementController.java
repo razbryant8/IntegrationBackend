@@ -98,7 +98,7 @@ public class ElementController {
             @PathVariable("userSmartspace") String userSmartspace,
             @PathVariable("userEmail") String userEmail,
             @RequestParam(name = "search") String search,
-            @RequestParam(name = "value") String value,
+            @RequestParam(name = "value" ,required = false) String value,
             @RequestParam(name = "size", required = false, defaultValue = "10") int size,
             @RequestParam(name = "page", required = false, defaultValue = "0") int page) {
         if (search.toLowerCase().equals(Search.TYPE.toString().toLowerCase())) {
@@ -119,6 +119,22 @@ public class ElementController {
         //TODO else if search.equals(Search.location)...
         else
             throw new ElementNotFoundException("Invalid search value");
+    }
+
+
+    @Transactional
+    @RequestMapping(
+            method = RequestMethod.PUT,
+            path = "/smartspace/elements/{managerSmartspace}/{managerEmail}/{elementSmartspace}/{elementId}",
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void update(
+            @PathVariable("managerSmartspace") String managerSmartspace,
+            @PathVariable("managerEmail") String managerEmail,
+            @PathVariable("elementSmartspace") String elementSmartspace,
+            @PathVariable("elementId") String elementId,
+            @RequestBody ElementBoundary elementBoundary) {
+            this.elementService.update(elementBoundary.convertToEntity(),elementId,elementSmartspace,getUserRole(managerSmartspace,managerEmail));
     }
 
 

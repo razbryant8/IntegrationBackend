@@ -17,5 +17,9 @@ public interface ElementService {
 
     public List<ElementEntity> getByName(int size, int page, String name, UserRole userRole);
 
-    public ElementEntity getById (String elementId, String elementSmartspace, UserRole userRole);
+    public ElementEntity getById(String elementId, String elementSmartspace, UserRole userRole);
+
+    void update(ElementEntity elementEntity , String elementId, String elementSmartspace, UserRole userRole);
+
+
 }

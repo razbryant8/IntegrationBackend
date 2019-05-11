@@ -115,6 +115,20 @@ public class ElementServiceImpl implements ElementService {
 
     }
 
+    @Override
+    public void update(ElementEntity elementEntity, String elementId, String elementSmartspace, UserRole userRole) {
+        if (userRole.equals(UserRole.MANAGER)) {
+            elementEntity.setElementId(elementId);
+            elementEntity.setElementSmartspace(elementSmartspace);
+            if (validateCreation(elementEntity)) {
+                this.enhancedElementDao.update(elementEntity);
+            } else {
+                throw new RuntimeException("Invalid element input");
+            }
+        } else
+            throw new RuntimeException("Unauthorized operation");
+    }
+
     private boolean validate(ElementEntity elementEntity) {
         return elementEntity.getLocation() != null &&
                 elementEntity.getMoreAttributes() != null &&
