@@ -7,7 +7,6 @@ import org.springframework.data.repository.query.Param;
 import smartspace.data.UserEntity;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface UserCrud extends PagingAndSortingRepository<UserEntity, String> {
 
@@ -21,8 +20,6 @@ public interface UserCrud extends PagingAndSortingRepository<UserEntity, String>
             @Param("key") String key,
             @Param("sortBy") String sortBy,
             Pageable pageable);
-
-
 
 
 }

@@ -1,6 +1,5 @@
 package smartspace.layout;
 
-import org.h2.engine.User;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,7 +35,6 @@ public class UserControllerTest {
     private RestTemplate restTemplate;
     private String baseUrl, userRestAPIurl, loginUrlAddition;
     private UserEntity adminUser;
-
 
 
     @Autowired
@@ -193,7 +191,7 @@ public class UserControllerTest {
     public void testImportUsersFromCurrentSmartSpace() {
         // GIVEN the database contain one Admin user and we create one more user from our project smartspace
         UserEntity importUser = new UserEntity
-                ("crash@mail","2019b.zuru","needToCrash","Q",UserRole.ADMIN,400);
+                ("crash@mail", "2019b.zuru", "needToCrash", "Q", UserRole.ADMIN, 400);
 
 
         // WHEN we try to import a user from the same smartspace of our project.
@@ -218,13 +216,13 @@ public class UserControllerTest {
     public void testExportUsingPagination() {
         // GIVEN the database contain one Admin user and two elements
         UserEntity userEntity1 = enhancedUserDao.create(new UserEntity
-                ("user1@mail","2019b.nba","user1","Q1",UserRole.PLAYER,40));
+                ("user1@mail", "2019b.nba", "user1", "Q1", UserRole.PLAYER, 40));
         UserEntity userEntity2 = enhancedUserDao.create(new UserEntity
-                ("user2@mail","2019b.nba","user2","Q2",UserRole.MANAGER,4000));
+                ("user2@mail", "2019b.nba", "user2", "Q2", UserRole.MANAGER, 4000));
         UserEntity userEntity3 = enhancedUserDao.create(new UserEntity
-                ("user3@mail","2019b.nba","user3","Q3",UserRole.MANAGER,200));
+                ("user3@mail", "2019b.nba", "user3", "Q3", UserRole.MANAGER, 200));
         UserEntity userEntity4 = enhancedUserDao.create(new UserEntity
-                ("user4@mail","2019b.nba","user4","Q4",UserRole.PLAYER,100));
+                ("user4@mail", "2019b.nba", "user4", "Q4", UserRole.PLAYER, 100));
 
 
         // WHEN I get all messages using page 1 and size 2
@@ -247,13 +245,13 @@ public class UserControllerTest {
     public void testExportingWithDefaultPagination() {
         // GIVEN the database contain one Admin user and two elements
         UserEntity userEntity1 = enhancedUserDao.create(new UserEntity
-                ("user1@mail","2019b.nba","user1","Q1",UserRole.PLAYER,40));
+                ("user1@mail", "2019b.nba", "user1", "Q1", UserRole.PLAYER, 40));
         UserEntity userEntity2 = enhancedUserDao.create(new UserEntity
-                ("user2@mail","2019b.nba","user2","Q2",UserRole.MANAGER,4000));
+                ("user2@mail", "2019b.nba", "user2", "Q2", UserRole.MANAGER, 4000));
         UserEntity userEntity3 = enhancedUserDao.create(new UserEntity
-                ("user3@mail","2019b.nba","user3","Q3",UserRole.MANAGER,200));
+                ("user3@mail", "2019b.nba", "user3", "Q3", UserRole.MANAGER, 200));
         UserEntity userEntity4 = enhancedUserDao.create(new UserEntity
-                ("user4@mail","2019b.nba","user4","Q4",UserRole.PLAYER,100));
+                ("user4@mail", "2019b.nba", "user4", "Q4", UserRole.PLAYER, 100));
 
 
         // WHEN I get all messages using page 1 and size 2
@@ -278,45 +276,45 @@ public class UserControllerTest {
      */
 
     @Test
-    public void testValidCreateNewUserForm(){
+    public void testValidCreateNewUserForm() {
         // GIVEN the database empty
         this.enhancedUserDao.deleteAll();
 
         // WHEN create new user with newUserFormBoundary
-        NewUserFormBoundary newUserForm = new NewUserFormBoundary("test@this.now","test1","PLAYER",":-)");
+        NewUserFormBoundary newUserForm = new NewUserFormBoundary("test@this.now", "test1", "PLAYER", ":-)");
         UserBoundary createdUserNewForm = this.restTemplate
                 .postForObject(this.userRestAPIurl,
                         newUserForm
-                        ,UserBoundary.class);
+                        , UserBoundary.class);
 
         //THEN the only new user will be in the DB
-        Optional<UserEntity> rv = this.enhancedUserDao.readById(newUserForm.getEmail()+"#2019b.zuru");
+        Optional<UserEntity> rv = this.enhancedUserDao.readById(newUserForm.getEmail() + "#2019b.zuru");
 
-        if (rv.isPresent()){
+        if (rv.isPresent()) {
             UserEntity rvEntity = rv.get();
             assertThat(rvEntity).isEqualToComparingOnlyGivenFields(newUserForm.convertToEntity(),
-                    "key","username","avatar","role","points");
+                    "key", "username", "avatar", "role", "points");
         }
     }
 
     @Test(expected = Throwable.class)
-    public void testInvalidCreateNewUserFormWithInvalidEmail(){
+    public void testInvalidCreateNewUserFormWithInvalidEmail() {
         // GIVEN the database empty
         this.enhancedUserDao.deleteAll();
 
         // WHEN create new user with newUserFormBoundary with invalid email address
-        NewUserFormBoundary newUserForm = new NewUserFormBoundary("test_this.now","test1","PLAYER",":-)");
+        NewUserFormBoundary newUserForm = new NewUserFormBoundary("test_this.now", "test1", "PLAYER", ":-)");
         this.restTemplate
                 .postForObject(this.userRestAPIurl,
                         newUserForm
-                        ,UserBoundary.class);
+                        , UserBoundary.class);
 
         //THEN Exception will be thrown
     }
 
 
     @Test
-    public void testGetUserByExcistUser(){
+    public void testGetUserByExcistUser() {
         // GIVEN the database with one user (admin user by default)
 
 
@@ -324,16 +322,16 @@ public class UserControllerTest {
         String mail = "admin_store_test@mail.com";
         String smartspace = "2019b.NotOurSmartspace";
         UserBoundary expectedStoredAdminUser = this.restTemplate
-                .getForObject(this.loginUrlAddition+smartspace+"/"+mail ,UserBoundary.class);
+                .getForObject(this.loginUrlAddition + smartspace + "/" + mail, UserBoundary.class);
 
         //THEN we get the stored admin user
         UserEntity expectedStoredAdminUserEntity = expectedStoredAdminUser.convertToEntity();
         assertThat(expectedStoredAdminUserEntity).isEqualToComparingOnlyGivenFields(this.adminUser,
-                "key","username","avatar","role","points");
+                "key", "username", "avatar", "role", "points");
     }
 
     @Test
-    public void testGetNotExcistUser(){
+    public void testGetNotExcistUser() {
         // GIVEN the database with one user (admin user by default)
 
 
@@ -341,7 +339,7 @@ public class UserControllerTest {
         String mail = "not@excist.mail";
         String smartspace = "2019b.NotOurSmartspace";
         UserBoundary expectedStoredAdminUser = this.restTemplate
-                .getForObject(this.loginUrlAddition+smartspace+"/"+mail ,UserBoundary.class);
+                .getForObject(this.loginUrlAddition + smartspace + "/" + mail, UserBoundary.class);
 
         //THEN the returned value is null
         assertThat(expectedStoredAdminUser).isEqualTo(null);
@@ -355,19 +353,19 @@ public class UserControllerTest {
         // WHEN create new user with newUserFormBoundary and get with user REST API
         String mail = "test@this.now";
         String ourSmartspace = "2019b.zuru";
-        NewUserFormBoundary newUserForm = new NewUserFormBoundary(mail,"test1","PLAYER",":-)");
+        NewUserFormBoundary newUserForm = new NewUserFormBoundary(mail, "test1", "PLAYER", ":-)");
         UserEntity cu = newUserForm.convertToEntity();
         UserBoundary createdUserNewForm = this.restTemplate
                 .postForObject(this.userRestAPIurl,
                         newUserForm
-                        ,UserBoundary.class);
+                        , UserBoundary.class);
 
         UserBoundary expectedStoredAdminUser = this.restTemplate
-                .getForObject(this.loginUrlAddition+ourSmartspace+"/"+mail ,UserBoundary.class);
+                .getForObject(this.loginUrlAddition + ourSmartspace + "/" + mail, UserBoundary.class);
 
         //THEN
         assertThat(expectedStoredAdminUser.convertToEntity()).isEqualToComparingOnlyGivenFields(cu,
-                "key","username","avatar","role","points");
+                "key", "username", "avatar", "role", "points");
     }
 
     @Test
@@ -377,15 +375,15 @@ public class UserControllerTest {
         //WHEN we change his role to PLAYER with user rest api
         String mail = "admin_store_test@mail.com";
         String smartspace = "2019b.NotOurSmartspace";
-        String newRole="PLAYER";
+        String newRole = "PLAYER";
         UserBoundary updateRoleBoundary = new UserBoundary();
         updateRoleBoundary.setRole(newRole);
-        updateRoleBoundary.setUserKey(new UserKeyType(mail,smartspace));
+        updateRoleBoundary.setUserKey(new UserKeyType(mail, smartspace));
 
-        this.restTemplate.put(this.loginUrlAddition+smartspace+"/"+mail, updateRoleBoundary);
+        this.restTemplate.put(this.loginUrlAddition + smartspace + "/" + mail, updateRoleBoundary);
 
         //THAN his role will changed to PLAYER
-        UserBoundary rv = this.restTemplate.getForObject(this.loginUrlAddition+smartspace+"/"+mail ,UserBoundary.class);
+        UserBoundary rv = this.restTemplate.getForObject(this.loginUrlAddition + smartspace + "/" + mail, UserBoundary.class);
 
         assertThat(rv.convertToEntity().getRole()).isEqualByComparingTo(UserRole.PLAYER);
 
@@ -398,12 +396,12 @@ public class UserControllerTest {
         //WHEN we change his role to PLAYER with user rest api
         String mail = "admin_store_test@mail.com";
         String smartspace = "2019b.NotOurSmartspace";
-        String newRole="PLAYER";
+        String newRole = "PLAYER";
         UserBoundary updateRoleBoundary = new UserBoundary();
         updateRoleBoundary.setRole(newRole);
-        updateRoleBoundary.setUserKey(new UserKeyType(mail,"2019b.notExcistSmartspace"));
+        updateRoleBoundary.setUserKey(new UserKeyType(mail, "2019b.notExcistSmartspace"));
 
-        this.restTemplate.put(this.loginUrlAddition+smartspace+"/"+mail, updateRoleBoundary);
+        this.restTemplate.put(this.loginUrlAddition + smartspace + "/" + mail, updateRoleBoundary);
 
         // THEN Exception is thrown
 
@@ -417,17 +415,17 @@ public class UserControllerTest {
 
         String mail = this.adminUser.getUserEmail();
         String smartspace = this.adminUser.getUserSmartspace();
-        String newUserName="abrakadbra";
+        String newUserName = "abrakadbra";
         UserBoundary updateUsernameBoundary = new UserBoundary(this.adminUser);
         updateUsernameBoundary.setUsername(newUserName);
 
-        this.restTemplate.put(this.loginUrlAddition+smartspace+"/"+mail , updateUsernameBoundary);
+        this.restTemplate.put(this.loginUrlAddition + smartspace + "/" + mail, updateUsernameBoundary);
 
 
         //THAN his username will changed to abrakadbra
-        UserBoundary rv = this.restTemplate.getForObject(this.loginUrlAddition+smartspace+"/"+mail ,UserBoundary.class);
+        UserBoundary rv = this.restTemplate.getForObject(this.loginUrlAddition + smartspace + "/" + mail, UserBoundary.class);
 
-        assertThat(rv.convertToEntity()).isEqualToComparingOnlyGivenFields(updateUsernameBoundary,"username");
+        assertThat(rv.convertToEntity()).isEqualToComparingOnlyGivenFields(updateUsernameBoundary, "username");
         assertThat(rv.getUsername()).isEqualTo(newUserName);
 
     }
@@ -439,16 +437,16 @@ public class UserControllerTest {
         //WHEN we change his avatar to (8) with user rest api
         String mail = this.adminUser.getUserEmail();
         String smartspace = this.adminUser.getUserSmartspace();
-        String newAvatar="(8)";
+        String newAvatar = "(8)";
         UserBoundary updateAvatarBoundary = new UserBoundary(this.adminUser);
         updateAvatarBoundary.setAvatar(newAvatar);
 
-        this.restTemplate.put(this.loginUrlAddition+smartspace+"/"+mail, updateAvatarBoundary);
+        this.restTemplate.put(this.loginUrlAddition + smartspace + "/" + mail, updateAvatarBoundary);
 
         //THAN his avatar will changed to (8)
-        UserBoundary rv = this.restTemplate.getForObject(this.loginUrlAddition+smartspace+"/"+mail ,UserBoundary.class);
+        UserBoundary rv = this.restTemplate.getForObject(this.loginUrlAddition + smartspace + "/" + mail, UserBoundary.class);
 
-        assertThat(rv.convertToEntity()).isEqualToComparingOnlyGivenFields(updateAvatarBoundary,"avatar");
+        assertThat(rv.convertToEntity()).isEqualToComparingOnlyGivenFields(updateAvatarBoundary, "avatar");
         assertThat(rv.getAvatar()).isEqualTo(newAvatar);
     }
 
@@ -459,14 +457,14 @@ public class UserControllerTest {
         //WHEN we change his points to 500 with user rest api (he has 100 points)
         String mail = this.adminUser.getUserEmail();
         String smartspace = this.adminUser.getUserSmartspace();
-        long points=500;
+        long points = 500;
         UserBoundary updatePointsBoundary = new UserBoundary(this.adminUser);
         updatePointsBoundary.setPoints(points);
 
-        this.restTemplate.put(this.loginUrlAddition+smartspace+"/"+mail, updatePointsBoundary);
+        this.restTemplate.put(this.loginUrlAddition + smartspace + "/" + mail, updatePointsBoundary);
 
         //THAN his points will stay 100
-        UserBoundary rv = this.restTemplate.getForObject(this.loginUrlAddition+smartspace+"/"+mail ,UserBoundary.class);
+        UserBoundary rv = this.restTemplate.getForObject(this.loginUrlAddition + smartspace + "/" + mail, UserBoundary.class);
 
         assertThat(rv.convertToEntity().getPoints()).isEqualTo(100);
     }

@@ -19,8 +19,7 @@ public interface UserService {
 
     public UserEntity create(UserEntity user);
 
-    public void update(String userSmartspace,String userEmail, UserEntity convertToEntity);
-
+    public void update(String userSmartspace, String userEmail, UserEntity convertToEntity);
 
 
 }

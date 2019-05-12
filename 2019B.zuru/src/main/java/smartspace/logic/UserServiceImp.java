@@ -47,7 +47,6 @@ public class UserServiceImp implements UserService {
     @Override
     @Transactional(readOnly = true)
     public Optional<UserEntity> getUserByKey(String key) {
-        // maybe we need to check if key is a valid key
         return this.userDao
                 .readById(key);
     }
@@ -104,7 +103,7 @@ public class UserServiceImp implements UserService {
     // maybe we need to add AOP annotation to this code
     public void update(String userSmartspace, String userEmail, UserEntity updateDetails) {
         Optional<UserEntity> ifExcistUser = getUserByMailAndSmartSpace(userEmail, userSmartspace);
-        if(ifExcistUser.isPresent()) {
+        if (ifExcistUser.isPresent()) {
             UserEntity needToUpdateUserEntity = new UserEntity();
 
             needToUpdateUserEntity.setKey(updateDetails.getKey());
@@ -114,22 +113,18 @@ public class UserServiceImp implements UserService {
             needToUpdateUserEntity.setPoints(ifExcistUser.get().getPoints());
 
             this.userDao.update(needToUpdateUserEntity);
-        }
-        else throw new UserNotFoundException();
+        } else throw new UserNotFoundException();
 
     }
 
 
     private boolean CheckingEmailAndRole(UserEntity user) {
 
-        //      EmailValidator validator = new EmailValidator();
-
         if ((user.getRole().equals(UserRole.ADMIN) ||
                 user.getRole().equals(UserRole.MANAGER) ||
                 user.getRole().equals(UserRole.PLAYER)) &&
                 (user.getUserSmartspace().equals(this.currentSmartspace))
                 && validateEmailAddress(user.getUserEmail())) {
-            // &&(validator.isValid(user.getUserEmail()))) {
             return true;
         }
         return false;

@@ -3,8 +3,6 @@ package smartspace.layout;
 import smartspace.data.UserEntity;
 import smartspace.data.UserRole;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class NewUserFormBoundary {
 
@@ -12,7 +10,6 @@ public class NewUserFormBoundary {
     private String username;
     private String role;
     private String avatar;
-
 
 
     public NewUserFormBoundary() {
@@ -77,7 +74,7 @@ public class NewUserFormBoundary {
 
         entity.setAvatar(this.getAvatar());
 
-        switch (entity.getRole()){
+        switch (entity.getRole()) {
             case ADMIN:
                 entity.setPoints(-1);
                 break;
@@ -92,12 +89,11 @@ public class NewUserFormBoundary {
         //smartspace hard-coded for now - need to fix
         entity.setUserSmartspace("2019b.zuru");
 
-        entity.setKey(entity.getUserEmail()+"#"+entity.getUserSmartspace());
+        entity.setKey(entity.getUserEmail() + "#" + entity.getUserSmartspace());
 
 
         return entity;
     }
-
 
 
 }

@@ -69,7 +69,6 @@ public class UserController {
     }
 
 
-
     @Transactional
     @RequestMapping(
             method = RequestMethod.POST,
@@ -93,29 +92,26 @@ public class UserController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public UserBoundary getUser(
             @PathVariable("userSmartspace") String userSmartspace,
-            @PathVariable("userEmail") String userEmail){
+            @PathVariable("userEmail") String userEmail) {
         Optional<UserEntity> rv;
         rv = this.userService.getUserByMailAndSmartSpace(userEmail, userSmartspace);
-        if(rv.isPresent())
+        if (rv.isPresent())
             return new UserBoundary(rv.get());
         else
             return null;
     }
 
 
-
-// need to check about the points
-
     @RequestMapping(
-            method=RequestMethod.PUT,
-            path="/smartspace/users/login/{userSmartspace}/{userEmail}",
-            produces=MediaType.APPLICATION_JSON_VALUE)
+            method = RequestMethod.PUT,
+            path = "/smartspace/users/login/{userSmartspace}/{userEmail}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
     public void updateUser(
             @PathVariable("userSmartspace") String userSmartspace,
             @PathVariable("userEmail") String userEmail,
             @RequestBody UserBoundary updateBoundary) {
         this.userService
-                .update(userSmartspace,userEmail,updateBoundary.convertToEntity());
+                .update(userSmartspace, userEmail, updateBoundary.convertToEntity());
     }
 
 

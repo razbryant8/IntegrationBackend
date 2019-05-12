@@ -78,16 +78,16 @@ public class UserBoundary {
 
         //role is enum
         if (this.role != null) {
-            entity.setRole(UserRole.valueOf(this.role));
+            entity.setRole(UserRole.valueOf(this.getRole()));
         } else {
             entity.setRole(null);
         }
 
-        entity.setUsername(this.username);
+        entity.setUsername(this.getUsername());
 
-        entity.setAvatar(this.avatar);
+        entity.setAvatar(this.getAvatar());
 
-        entity.setPoints(this.points);
+        entity.setPoints(this.getPoints());
 
         return entity;
     }
