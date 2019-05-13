@@ -69,9 +69,55 @@ public class UserController {
     }
 
 
+    @Transactional
+    @RequestMapping(
+            method = RequestMethod.POST,
+            path = "/smartspace/users",
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    public UserBoundary create(
+            @RequestBody NewUserFormBoundary user) {
+
+        return
+                new UserBoundary(
+                        this.userService
+                                .create(user
+                                        .convertToEntity()));
+    }
+
+
+    @RequestMapping(
+            method = RequestMethod.GET,
+            path = "/smartspace/users/login/{userSmartspace}/{userEmail}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public UserBoundary getUser(
+            @PathVariable("userSmartspace") String userSmartspace,
+            @PathVariable("userEmail") String userEmail) {
+        Optional<UserEntity> rv;
+        rv = this.userService.getUserByMailAndSmartSpace(userEmail, userSmartspace);
+        if (rv.isPresent())
+            return new UserBoundary(rv.get());
+        else
+            return null;
+    }
+
+
+    @RequestMapping(
+            method = RequestMethod.PUT,
+            path = "/smartspace/users/login/{userSmartspace}/{userEmail}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public void updateUser(
+            @PathVariable("userSmartspace") String userSmartspace,
+            @PathVariable("userEmail") String userEmail,
+            @RequestBody UserBoundary updateBoundary) {
+        this.userService
+                .update(userSmartspace, userEmail, updateBoundary.convertToEntity());
+    }
+
+
     private boolean validate(String adminSmartspace, String adminEmail) {
-        Optional<UserEntity> dbUser = userService.getUserByMailAndSmartSpace(adminEmail,adminSmartspace);
-        if(!dbUser.isPresent() || !dbUser.get().getRole().equals(UserRole.ADMIN) ||
+        Optional<UserEntity> dbUser = userService.getUserByMailAndSmartSpace(adminEmail, adminSmartspace);
+        if (!dbUser.isPresent() || !dbUser.get().getRole().equals(UserRole.ADMIN) ||
                 adminSmartspace.equals(this.userService.getCurrentSmartspace()))
             return false;
         return true;

@@ -17,7 +17,7 @@ public class UserEntity implements SmartspaceEntity<String> {
     }
 
     public UserEntity(String userEmail, String userSmartspace, String username, String avatar, UserRole role, long points) {
-        this.setKey(userEmail+"#"+userSmartspace);
+        this.setKey(userEmail + "#" + userSmartspace);
         this.username = username;
         this.avatar = avatar;
         this.role = role;
@@ -85,7 +85,7 @@ public class UserEntity implements SmartspaceEntity<String> {
 
     @Override
     public void setKey(String key) {
-        if(key != null) {
+        if (key != null) {
             String[] args = key.split("#");
             if (args.length == 2) {
                 this.setUserEmail(args[0]);
@@ -98,6 +98,6 @@ public class UserEntity implements SmartspaceEntity<String> {
     @Override
     public String toString() {
         return "userEntity [id=" + getKey() + ", username=" + getUsername() + ", avatar=" + getAvatar() + ", role="
-                + getRole().name() + ", points=" + getPoints() +"]";
+                + getRole().name() + ", points=" + getPoints() + "]";
     }
 }

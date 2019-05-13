@@ -42,7 +42,7 @@ public class RdbUserDao implements EnhancedUserDao<String> {
     @Override
     @Transactional
     public UserEntity create(UserEntity userEntity) {
-        userEntity.setKey("" + userEntity.getUserEmail()+ "#" + this.smartspace);
+        userEntity.setKey("" + userEntity.getUserEmail() + "#" + this.smartspace);
         return this.userCrud.save(userEntity);
 
     }

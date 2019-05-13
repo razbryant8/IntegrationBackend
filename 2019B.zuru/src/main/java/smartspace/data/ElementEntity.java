@@ -2,10 +2,9 @@ package smartspace.data;
 
 import smartspace.dao.rdb.MapToJsonConverter;
 
+import javax.persistence.*;
 import java.util.Date;
 import java.util.Map;
-
-import javax.persistence.*;
 
 @Entity
 @Table(name = "ELEMENTS")
