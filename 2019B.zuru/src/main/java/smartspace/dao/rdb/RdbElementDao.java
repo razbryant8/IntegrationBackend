@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import smartspace.dao.ElementNotFoundException;
 import smartspace.dao.EnhancedElementDao;
 import smartspace.data.ElementEntity;
 
@@ -54,7 +55,7 @@ public class RdbElementDao implements EnhancedElementDao<String> {
     @Transactional
     public void update(ElementEntity elementEntity) {
         ElementEntity existing = this.readById(elementEntity.getKey())
-                .orElseThrow(() -> new RuntimeException("No element with this ID: "
+                .orElseThrow(() -> new ElementNotFoundException("No element with this ID: "
                         + elementEntity.getElementId()));
 
         if (elementEntity.getLocation() != null) {
@@ -113,8 +114,29 @@ public class RdbElementDao implements EnhancedElementDao<String> {
     }
 
     @Override
+    @Transactional
     public ElementEntity upsert(ElementEntity elementEntity) {
         return elementCrud.save(elementEntity);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ElementEntity> getAllElementsByType(int size, int page, String type, String sortBy) {
+        return this.elementCrud.findAllByType(type, PageRequest.of(page, size, Sort.Direction.ASC, sortBy));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ElementEntity> getAllElementsByName(int size, int page, String name, String sortBy) {
+        return this.elementCrud.findAllByName(name, PageRequest.of(page, size, Sort.Direction.ASC, sortBy));
+    }
+
+    @Override
+    public List<ElementEntity> getAllElementsByLocation(int size, int page, double x, double y, int distance, String sortBy) {
+        return this.elementCrud.findAllByLocation_xBetweenAndLocation_yBetween(
+                x - distance, x + distance,
+                y - distance, y + distance,
+                PageRequest.of(page, size, Sort.Direction.ASC, sortBy));
     }
 
     @Value("${spring.application.name}")

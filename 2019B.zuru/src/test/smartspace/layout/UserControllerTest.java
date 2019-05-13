@@ -109,12 +109,10 @@ public class UserControllerTest {
         // WHEN someone that is not admin Export using REST API
         int page = 0;
         int size = 5;
-        ElementBoundary[] result =
-                this.restTemplate
-                        .getForObject(
-                                this.baseUrl + "badSmartSpace/BadEmail?size={size}&page={page}",
-                                ElementBoundary[].class,
-                                size, page);
+        this.restTemplate
+            .getForObject(
+            this.baseUrl + "badSmartSpace/BadEmail?size={size}&page={page}",
+            ElementBoundary[].class, size, page);
 
         // THEN exception is thrown
     }

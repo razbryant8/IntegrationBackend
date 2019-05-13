@@ -28,7 +28,7 @@ public class RdbActionDaoTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         rdbActionDao.deleteAll();
     }
 
