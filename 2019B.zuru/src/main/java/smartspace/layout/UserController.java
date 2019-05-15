@@ -1,13 +1,13 @@
 package smartspace.layout;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import smartspace.data.UserEntity;
 import smartspace.data.UserRole;
 import smartspace.logic.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Optional;
 import java.util.stream.Collectors;

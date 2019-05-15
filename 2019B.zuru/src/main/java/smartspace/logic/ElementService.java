@@ -4,7 +4,6 @@ import smartspace.data.ElementEntity;
 import smartspace.data.UserRole;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface ElementService {
     public List<ElementEntity> getAll(int size, int page, UserRole userRole);

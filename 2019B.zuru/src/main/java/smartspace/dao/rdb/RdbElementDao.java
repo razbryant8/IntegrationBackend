@@ -1,9 +1,5 @@
 package smartspace.dao.rdb;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
@@ -13,6 +9,10 @@ import org.springframework.transaction.annotation.Transactional;
 import smartspace.dao.ElementNotFoundException;
 import smartspace.dao.EnhancedElementDao;
 import smartspace.data.ElementEntity;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 
 @Repository

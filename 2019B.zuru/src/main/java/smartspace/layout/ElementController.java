@@ -6,12 +6,10 @@ import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import smartspace.dao.ElementNotFoundException;
-import smartspace.data.UserEntity;
 import smartspace.data.UserRole;
 import smartspace.logic.ElementService;
 import smartspace.logic.UserService;
 
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 

@@ -1,22 +1,18 @@
 package smartspace.dao.rdb;
 
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-
-
-import org.springframework.data.domain.Sort.Direction;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
-
-
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import smartspace.dao.EnhancedUserDao;
 import smartspace.data.UserEntity;
 
 import java.util.ArrayList;
-import java.util.Optional;
 import java.util.List;
+import java.util.Optional;
 
 
 @Repository
