@@ -117,8 +117,8 @@ public class UserController {
 
     private boolean validate(String adminSmartspace, String adminEmail) {
         Optional<UserEntity> dbUser = userService.getUserByMailAndSmartSpace(adminEmail, adminSmartspace);
-        if (!dbUser.isPresent() || !dbUser.get().getRole().equals(UserRole.ADMIN) ||
-                adminSmartspace.equals(this.userService.getCurrentSmartspace()))
+        if (!dbUser.isPresent() || !dbUser.get().getRole().equals(UserRole.ADMIN))
+            // || adminSmartspace.equals(this.userService.getCurrentSmartspace()))
             return false;
         return true;
     }
