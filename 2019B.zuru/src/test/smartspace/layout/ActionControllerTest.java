@@ -19,7 +19,6 @@ import smartspace.data.ActionEntity;
 import smartspace.data.UserEntity;
 import smartspace.data.UserRole;
 import smartspace.data.util.EntityFactory;
-import smartspace.logic.ActionService;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -117,7 +116,7 @@ public class ActionControllerTest {
         ActionBoundary[] actionBoundaries = new ActionBoundary[1];
         actionBoundaries[0] = new ActionBoundary();
         actionBoundaries[0].setActionKey(new KeyType("1", "2019B.othersmartspace"));
-        actionBoundaries[0].setActionProperties(new HashMap<>());
+        actionBoundaries[0].setProperties(new HashMap<>());
         actionBoundaries[0].setCreated(new Date());
         actionBoundaries[0].setElement(new KeyType("1", "2019B.element"));
         actionBoundaries[0].setType("actionType");
@@ -154,7 +153,7 @@ public class ActionControllerTest {
         ActionBoundary[] actionBoundaries = new ActionBoundary[1];
         actionBoundaries[0] = new ActionBoundary();
         actionBoundaries[0].setActionKey(new KeyType("1", "2019B.othersmartspace"));
-        actionBoundaries[0].setActionProperties(new HashMap<>());
+        actionBoundaries[0].setProperties(new HashMap<>());
         actionBoundaries[0].setCreated(new Date());
         actionBoundaries[0].setElement(new KeyType("1", "2019B.element"));
         actionBoundaries[0].setType("actionType");
@@ -196,7 +195,7 @@ public class ActionControllerTest {
         ActionBoundary[] actionBoundaries = new ActionBoundary[1];
         actionBoundaries[0] = new ActionBoundary();
         actionBoundaries[0].setActionKey(new KeyType("1", "2019B.othersmartspace"));
-        actionBoundaries[0].setActionProperties(new HashMap<>());
+        actionBoundaries[0].setProperties(new HashMap<>());
         actionBoundaries[0].setCreated(new Date());
         actionBoundaries[0].setElement(new KeyType("1", "2019B.element"));
         actionBoundaries[0].setType("actionType");
@@ -254,7 +253,7 @@ public class ActionControllerTest {
         ActionBoundary[] actionBoundaries = new ActionBoundary[2];
         actionBoundaries[0] = new ActionBoundary();
         actionBoundaries[0].setActionKey(new KeyType("1", "2019B.othersmartspace"));
-        actionBoundaries[0].setActionProperties(new HashMap<>());
+        actionBoundaries[0].setProperties(new HashMap<>());
         actionBoundaries[0].setCreated(new Date());
         actionBoundaries[0].setElement(new KeyType("1", "2019B.element"));
         actionBoundaries[0].setType("actionType");
@@ -262,7 +261,7 @@ public class ActionControllerTest {
 
         actionBoundaries[1] = new ActionBoundary();
         actionBoundaries[1].setActionKey(new KeyType("2", "2019B.othersmartspace"));
-        actionBoundaries[1].setActionProperties(new HashMap<>());
+        actionBoundaries[1].setProperties(new HashMap<>());
         actionBoundaries[1].setCreated(new Date());
         actionBoundaries[1].setElement(new KeyType("2", "2019B.element"));
         actionBoundaries[1].setType("actionType");
@@ -294,7 +293,7 @@ public class ActionControllerTest {
         ActionBoundary[] actionBoundaries = new ActionBoundary[1];
         actionBoundaries[0] = new ActionBoundary();
         actionBoundaries[0].setActionKey(new KeyType("1", "2019B.othersmartspace"));
-        actionBoundaries[0].setActionProperties(new HashMap<>());
+        actionBoundaries[0].setProperties(new HashMap<>());
         actionBoundaries[0].setCreated(new Date());
         actionBoundaries[0].setElement(new KeyType("1", mySmartspace));//Same smartspace
         actionBoundaries[0].setType("actionType");

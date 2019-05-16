@@ -1,11 +1,7 @@
 package smartspace.data;
 
-import javafx.stage.Screen;
-import javafx.stage.Window;
-
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.swing.*;
 
 @Embeddable
 public class Location {
