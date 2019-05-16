@@ -29,7 +29,7 @@ public class RdbUserDao implements EnhancedUserDao<String> {
 
     }
 
-    @Value("${spring.application.name}")
+    @Value("${spring.smartspace.name}")
     public void setSmartspace(String smartspace) {
         this.smartspace = smartspace;
     }

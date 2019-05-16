@@ -131,7 +131,7 @@ public class ElementEntity implements SmartspaceEntity<String> {
 
     @Override
     public void setKey(String key) {
-        if(key != null) {
+        if (key != null) {
             String[] args = key.split("#");
             if (args.length == 2) {
                 this.elementId = args[0];

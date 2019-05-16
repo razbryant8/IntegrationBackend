@@ -83,7 +83,7 @@ public class ActionControllerTest {
         this.port = port;
     }
 
-    @Value("${spring.application.name}")
+    @Value("${spring.smartspace.name}")
     public void setMySmartspace(String mySmartspace) {
         this.mySmartspace = mySmartspace;
     }
@@ -220,7 +220,6 @@ public class ActionControllerTest {
     }
 
 
-
     @Test
     public void testCreateActions() {
         // GIVEN there are elements that the following actions are preformed on
@@ -328,7 +327,7 @@ public class ActionControllerTest {
 
 
         // THEN the database contains the new action with the generated key
-        assertEquals("1",result.getActionKey().getId());
+        assertEquals("1", result.getActionKey().getId());
 
 
     }

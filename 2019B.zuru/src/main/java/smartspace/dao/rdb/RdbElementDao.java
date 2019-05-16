@@ -139,7 +139,7 @@ public class RdbElementDao implements EnhancedElementDao<String> {
                 PageRequest.of(page, size, Sort.Direction.ASC, sortBy));
     }
 
-    @Value("${spring.application.name}")
+    @Value("${spring.smartspace.name}")
     public void setSmartspace(String smartspace) {
         this.smartspace = smartspace;
     }

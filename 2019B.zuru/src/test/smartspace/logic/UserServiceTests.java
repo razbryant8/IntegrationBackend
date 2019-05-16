@@ -30,7 +30,7 @@ public class UserServiceTests {
     private UserServiceImp userService;
     private String currentSmartSpace;
 
-    @Value("${spring.application.name}")
+    @Value("${spring.smartspace.name}")
     public void setCurrentSmartSpace(String currentSmartSpace) {
         this.currentSmartSpace = currentSmartSpace;
     }

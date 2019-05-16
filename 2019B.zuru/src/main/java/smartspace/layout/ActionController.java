@@ -74,8 +74,8 @@ public class ActionController {
     }
 
     private boolean validate(String adminSmartspace, String adminEmail) {
-        Optional<UserEntity> dbUser = userService.getUserByMailAndSmartSpace(adminEmail,adminSmartspace);
-        if(dbUser.isPresent() && dbUser.get().getRole().equals(UserRole.ADMIN))
+        Optional<UserEntity> dbUser = userService.getUserByMailAndSmartSpace(adminEmail, adminSmartspace);
+        if (dbUser.isPresent() && dbUser.get().getRole().equals(UserRole.ADMIN))
             return true;
         return false;
     }

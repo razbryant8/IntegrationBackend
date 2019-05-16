@@ -78,7 +78,7 @@ public class UserServiceImp implements UserService {
 
     }
 
-    @Value("${spring.application.name}")
+    @Value("${spring.smartspace.name}")
     public void setSmartspace(String currentSmartspace) {
         this.currentSmartspace = currentSmartspace;
     }

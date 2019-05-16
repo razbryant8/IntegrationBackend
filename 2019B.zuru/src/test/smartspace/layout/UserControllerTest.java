@@ -52,7 +52,7 @@ public class UserControllerTest {
         this.port = port;
     }
 
-    @Value("${spring.application.name}")
+    @Value("${spring.smartspace.name}")
     public void setMySmartspace(String currentSmartspace) {
         this.currentSmartspace = currentSmartspace;
     }
@@ -110,9 +110,9 @@ public class UserControllerTest {
         int page = 0;
         int size = 5;
         this.restTemplate
-            .getForObject(
-            this.baseUrl + "badSmartSpace/BadEmail?size={size}&page={page}",
-            ElementBoundary[].class, size, page);
+                .getForObject(
+                        this.baseUrl + "badSmartSpace/BadEmail?size={size}&page={page}",
+                        ElementBoundary[].class, size, page);
 
         // THEN exception is thrown
     }
