@@ -6,12 +6,10 @@ import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import smartspace.dao.ElementNotFoundException;
-import smartspace.data.UserEntity;
 import smartspace.data.UserRole;
 import smartspace.logic.ElementService;
 import smartspace.logic.UserService;
 
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -28,6 +26,7 @@ public class ElementController {
     }
 
     @RequestMapping(
+            
             method = RequestMethod.GET,
             path = "/smartspace/admin/elements/{adminSmartspace}/{adminEmail}",
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -94,31 +93,51 @@ public class ElementController {
             method = RequestMethod.GET,
             path = "/smartspace/elements/{userSmartspace}/{userEmail}",
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ElementBoundary[] getByAttribute(
+    public ElementBoundary[] getAllElementsBy(
             @PathVariable("userSmartspace") String userSmartspace,
             @PathVariable("userEmail") String userEmail,
-            @RequestParam(name = "search") String search,
+            @RequestParam(name = "search",required = false) String search,
             @RequestParam(name = "value" ,required = false) String value,
+            @RequestParam(name = "x" ,required = false) String x,
+            @RequestParam(name = "y" ,required = false) String y,
+            @RequestParam(name = "distance" ,required = false) String distance,
             @RequestParam(name = "size", required = false, defaultValue = "10") int size,
             @RequestParam(name = "page", required = false, defaultValue = "0") int page) {
-        if (search.toLowerCase().equals(Search.TYPE.toString().toLowerCase())) {
+        if(search == null) {
             return this.elementService
-                    .getByType(size, page, value, getUserRole(userSmartspace, userEmail))
+                    .getAllElements(size,page,getUserRole(userSmartspace,userEmail))
                     .stream()
                     .map(ElementBoundary::new)
                     .collect(Collectors.toList())
                     .toArray(new ElementBoundary[0]);
-        } else if (search.toLowerCase().equals((Search.NAME.toString().toLowerCase()))) {
-            return this.elementService
-                    .getByName(size, page, value, getUserRole(userSmartspace, userEmail))
-                    .stream()
-                    .map(ElementBoundary::new)
-                    .collect(Collectors.toList())
-                    .toArray(new ElementBoundary[0]);
+        } else{
+            if (search.toLowerCase().equals(Search.TYPE.toString().toLowerCase())) {
+                return this.elementService
+                        .getByType(size, page, value, getUserRole(userSmartspace, userEmail))
+                        .stream()
+                        .map(ElementBoundary::new)
+                        .collect(Collectors.toList())
+                        .toArray(new ElementBoundary[0]);
+            } else if (search.toLowerCase().equals((Search.NAME.toString().toLowerCase()))) {
+                return this.elementService
+                        .getByName(size, page, value, getUserRole(userSmartspace, userEmail))
+                        .stream()
+                        .map(ElementBoundary::new)
+                        .collect(Collectors.toList())
+                        .toArray(new ElementBoundary[0]);
+            }
+            else if(search.toLowerCase().equals((Search.LOCATION.toString().toLowerCase()))){
+                if (x == null || y == null || distance == null) {
+                    throw new ElementNotFoundException("Invalid search value");
+                }
+                return this.elementService
+                        .getByLocation(size, page, Double.parseDouble(x), Double.parseDouble(y), Integer.parseInt(distance), getUserRole(userSmartspace, userEmail))
+                        .stream()
+                        .map(ElementBoundary::new).toArray(ElementBoundary[]::new);
+            }
+            else
+                throw new ElementNotFoundException("Invalid search value");
         }
-        //TODO else if search.equals(Search.location)...
-        else
-            throw new ElementNotFoundException("Invalid search value");
     }
 
 
@@ -126,7 +145,6 @@ public class ElementController {
     @RequestMapping(
             method = RequestMethod.PUT,
             path = "/smartspace/elements/{managerSmartspace}/{managerEmail}/{elementSmartspace}/{elementId}",
-            produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     public void update(
             @PathVariable("managerSmartspace") String managerSmartspace,

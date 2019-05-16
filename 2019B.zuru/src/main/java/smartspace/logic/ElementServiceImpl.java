@@ -112,7 +112,22 @@ public class ElementServiceImpl implements ElementService {
                         + elementEntity.getKey());
         } else
             throw new ElementNotFoundException("Unauthorized request");
+    }
 
+    @Override
+    public List<ElementEntity> getByLocation(int size, int page, double x, double y, int distance, UserRole userRole) {
+        if (userRole.equals(UserRole.PLAYER)) {
+            return this.enhancedElementDao
+                    .getAllElementsByLocation(size, page, x, y, distance, "creationTimestamp")
+                    .stream()
+                    .filter(elementEntity -> !elementEntity.isExpired())
+                    .collect(Collectors.toList());
+        } else if (userRole.equals(UserRole.MANAGER)) {
+                return this.enhancedElementDao
+                        .getAllElementsByLocation(size, page, x, y, distance, "creationTimestamp");
+        } else {
+            throw new ElementNotFoundException("Unauthorized operation");
+        }
     }
 
     @Override
@@ -127,6 +142,20 @@ public class ElementServiceImpl implements ElementService {
             }
         } else
             throw new RuntimeException("Unauthorized operation");
+    }
+
+    @Override
+    public List<ElementEntity> getAllElements(int size, int page, UserRole userRole) {
+        if (userRole.equals(UserRole.PLAYER))
+            return this.enhancedElementDao.
+                    readAll(size, page, "creationTimestamp")
+                    .stream()
+                    .filter(elementEntity -> !elementEntity.isExpired())
+                    .collect(Collectors.toList());
+        else if (userRole.equals((UserRole.MANAGER)))
+            return this.enhancedElementDao.readAll(size, page, "creationTimestamp");
+        else
+            throw new RuntimeException("Unauthorized request");
     }
 
     private boolean validate(ElementEntity elementEntity) {

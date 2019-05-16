@@ -60,7 +60,7 @@ public class RdbUserDaoTest {
         this.userEntity.setPoints(15);
         this.userEntity.setAvatar("haha");
         this.userEntity.setUsername("zur");
-        UserEntity userEntity = rdbUserDao.create(this.userEntity);
+        rdbUserDao.create(this.userEntity);
         Optional<UserEntity> userEntityOpt = rdbUserDao.readById(expectedId);
         assertTrue("Row was not created/found", userEntityOpt.isPresent());
     }
@@ -109,9 +109,9 @@ public class RdbUserDaoTest {
     @Test
     public void testDeleteAll() {
         //Add initialized variables to db
-        UserEntity userEntity1 = rdbUserDao.create(new UserEntity());
-        UserEntity userEntity2 = rdbUserDao.create(new UserEntity());
-        UserEntity userEntity3 = rdbUserDao.create(new UserEntity());
+        rdbUserDao.create(new UserEntity());
+        rdbUserDao.create(new UserEntity());
+        rdbUserDao.create(new UserEntity());
 
         rdbUserDao.deleteAll();
 

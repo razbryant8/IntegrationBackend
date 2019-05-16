@@ -1,7 +1,8 @@
 package smartspace.dao;
-import java.util.List;
 
-import smartspace.data.*;
+import smartspace.data.ActionEntity;
+
+import java.util.List;
 
 public interface ActionDao {
 	

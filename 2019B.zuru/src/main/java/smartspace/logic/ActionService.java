@@ -10,4 +10,6 @@ public interface ActionService {
 
     ActionEntity store(ActionEntity actionEntity);
 
+    ActionEntity invoke(ActionEntity actionEntity);
+
 }

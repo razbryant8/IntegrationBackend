@@ -62,6 +62,17 @@ public class ActionController {
             throw new RuntimeException("Unauthorized operation");
     }
 
+
+    @Transactional
+    @RequestMapping(
+            method = RequestMethod.POST,
+            path = "/smartspace/actions",
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ActionBoundary invoke(@RequestBody ActionBoundary actionBoundary) {
+        return new ActionBoundary(this.actionService.invoke(actionBoundary.convertToEntity()));
+    }
+
     private boolean validate(String adminSmartspace, String adminEmail) {
         Optional<UserEntity> dbUser = userService.getUserByMailAndSmartSpace(adminEmail,adminSmartspace);
         if(dbUser.isPresent() && dbUser.get().getRole().equals(UserRole.ADMIN))
