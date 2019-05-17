@@ -8,7 +8,7 @@ import java.util.List;
 public interface ElementService {
     public List<ElementEntity> getAll(int size, int page, UserRole userRole);
 
-    public ElementEntity store(ElementEntity elementEntity, UserRole userRole);
+    public ElementEntity[] store(ElementEntity[] elementEntity, UserRole userRole);
 
     public ElementEntity create(ElementEntity elementEntity, UserRole userRole);
 
@@ -20,7 +20,7 @@ public interface ElementService {
 
     public List<ElementEntity> getByLocation(int size, int page, double x, double y, int distance, UserRole userRole);
 
-    void update(ElementEntity elementEntity , String elementId, String elementSmartspace, UserRole userRole);
+    void update(ElementEntity elementEntity, String elementId, String elementSmartspace, UserRole userRole);
 
     List<ElementEntity> getAllElements(int size, int page, UserRole userRole);
 

@@ -6,6 +6,7 @@ import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import smartspace.dao.ElementNotFoundException;
+import smartspace.data.ElementEntity;
 import smartspace.data.UserRole;
 import smartspace.logic.ElementService;
 import smartspace.logic.UserService;
@@ -54,12 +55,24 @@ public class ElementController {
             @PathVariable("adminSmartspace") String adminSmartspace,
             @PathVariable("adminEmail") String adminEmail,
             @RequestBody ElementBoundary[] elementBoundary) {
-        return IntStream.range(0, elementBoundary.length)
+        ElementEntity[] convertedEntities = new ElementEntity[elementBoundary.length];
+        for (int i = 0; i < elementBoundary.length; i++) {
+            convertedEntities[i] = elementBoundary[i].convertToEntity();
+        }
+        ElementEntity[] elementEntities = this.elementService.
+                store(convertedEntities, getUserRole(adminSmartspace, adminEmail));
+        ElementBoundary[] elementBoundaries = new ElementBoundary[elementEntities.length];
+        for (int i = 0; i < elementEntities.length; i++) {
+            elementBoundaries[i] = new ElementBoundary(elementEntities[i]);
+        }
+        return elementBoundaries;
+
+        /*return IntStream.range(0, elementBoundary.length)
                 .mapToObj(i -> elementBoundary[i].convertToEntity())
                 .map(x -> this.elementService.store(x, getUserRole(adminSmartspace, adminEmail)))
                 .map(ElementBoundary::new)
                 .collect(Collectors.toList())
-                .toArray(new ElementBoundary[0]);
+                .toArray(new ElementBoundary[0]);*/
     }
 
     @Transactional

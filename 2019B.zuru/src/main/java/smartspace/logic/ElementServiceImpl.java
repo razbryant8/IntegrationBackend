@@ -34,16 +34,20 @@ public class ElementServiceImpl implements ElementService {
 
     @Override
     @Transactional
-    public ElementEntity store(ElementEntity elementEntity, UserRole userRole) {
+    public ElementEntity[] store(ElementEntity[] elementEntity, UserRole userRole) {
+        ElementEntity[] elementEntities = new ElementEntity[elementEntity.length];
         if (userRole.equals(UserRole.ADMIN)) {
-            if (validate(elementEntity)) {
-                return this.enhancedElementDao
-                        .upsert(elementEntity);
-            } else {
-                throw new RuntimeException("Invalid element input");
+            for (int i = 0; i < elementEntities.length; i++) {
+                if (validate(elementEntity[i])) {
+                    elementEntities[i] = this.enhancedElementDao
+                            .upsert(elementEntity[i]);
+                } else {
+                    throw new RuntimeException("Invalid element input");
+                }
             }
         } else
             throw new RuntimeException("Unauthorized Operation");
+        return elementEntities;
     }
 
     @Override

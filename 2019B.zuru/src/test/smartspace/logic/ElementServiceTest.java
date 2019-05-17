@@ -125,28 +125,35 @@ public class ElementServiceTest {
     @Test()
     public void checkStoreAsAdmin() {
         // GIVEN Valid Element Entity
-        ElementEntity elementEntity = factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", "test", false, new HashMap<>());
-        elementEntity.setKey("1#anotherTeam");
+        ElementEntity elementEntity1 = factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", "test", false, new HashMap<>());
+        ElementEntity elementEntity2 = factory.createNewElement("name2", "type2", new Location(5, 10), new Date(), "zur@gmail.com", "test", false, new HashMap<>());
+        elementEntity1.setKey("1#anotherTeam");
+        elementEntity2.setKey("2#anotherTeam");
+        ElementEntity[] elementEntities = {elementEntity1, elementEntity2};
 
         // WHEN we store the entity using ElementService Logic as admin
         elementService.
-                store(elementEntity, UserRole.ADMIN);
+                store(elementEntities, UserRole.ADMIN);
 
         // THEN the entity is stored
         List<ElementEntity> entities = this.enhancedDao.readAll();
-        assertEquals(1, entities.size());
-        assertThat(entities).usingElementComparatorOnFields("key").contains(elementEntity);
+        assertEquals(2, entities.size());
+        assertThat(entities).usingElementComparatorOnFields("key").contains(elementEntity1);
+        assertThat(entities).usingElementComparatorOnFields("key").contains(elementEntity2);
     }
 
     @Test(expected = Throwable.class)
     public void checkValidateIllegalSmartSpace() {
         // GIVEN Entity with the current Smartspace
-        ElementEntity elementEntity = factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", "test", false, new HashMap<>());
-        elementEntity.setKey("1#" + this.currentSmartSpace);
+        ElementEntity elementEntity1 = factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", "test", false, new HashMap<>());
+        ElementEntity elementEntity2 = factory.createNewElement("name2", "type2", new Location(5, 4), new Date(), "zur@gmail.com", "test", false, new HashMap<>());
+        elementEntity1.setKey("1#anotherteam" + this.currentSmartSpace);
+        elementEntity2.setKey("2#" + this.currentSmartSpace);
+        ElementEntity[] elementEntities = {elementEntity1, elementEntity2};
 
         // WHEN we store the entity using ElementService Logic As Admin
         elementService.
-                store(elementEntity, UserRole.ADMIN);
+                store(elementEntities, UserRole.ADMIN);
 
         // THEN we expect Exception to be thrown
     }
@@ -156,10 +163,11 @@ public class ElementServiceTest {
         // GIVEN Entity with null more attributes
         ElementEntity elementEntity = factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", "test", false, null);
         elementEntity.setKey("1#" + this.currentSmartSpace);
+        ElementEntity[] elementEntities = {elementEntity};
 
         // WHEN we store the entity using ElementService Logic As Admin
         elementService.
-                store(elementEntity, UserRole.ADMIN);
+                store(elementEntities, UserRole.ADMIN);
 
         // THEN we expect Exception to be thrown
     }
@@ -169,10 +177,12 @@ public class ElementServiceTest {
         // GIVEN Entity with null creatorSmartspace
         ElementEntity elementEntity = factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", null, false, new HashMap<>());
         elementEntity.setKey("1#" + this.currentSmartSpace);
+        ElementEntity[] elementEntities = {elementEntity};
+
 
         // WHEN we store the entity using ElementService LogicAs Admin
         elementService.
-                store(elementEntity, UserRole.ADMIN);
+                store(elementEntities, UserRole.ADMIN);
 
         // THEN we expect Exception to be thrown
     }
@@ -182,9 +192,11 @@ public class ElementServiceTest {
         // GIVEN Entity with bad CreatorMail
         ElementEntity elementEntity = factory.createNewElement("name", "type", new Location(5, 4), new Date(), "      ", "test", false, new HashMap<>());
         elementEntity.setKey("1#" + this.currentSmartSpace);
+        ElementEntity[] elementEntities = {elementEntity};
+
 
         // WHEN we store the entity using ElementService Logic as admin
-        elementService.store(elementEntity, UserRole.ADMIN);
+        elementService.store(elementEntities, UserRole.ADMIN);
 
         // THEN we expect Exception to be thrown
     }
@@ -194,10 +206,12 @@ public class ElementServiceTest {
         // GIVEN Entity with Bad Type
         ElementEntity elementEntity = factory.createNewElement("name", "            ", new Location(5, 4), new Date(), "zur@gmail.com", "test", false, new HashMap<>());
         elementEntity.setKey("1#" + this.currentSmartSpace);
+        ElementEntity[] elementEntities = {elementEntity};
+
 
         // WHEN we store the entity using ElementService Logic as admin
         elementService.
-                store(elementEntity, UserRole.ADMIN);
+                store(elementEntities, UserRole.ADMIN);
 
         // THEN we expect Exception to be thrown
     }
@@ -207,10 +221,12 @@ public class ElementServiceTest {
         // GIVEN Entity with Bad Name
         ElementEntity elementEntity = factory.createNewElement("              ", "type", new Location(5, 4), new Date(), "zur@gmail.com", "test", false, new HashMap<>());
         elementEntity.setKey("1#test");
+        ElementEntity[] elementEntities = {elementEntity};
+
 
         // WHEN we store the entity using ElementService Logic As Admin
         elementService.
-                store(elementEntity, UserRole.ADMIN);
+                store(elementEntities, UserRole.ADMIN);
 
         // THEN we expect Exception to be thrown
     }
@@ -220,10 +236,12 @@ public class ElementServiceTest {
         // GIVEN Entity without location
         ElementEntity elementEntity = factory.createNewElement("name", "type", null, new Date(), "zur@gmail.com", "test", false, new HashMap<>());
         elementEntity.setKey("1#test");
+        ElementEntity[] elementEntities = {elementEntity};
+
 
         // WHEN we store the entity using ElementService Logic AsAdmin
         elementService.
-                store(elementEntity, UserRole.ADMIN);
+                store(elementEntities, UserRole.ADMIN);
 
         // THEN we expect Exception to be thrown
     }
