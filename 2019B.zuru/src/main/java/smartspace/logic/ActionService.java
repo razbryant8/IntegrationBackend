@@ -8,7 +8,7 @@ public interface ActionService {
 
     List<ActionEntity> getAll(int size, int page);
 
-    ActionEntity store(ActionEntity actionEntity);
+    ActionEntity[] store(ActionEntity[] actionEntity);
 
     ActionEntity invoke(ActionEntity actionEntity);
 

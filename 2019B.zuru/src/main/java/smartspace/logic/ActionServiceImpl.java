@@ -8,6 +8,7 @@ import smartspace.dao.EnhancedActionDao;
 import smartspace.dao.EnhancedElementDao;
 import smartspace.data.ActionEntity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -31,13 +32,17 @@ public class ActionServiceImpl implements ActionService {
 
     @Override
     @Transactional
-    public ActionEntity store(ActionEntity actionEntity) {
-        if (validate(actionEntity)) {
-            return this.enhancedActionDao
-                    .upsert(actionEntity);
-        } else {
-            throw new RuntimeException("Invalid action input");
+    public ActionEntity[] store(ActionEntity[] actionEntity) {
+        ActionEntity[]actionEntities = new ActionEntity[actionEntity.length];
+        for (int i = 0; i < actionEntity.length; i++) {
+            if (validate(actionEntity[i])) {
+                actionEntities[i]=(this.enhancedActionDao
+                        .upsert(actionEntity[i]));
+            } else {
+                throw new RuntimeException("Invalid action input");
+            }
         }
+        return actionEntities;
     }
 
     @Override

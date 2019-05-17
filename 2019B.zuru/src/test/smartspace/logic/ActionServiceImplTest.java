@@ -129,11 +129,12 @@ public class ActionServiceImplTest {
         newElement.setKey("5#"+"anotherTeam");
         enhancedElementDao.upsert(newElement);
 
+        ActionEntity[] actionEntities = new ActionEntity[1];
         ActionEntity actionEntity = factory.createNewAction("5#anotherTeam", "anotherTeam", "someType", new Date(), "mark@gmail.com", "anotherTeam", new HashMap<>());
         actionEntity.setKey("1#"+"anotherTeam");
-
+        actionEntities[0] = actionEntity;
         // WHEN we store the entity using ActionService Logic
-        actionService.store(actionEntity);
+        actionService.store(actionEntities);
 
         // THEN the entity is stored
         List<ActionEntity> entities = this.enhancedActionDao.readAll();
@@ -144,11 +145,12 @@ public class ActionServiceImplTest {
     @Test(expected = Throwable.class)
     public void checkValidateIllegalSmartSpace(){
         // GIVEN Entity with the current Smartspace
+        ActionEntity[] actionEntities = new ActionEntity[1];
         ActionEntity actionEntity = enhancedActionDao.create(factory.createNewAction("someID", this.currentSmartSpace, "someType", new Date(), "mark@gmail.com", "zuru.bubu", new HashMap<>()));
         actionEntity.setKey("1#"+this.currentSmartSpace);
-
+        actionEntities[0] = actionEntity;
         // WHEN we store the entity using ActionService Logic
-        actionService.store(actionEntity);
+        actionService.store(actionEntities);
 
         // THEN we expect Exception to be thrown
     }
@@ -156,11 +158,12 @@ public class ActionServiceImplTest {
     @Test(expected = Throwable.class)
     public void checkValidateIllegalMoreAttributes(){
         // GIVEN Entity with null more attributes
+        ActionEntity[] actionEntities = new ActionEntity[1];
         ActionEntity actionEntity = enhancedActionDao.create(factory.createNewAction("someID", this.currentSmartSpace, "someType", new Date(), "mark@gmail.com", "zuru.bubu", null));
         actionEntity.setKey("1#"+this.currentSmartSpace);
-
+        actionEntities[0] = actionEntity;
         // WHEN we store the entity using ActionService Logic
-        actionService.store(actionEntity);
+        actionService.store(actionEntities);
 
         // THEN we expect Exception to be thrown
     }
@@ -168,11 +171,13 @@ public class ActionServiceImplTest {
     @Test(expected = Throwable.class)
     public void checkValidateIllegalEmail(){
         // GIVEN Entity with null Email
+        ActionEntity[] actionEntities = new ActionEntity[1];
         ActionEntity actionEntity = enhancedActionDao.create(factory.createNewAction("someID", this.currentSmartSpace, "someType", new Date(), null, "zuru.bubu", new HashMap<>()));
         actionEntity.setKey("1#"+this.currentSmartSpace);
+        actionEntities[0] = actionEntity;
 
         // WHEN we store the entity using ActionService Logic
-        actionService.store(actionEntity);
+        actionService.store(actionEntities);
 
         // THEN we expect Exception to be thrown
     }
@@ -180,11 +185,12 @@ public class ActionServiceImplTest {
     @Test(expected = Throwable.class)
     public void checkValidateIllegalActionType(){
         // GIVEN Entity with null action type
+        ActionEntity[] actionEntities = new ActionEntity[1];
         ActionEntity actionEntity = enhancedActionDao.create(factory.createNewAction("someID", this.currentSmartSpace, null, new Date(), "mark@gmail.com", "zuru.bubu", new HashMap<>()));
         actionEntity.setKey("1#"+this.currentSmartSpace);
-
+        actionEntities[0] = actionEntity;
         // WHEN we store the entity using ActionService Logic
-        actionService.store(actionEntity);
+        actionService.store(actionEntities);
 
         // THEN we expect Exception to be thrown
     }
@@ -192,11 +198,12 @@ public class ActionServiceImplTest {
     @Test(expected = Throwable.class)
     public void checkValidateIllegalPlayerSmartSpace(){
         // GIVEN Entity with null player smartSpace
+        ActionEntity[] actionEntities = new ActionEntity[1];
         ActionEntity actionEntity = enhancedActionDao.create(factory.createNewAction("someID", this.currentSmartSpace, "someType", new Date(), "mark@gmail.com", null, new HashMap<>()));
         actionEntity.setKey("1#"+this.currentSmartSpace);
-
+        actionEntities[0] = actionEntity;
         // WHEN we store the entity using ActionService Logic
-        actionService.store(actionEntity);
+        actionService.store(actionEntities);
 
         // THEN we expect Exception to be thrown
     }
@@ -204,11 +211,12 @@ public class ActionServiceImplTest {
     @Test(expected = Throwable.class)
     public void checkValidateIllegalActionSmartSpace(){
         // GIVEN Entity with null action smartSpace
+        ActionEntity[] actionEntities = new ActionEntity[1];
         ActionEntity actionEntity = enhancedActionDao.create(factory.createNewAction("someID", this.currentSmartSpace, "someType", new Date(), "mark@gmail.com", this.currentSmartSpace, new HashMap<>()));
         actionEntity.setKey("1#"+null);
-
+        actionEntities[0] = actionEntity;
         // WHEN we store the entity using ActionService Logic
-        actionService.store(actionEntity);
+        actionService.store(actionEntities);
 
         // THEN we expect Exception to be thrown
     }
@@ -216,11 +224,12 @@ public class ActionServiceImplTest {
     @Test(expected = Throwable.class)
     public void checkValidateIllegalElementSmartSpace(){
         // GIVEN Entity with null element smartSpace
+        ActionEntity[] actionEntities = new ActionEntity[1];
         ActionEntity actionEntity = enhancedActionDao.create(factory.createNewAction("someID", null, "someType", new Date(), "mark@gmail.com", this.currentSmartSpace, new HashMap<>()));
         actionEntity.setKey("1#"+this.currentSmartSpace);
-
+        actionEntities[0] = actionEntity;
         // WHEN we store the entity using ActionService Logic
-        actionService.store(actionEntity);
+        actionService.store(actionEntities);
 
         // THEN we expect Exception to be thrown
     }
@@ -228,11 +237,12 @@ public class ActionServiceImplTest {
     @Test(expected = Throwable.class)
     public void checkValidateIllegalActionID(){
         // GIVEN Entity with null action ID
+        ActionEntity[] actionEntities = new ActionEntity[1];
         ActionEntity actionEntity = enhancedActionDao.create(factory.createNewAction("someID", this.currentSmartSpace, "someType", new Date(), "mark@gmail.com", this.currentSmartSpace, new HashMap<>()));
         actionEntity.setKey(null + this.currentSmartSpace);
-
+        actionEntities[0] = actionEntity;
         // WHEN we store the entity using ActionService Logic
-        actionService.store(actionEntity);
+        actionService.store(actionEntities);
 
         // THEN we expect Exception to be thrown
     }
@@ -240,11 +250,12 @@ public class ActionServiceImplTest {
     @Test(expected = Throwable.class)
     public void checkValidateIllegalElementID(){
         // GIVEN Entity with null Element ID
+        ActionEntity[] actionEntities = new ActionEntity[1];
         ActionEntity actionEntity = enhancedActionDao.create(factory.createNewAction(null, this.currentSmartSpace, "someType", new Date(), "mark@gmail.com", this.currentSmartSpace, new HashMap<>()));
         actionEntity.setKey("1#"+this.currentSmartSpace);
-
+        actionEntities[0] = actionEntity;
         // WHEN we store the entity using ActionService Logic
-        actionService.store(actionEntity);
+        actionService.store(actionEntities);
 
         // THEN we expect Exception to be thrown
     }
