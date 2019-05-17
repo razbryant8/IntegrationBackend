@@ -37,7 +37,7 @@ public class ElementServiceTest {
 
     private String currentSmartSpace;
 
-    @Value("${spring.application.name}")
+    @Value("${spring.smartspace.name}")
     public void setCurrentSmartSpace(String currentSmartSpace) {
         this.currentSmartSpace = currentSmartSpace;
     }
@@ -465,7 +465,7 @@ public class ElementServiceTest {
         ElementEntity elementEntity3 = enhancedDao.create(factory.createNewElement("name", "type", new Location(450, 45), new Date(), null, null, false, new HashMap<>()));
 
         // WHEN we try to get them as a user.
-        List<ElementEntity> entities = elementService.getAllElements(3, 0,UserRole.PLAYER);
+        List<ElementEntity> entities = elementService.getAllElements(3, 0, UserRole.PLAYER);
 
         // THEN we expect to have only the second and third elements.
         assertThat(entities).hasSize(2);
@@ -481,7 +481,7 @@ public class ElementServiceTest {
         ElementEntity elementEntity3 = enhancedDao.create(factory.createNewElement("name", "type", new Location(450, 45), new Date(), null, null, false, new HashMap<>()));
 
         // WHEN we try to get them as a user.
-        List<ElementEntity> entities = elementService.getAllElements(3, 0,UserRole.MANAGER);
+        List<ElementEntity> entities = elementService.getAllElements(3, 0, UserRole.MANAGER);
 
         // THEN we expect to have all 3
         assertThat(entities).hasSize(3);
@@ -498,7 +498,7 @@ public class ElementServiceTest {
         ElementEntity elementEntity3 = enhancedDao.create(factory.createNewElement("name", "type", new Location(450, 45), new Date(), null, null, false, new HashMap<>()));
 
         // WHEN we try to get them as a user.
-        List<ElementEntity> entities = elementService.getAllElements(3, 0,null);
+        List<ElementEntity> entities = elementService.getAllElements(3, 0, null);
 
         // THEN we expect to have all 3
         assertThat(entities).hasSize(3);
@@ -506,6 +506,7 @@ public class ElementServiceTest {
         assertThat(entities).usingElementComparatorOnFields("key").contains(elementEntity2);
         assertThat(entities).usingElementComparatorOnFields("key").contains(elementEntity3);
     }
+
     @Test
     public void testUpdateElementAsManager() {
         // GIVEN we have an element in db
@@ -514,7 +515,7 @@ public class ElementServiceTest {
         elementEntity1.setName("Omri");
 
         // WHEN we update that element
-        elementService.update(elementEntity1,result.getElementId(),result.getElementSmartspace() ,UserRole.MANAGER);
+        elementService.update(elementEntity1, result.getElementId(), result.getElementSmartspace(), UserRole.MANAGER);
 
         // THEN we expect one element to be updated
         int size = 5;
@@ -533,7 +534,7 @@ public class ElementServiceTest {
         elementEntity1.setName("Omri");
 
         // WHEN we update that element
-        elementService.update(elementEntity1,result.getElementId(),result.getElementSmartspace() ,UserRole.PLAYER);
+        elementService.update(elementEntity1, result.getElementId(), result.getElementSmartspace(), UserRole.PLAYER);
 
         // THEN we expect Exception to be thrown
     }

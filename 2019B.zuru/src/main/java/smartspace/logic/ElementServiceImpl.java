@@ -123,8 +123,8 @@ public class ElementServiceImpl implements ElementService {
                     .filter(elementEntity -> !elementEntity.isExpired())
                     .collect(Collectors.toList());
         } else if (userRole.equals(UserRole.MANAGER)) {
-                return this.enhancedElementDao
-                        .getAllElementsByLocation(size, page, x, y, distance, "creationTimestamp");
+            return this.enhancedElementDao
+                    .getAllElementsByLocation(size, page, x, y, distance, "creationTimestamp");
         } else {
             throw new ElementNotFoundException("Unauthorized operation");
         }
@@ -190,7 +190,7 @@ public class ElementServiceImpl implements ElementService {
                 !elementEntity.getCreatorSmartspace().trim().isEmpty();
     }
 
-    @Value("${spring.application.name}")
+    @Value("${spring.smartspace.name}")
     public void setSmartspace(String smartspace) {
         this.smartspace = smartspace;
     }

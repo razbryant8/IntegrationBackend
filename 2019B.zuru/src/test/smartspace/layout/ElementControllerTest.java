@@ -69,7 +69,7 @@ public class ElementControllerTest {
         this.port = port;
     }
 
-    @Value("${spring.application.name}")
+    @Value("${spring.smartspace.name}")
     public void setCurrentSmartspace(String currentSmartspace) {
         this.currentSmartspace = currentSmartspace;
     }
@@ -728,7 +728,7 @@ public class ElementControllerTest {
         ElementBoundary[] result = this.restTemplate
                 .getForObject(
                         this.baseUrl + this.relativeURL + playerUser.getUserSmartspace() + "/" + playerUser.getUserEmail() +
-                        "?search={search}&x={x}&y={y}&distance={distance}&page={page}&size={size}",
+                                "?search={search}&x={x}&y={y}&distance={distance}&page={page}&size={size}",
                         ElementBoundary[].class,
                         search, x, y, distance, page, size);
 
@@ -853,6 +853,7 @@ public class ElementControllerTest {
         assertThat(result).usingElementComparatorOnFields("key").contains(new ElementBoundary(elementEntity4));
         assertThat(result).usingElementComparatorOnFields("key").contains(new ElementBoundary(elementEntity5));
     }
+
     @Test
     public void testUpdateElement() {
         // GIVEN the database contain one Admin user, one Manager User and one Player and one element exists on db
@@ -876,7 +877,7 @@ public class ElementControllerTest {
         // WHEN I update the element As Manager
         actualResult.setName("Omri");
 
-        this.restTemplate.put(this.baseUrl + this.relativeURL + managerUser.getUserSmartspace() + "/" + managerUser.getUserEmail()+ "/" +actualResult.getKey().getSmartspace() + "/" + actualResult.getKey().getId(),
+        this.restTemplate.put(this.baseUrl + this.relativeURL + managerUser.getUserSmartspace() + "/" + managerUser.getUserEmail() + "/" + actualResult.getKey().getSmartspace() + "/" + actualResult.getKey().getId(),
                 actualResult);
 
 
@@ -887,8 +888,8 @@ public class ElementControllerTest {
                                 this.baseUrl + this.adminURL + this.relativeURL + adminUser.getUserSmartspace() + "/" + adminUser.getUserEmail(),
                                 ElementBoundary[].class);
 
-        assertEquals(1,result.length);
-        assertEquals("Omri",result[0].getName());
+        assertEquals(1, result.length);
+        assertEquals("Omri", result[0].getName());
     }
 
     @Test(expected = Throwable.class)
@@ -914,7 +915,7 @@ public class ElementControllerTest {
         // WHEN I update the element As Manager
         actualResult.setName("Omri");
 
-        this.restTemplate.put(this.baseUrl + this.relativeURL + managerUser.getUserSmartspace() + "/" + managerUser.getUserEmail()+ "/" +"stamsmartspace" + "/" + actualResult.getKey().getId(),
+        this.restTemplate.put(this.baseUrl + this.relativeURL + managerUser.getUserSmartspace() + "/" + managerUser.getUserEmail() + "/" + "stamsmartspace" + "/" + actualResult.getKey().getId(),
                 actualResult);
 
 

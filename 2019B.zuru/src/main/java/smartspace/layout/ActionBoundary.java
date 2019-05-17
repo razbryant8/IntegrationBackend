@@ -14,7 +14,8 @@ public class ActionBoundary {
     private UserKeyType player;
     private Map<String, Object> properties;
 
-    public ActionBoundary() { }
+    public ActionBoundary() {
+    }
 
     public ActionBoundary(ActionEntity actionEntity) {
         this.actionKey = new KeyType(actionEntity.getActionId(), actionEntity.getActionSmartspace());
@@ -103,7 +104,7 @@ public class ActionBoundary {
         }
 
         entity.setMoreAttributes(this.properties);
-        
+
         return entity;
     }
 }

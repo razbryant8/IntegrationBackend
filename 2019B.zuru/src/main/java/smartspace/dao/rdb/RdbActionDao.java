@@ -47,7 +47,7 @@ public class RdbActionDao implements EnhancedActionDao {
         this.actionCrud.deleteAll();
     }
 
-    @Value("${spring.application.name}")
+    @Value("${spring.smartspace.name}")
     public void setSmartspace(String smartspace) {
         this.smartspace = smartspace;
     }

@@ -28,7 +28,7 @@ public class RdbUserDaoTest {
 
     private String smartspace;
 
-    @Value("${spring.application.name}")
+    @Value("${spring.smartspace.name}")
     public void setSmartspace(String smartspace) {
         this.smartspace = smartspace;
     }

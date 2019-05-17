@@ -43,7 +43,7 @@ public class ActionServiceImplTest {
         this.enhancedElementDao = enhancedElementDao;
     }
 
-    @Value("${spring.application.name}")
+    @Value("${spring.smartspace.name}")
     public void setCurrentSmartSpace(String currentSmartSpace) {
         this.currentSmartSpace = currentSmartSpace;
 
@@ -82,29 +82,29 @@ public class ActionServiceImplTest {
         // WHEN getAll elements in an empty page
         int size = 5;
         int page = 1;
-        List<ActionEntity> actionEntities = actionService.getAll(size,page);
+        List<ActionEntity> actionEntities = actionService.getAll(size, page);
 
         // THEN the List is empty
-        assertEquals(0,actionEntities.size());
+        assertEquals(0, actionEntities.size());
     }
 
     @Test()
-    public void checkGetAllInPageWithOneAction(){
+    public void checkGetAllInPageWithOneAction() {
         // GIVEN The database contains one element
         ActionEntity actionEntity = enhancedActionDao.create(factory.createNewAction("someID", "smartspace", null, null, null, null, null));
 
         // WHEN getAll elements in the first page
         int size = 5;
         int page = 0;
-        List<ActionEntity> actionEntities = actionService.getAll(size,page);
+        List<ActionEntity> actionEntities = actionService.getAll(size, page);
 
         // THEN the List contains exactly one element
-        assertEquals(1,actionEntities.size());
+        assertEquals(1, actionEntities.size());
         assertThat(actionEntities).usingElementComparatorOnFields("key").contains(actionEntity);
     }
 
     @Test()
-    public void checkGetAllInPageWithThreeActions(){
+    public void checkGetAllInPageWithThreeActions() {
         // GIVEN The database contains one element
         ActionEntity actionEntity1 = enhancedActionDao.create(factory.createNewAction("someID1", "smartspace", null, new Date(), "mark@gmail.com", "smartspace.zur", new HashMap<>()));
         ActionEntity actionEntity2 = enhancedActionDao.create(factory.createNewAction("someID2", "smartspace", null, new Date(), "mark@gmail.com", "smartspace.zur", new HashMap<>()));
@@ -113,20 +113,20 @@ public class ActionServiceImplTest {
         // WHEN getAll elements in an empty page
         int size = 5;
         int page = 0;
-        List<ActionEntity> actionEntities = actionService.getAll(size,page);
+        List<ActionEntity> actionEntities = actionService.getAll(size, page);
 
         // THEN the List contains exactly the three created elements
-        assertEquals(3,actionEntities.size());
+        assertEquals(3, actionEntities.size());
         assertThat(actionEntities).usingElementComparatorOnFields("key").contains(actionEntity1);
         assertThat(actionEntities).usingElementComparatorOnFields("key").contains(actionEntity2);
         assertThat(actionEntities).usingElementComparatorOnFields("key").contains(actionEntity3);
     }
 
     @Test()
-    public void checkStore(){
+    public void checkStore() {
         // GIVEN Valid Element Entity exists on db
         ElementEntity newElement = factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", "test", false, new HashMap<>());
-        newElement.setKey("5#"+"anotherTeam");
+        newElement.setKey("5#" + "anotherTeam");
         enhancedElementDao.upsert(newElement);
 
         ActionEntity[] actionEntities = new ActionEntity[1];
@@ -138,12 +138,12 @@ public class ActionServiceImplTest {
 
         // THEN the entity is stored
         List<ActionEntity> entities = this.enhancedActionDao.readAll();
-        assertEquals(1,entities.size());
+        assertEquals(1, entities.size());
         assertThat(entities).usingElementComparatorOnFields("key").contains(actionEntity);
     }
 
     @Test(expected = Throwable.class)
-    public void checkValidateIllegalSmartSpace(){
+    public void checkValidateIllegalSmartSpace() {
         // GIVEN Entity with the current Smartspace
         ActionEntity[] actionEntities = new ActionEntity[1];
         ActionEntity actionEntity = enhancedActionDao.create(factory.createNewAction("someID", this.currentSmartSpace, "someType", new Date(), "mark@gmail.com", "zuru.bubu", new HashMap<>()));
@@ -156,7 +156,7 @@ public class ActionServiceImplTest {
     }
 
     @Test(expected = Throwable.class)
-    public void checkValidateIllegalMoreAttributes(){
+    public void checkValidateIllegalMoreAttributes() {
         // GIVEN Entity with null more attributes
         ActionEntity[] actionEntities = new ActionEntity[1];
         ActionEntity actionEntity = enhancedActionDao.create(factory.createNewAction("someID", this.currentSmartSpace, "someType", new Date(), "mark@gmail.com", "zuru.bubu", null));
@@ -169,7 +169,7 @@ public class ActionServiceImplTest {
     }
 
     @Test(expected = Throwable.class)
-    public void checkValidateIllegalEmail(){
+    public void checkValidateIllegalEmail() {
         // GIVEN Entity with null Email
         ActionEntity[] actionEntities = new ActionEntity[1];
         ActionEntity actionEntity = enhancedActionDao.create(factory.createNewAction("someID", this.currentSmartSpace, "someType", new Date(), null, "zuru.bubu", new HashMap<>()));
@@ -183,7 +183,7 @@ public class ActionServiceImplTest {
     }
 
     @Test(expected = Throwable.class)
-    public void checkValidateIllegalActionType(){
+    public void checkValidateIllegalActionType() {
         // GIVEN Entity with null action type
         ActionEntity[] actionEntities = new ActionEntity[1];
         ActionEntity actionEntity = enhancedActionDao.create(factory.createNewAction("someID", this.currentSmartSpace, null, new Date(), "mark@gmail.com", "zuru.bubu", new HashMap<>()));
@@ -196,7 +196,7 @@ public class ActionServiceImplTest {
     }
 
     @Test(expected = Throwable.class)
-    public void checkValidateIllegalPlayerSmartSpace(){
+    public void checkValidateIllegalPlayerSmartSpace() {
         // GIVEN Entity with null player smartSpace
         ActionEntity[] actionEntities = new ActionEntity[1];
         ActionEntity actionEntity = enhancedActionDao.create(factory.createNewAction("someID", this.currentSmartSpace, "someType", new Date(), "mark@gmail.com", null, new HashMap<>()));
@@ -209,7 +209,7 @@ public class ActionServiceImplTest {
     }
 
     @Test(expected = Throwable.class)
-    public void checkValidateIllegalActionSmartSpace(){
+    public void checkValidateIllegalActionSmartSpace() {
         // GIVEN Entity with null action smartSpace
         ActionEntity[] actionEntities = new ActionEntity[1];
         ActionEntity actionEntity = enhancedActionDao.create(factory.createNewAction("someID", this.currentSmartSpace, "someType", new Date(), "mark@gmail.com", this.currentSmartSpace, new HashMap<>()));
@@ -222,7 +222,7 @@ public class ActionServiceImplTest {
     }
 
     @Test(expected = Throwable.class)
-    public void checkValidateIllegalElementSmartSpace(){
+    public void checkValidateIllegalElementSmartSpace() {
         // GIVEN Entity with null element smartSpace
         ActionEntity[] actionEntities = new ActionEntity[1];
         ActionEntity actionEntity = enhancedActionDao.create(factory.createNewAction("someID", null, "someType", new Date(), "mark@gmail.com", this.currentSmartSpace, new HashMap<>()));
@@ -235,7 +235,7 @@ public class ActionServiceImplTest {
     }
 
     @Test(expected = Throwable.class)
-    public void checkValidateIllegalActionID(){
+    public void checkValidateIllegalActionID() {
         // GIVEN Entity with null action ID
         ActionEntity[] actionEntities = new ActionEntity[1];
         ActionEntity actionEntity = enhancedActionDao.create(factory.createNewAction("someID", this.currentSmartSpace, "someType", new Date(), "mark@gmail.com", this.currentSmartSpace, new HashMap<>()));
@@ -248,7 +248,7 @@ public class ActionServiceImplTest {
     }
 
     @Test(expected = Throwable.class)
-    public void checkValidateIllegalElementID(){
+    public void checkValidateIllegalElementID() {
         // GIVEN Entity with null Element ID
         ActionEntity[] actionEntities = new ActionEntity[1];
         ActionEntity actionEntity = enhancedActionDao.create(factory.createNewAction(null, this.currentSmartSpace, "someType", new Date(), "mark@gmail.com", this.currentSmartSpace, new HashMap<>()));
@@ -261,10 +261,10 @@ public class ActionServiceImplTest {
     }
 
     @Test()
-    public void checkInvoke(){
+    public void checkInvoke() {
         // GIVEN Valid Element Entity exists on db
         ElementEntity newElement = factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", "test", false, new HashMap<>());
-        newElement.setKey("5#"+"anotherTeam");
+        newElement.setKey("5#" + "anotherTeam");
         enhancedElementDao.upsert(newElement);
 
         ActionEntity actionEntity = factory.createNewAction("5#anotherTeam", "anotherTeam", "someType", new Date(), "mark@gmail.com", "anotherTeam", new HashMap<>());
@@ -274,16 +274,16 @@ public class ActionServiceImplTest {
 
         // THEN the entity is created with a generated action key
         List<ActionEntity> entities = this.enhancedActionDao.readAll();
-        assertEquals(1,entities.size());
-        assertEquals("1",entities.get(0).getActionId());
+        assertEquals(1, entities.size());
+        assertEquals("1", entities.get(0).getActionId());
     }
 
 
     @Test(expected = Throwable.class)
-    public void checkIllegalInvoke(){
+    public void checkIllegalInvoke() {
         // GIVEN Valid Element Entity exists on db
         ElementEntity newElement = factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", "test", false, new HashMap<>());
-        newElement.setKey("5#"+"anotherTeam");
+        newElement.setKey("5#" + "anotherTeam");
         enhancedElementDao.upsert(newElement);
 
         ActionEntity actionEntity = factory.createNewAction("4#anotherTeam", "anotherTeam", "someType", new Date(), "mark@gmail.com", "anotherTeam", new HashMap<>());
