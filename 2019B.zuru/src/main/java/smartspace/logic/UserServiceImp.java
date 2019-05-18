@@ -35,6 +35,7 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
+    @Transactional
     public UserEntity[] store(UserEntity[] users) {
         UserEntity[] usersEntities = new UserEntity[users.length];
         for(int i=0; i<usersEntities.length;i++) {
