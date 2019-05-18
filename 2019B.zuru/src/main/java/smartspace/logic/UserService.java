@@ -9,7 +9,7 @@ public interface UserService {
 
     public List<UserEntity> getAll(int size, int page);
 
-    public UserEntity store(UserEntity user);
+    public UserEntity[] store(UserEntity[] users);
 
     public Optional<UserEntity> getUserByKey(String key);
 

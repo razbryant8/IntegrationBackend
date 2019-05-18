@@ -116,11 +116,13 @@ public class UserServiceTests {
         // GIVEN Valid User Entity
         String mail = "mail1";
         String smartspace = "smart1";
+        UserEntity[] userEntities = new UserEntity[1];
         UserEntity userEntity = entityFactory.createNewUser(mail, smartspace,
                 "user1", "ava1", UserRole.ADMIN, 100);
         String userEntityId = userEntity.getKey();
+        userEntities[0] = userEntity;
         // WHEN we store the user using UserService Logic
-        userService.store(userEntity);
+        userService.store(userEntities);
 
         // THEN the user entity is stored
         Optional<UserEntity> expectedUserEntity = this.enhancedUserDao.readById(userEntityId);
@@ -131,18 +133,17 @@ public class UserServiceTests {
     @Test()
     public void checkMultipyUsersStoreByAmount() {
 
-        // GIVEN Valid User Entity
-        UserEntity userEntity1 = entityFactory.createNewUser("mail1", "smart1",
+        // GIVEN Valid User
+        UserEntity[] userEntities = new UserEntity[3];
+        userEntities[0] = entityFactory.createNewUser("mail1", "smart1",
                 "user1", "ava1", UserRole.ADMIN, 100);
-        UserEntity userEntity2 = entityFactory.createNewUser("mail2", "smart2",
+        userEntities[1] = entityFactory.createNewUser("mail2", "smart2",
                 "user2", "ava2", UserRole.ADMIN, 200);
-        UserEntity userEntity3 = entityFactory.createNewUser("mail3", "smart3",
+        userEntities[2] = entityFactory.createNewUser("mail3", "smart3",
                 "user3", "ava3", UserRole.ADMIN, 300);
 
         // WHEN we store the users using UserService Logic
-        userService.store(userEntity1);
-        userService.store(userEntity2);
-        userService.store(userEntity3);
+        userService.store(userEntities);
 
         // THEN the amount od user entities is stored
 
@@ -157,11 +158,12 @@ public class UserServiceTests {
     @Test(expected = Throwable.class)
     public void checkValidateIlligalUserSmartspace() {
         // GIVEN Valid User Entity from this project
-        UserEntity userEntity = entityFactory.createNewUser("mail1", "2019b.zuru",
+        UserEntity[] userEntities = new UserEntity[1];
+        userEntities[0] = entityFactory.createNewUser("mail1", "2019b.zuru",
                 "user1", "ava1", UserRole.ADMIN, 100);
 
         // WHEN we store the user entity using UserService Logic
-        userService.store(userEntity);
+        userService.store(userEntities);
 
         // THEN we expect Exception to be thrown because is the same smartspace that in our project
 
@@ -170,11 +172,13 @@ public class UserServiceTests {
     @Test(expected = Throwable.class)
     public void checkValidateIlligalNotAdminUserRole() {
         // GIVEN Valid User Entity from this project
-        UserEntity userEntity = entityFactory.createNewUser("mail1", "2019b.zuru",
+        UserEntity[] userEntities = new UserEntity[1];
+
+        userEntities[0] = entityFactory.createNewUser("mail1", "2019b.zuru",
                 "user1", "ava1", UserRole.MANAGER, 100);
 
         // WHEN we store the user entity using UserService Logic
-        userService.store(userEntity);
+        userService.store(userEntities);
 
         // THEN we expect Exception to be thrown because is the not a admin
 
@@ -183,11 +187,12 @@ public class UserServiceTests {
     @Test(expected = Throwable.class)
     public void checkValidateIlligalNullserRole() {
         // GIVEN Valid User Entity from this project
-        UserEntity userEntity = entityFactory.createNewUser("mail1", "2019b.zuru",
+        UserEntity[] userEntities = new UserEntity[1];
+        userEntities[0] = entityFactory.createNewUser("mail1", "2019b.zuru",
                 "user1", "ava1", null, 100);
 
         // WHEN we store the user entity using UserService Logic
-        userService.store(userEntity);
+        userService.store(userEntities);
 
         // THEN we expect Exception to be thrown because is the not a admin
 
@@ -196,11 +201,12 @@ public class UserServiceTests {
     @Test(expected = Throwable.class)
     public void checkValidateIlligalEmptyUsername() {
         // GIVEN Valid User Entity from this project
-        UserEntity userEntity = entityFactory.createNewUser("mail1", "2019b.zuru",
+        UserEntity[] userEntities = new UserEntity[1];
+        userEntities[0] = entityFactory.createNewUser("mail1", "2019b.zuru",
                 "", "ava1", UserRole.ADMIN, 100);
 
         // WHEN we store the user entity using UserService Logic
-        userService.store(userEntity);
+        userService.store(userEntities);
 
         // THEN we expect Exception to be thrown because is the not a admin
 
@@ -209,11 +215,13 @@ public class UserServiceTests {
     @Test(expected = Throwable.class)
     public void checkValidateIlligalSpacesAvatar() {
         // GIVEN Valid User Entity from this project
-        UserEntity userEntity = entityFactory.createNewUser("mail1", "2019b.zuru",
+        UserEntity[] userEntities = new UserEntity[1];
+
+        userEntities[0] = entityFactory.createNewUser("mail1", "2019b.zuru",
                 "user1", "      ", UserRole.ADMIN, 100);
 
         // WHEN we store the user entity using UserService Logic
-        userService.store(userEntity);
+        userService.store(userEntities);
 
         // THEN we expect Exception to be thrown because is the not a admin
 
@@ -222,11 +230,13 @@ public class UserServiceTests {
     @Test(expected = Throwable.class)
     public void checkValidateIlligalNegetivePoints() {
         // GIVEN Valid User Entity from this project
-        UserEntity userEntity = entityFactory.createNewUser("mail1", "2019b.zuru",
+        UserEntity[] userEntities = new UserEntity[1];
+
+        userEntities[0] = entityFactory.createNewUser("mail1", "2019b.zuru",
                 "user1", ":-}", UserRole.ADMIN, -550);
 
         // WHEN we store the user entity using UserService Logic
-        userService.store(userEntity);
+        userService.store(userEntities);
 
         // THEN we expect Exception to be thrown because is the not a admin
 

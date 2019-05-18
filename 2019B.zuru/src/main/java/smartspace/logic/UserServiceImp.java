@@ -35,14 +35,18 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public UserEntity store(UserEntity user) {
-        if (validate(user)) {
-            return this.userDao
-                    .upsert(user);
-        } else {
-            throw new RuntimeException("Invalid user input");
+    public UserEntity[] store(UserEntity[] users) {
+        UserEntity[] usersEntities = new UserEntity[users.length];
+        for(int i=0; i<usersEntities.length;i++) {
+            if (validate(users[i])) {
+                usersEntities[i] =  this.userDao.upsert(users[i]);
+            } else {
+                throw new RuntimeException("Invalid user input");
+            }
         }
+        return usersEntities;
     }
+
 
     @Override
     @Transactional(readOnly = true)
@@ -103,14 +107,15 @@ public class UserServiceImp implements UserService {
     // maybe we need to add AOP annotation to this code
     public void update(String userSmartspace, String userEmail, UserEntity updateDetails) {
         Optional<UserEntity> ifExcistUser = getUserByMailAndSmartSpace(userEmail, userSmartspace);
-        if (ifExcistUser.isPresent()) {
+        Optional<UserEntity> userToUpdate = getUserByMailAndSmartSpace(updateDetails.getUserEmail(), updateDetails.getUserSmartspace());
+        if (ifExcistUser.isPresent() && userToUpdate.isPresent()) {
             UserEntity needToUpdateUserEntity = new UserEntity();
 
             needToUpdateUserEntity.setKey(updateDetails.getKey());
             needToUpdateUserEntity.setUsername(updateDetails.getUsername());
             needToUpdateUserEntity.setAvatar(updateDetails.getAvatar());
             needToUpdateUserEntity.setRole(updateDetails.getRole());
-            needToUpdateUserEntity.setPoints(ifExcistUser.get().getPoints());
+            needToUpdateUserEntity.setPoints(userToUpdate.get().getPoints());
 
             this.userDao.update(needToUpdateUserEntity);
         } else throw new UserNotFoundException();

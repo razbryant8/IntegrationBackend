@@ -45,7 +45,7 @@ public class UserController {
             throw new RuntimeException("Unauthorized operation");
 
     }
-
+/*
     @Transactional
     @RequestMapping(
             method = RequestMethod.POST,
@@ -67,7 +67,33 @@ public class UserController {
             throw new RuntimeException("Unauthorized operation");
 
     }
+*/
 
+    @Transactional
+    @RequestMapping(
+            method = RequestMethod.POST,
+            path = "/smartspace/admin/users/{adminSmartspace}/{adminEmail}",
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    public UserBoundary[] store(
+            @PathVariable("adminSmartspace") String adminSmartspace,
+            @PathVariable("adminEmail") String adminEmail,
+            @RequestBody UserBoundary[] users) {
+        if (validate(adminSmartspace, adminEmail)) {
+            UserEntity[] convertedUserEntities = new UserEntity[users.length];
+            for (int i = 0; i < users.length; i++)
+                convertedUserEntities[i] = users[i].convertToEntity();
+            UserEntity[] usersEntities = this.userService.store(convertedUserEntities);
+
+            UserBoundary[] usersBoundary = new UserBoundary[usersEntities.length];
+            for (int i = 0; i < usersEntities.length; i++)
+                usersBoundary[i] = new UserBoundary(usersEntities[i]);
+
+            return usersBoundary;
+        }
+        else
+            throw new RuntimeException("Unauthorized operation");
+    }
 
     @Transactional
     @RequestMapping(
