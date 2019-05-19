@@ -35,7 +35,7 @@ public class ActionController {
             @PathVariable("adminEmail") String adminEmail,
             @RequestParam(name = "size", required = false, defaultValue = "10") int size,
             @RequestParam(name = "page", required = false, defaultValue = "0") int page) {
-        if (validate(adminSmartspace, adminEmail)) {
+        if (validateAdmin(adminSmartspace, adminEmail)) {
             return this.actionService
                     .getAll(size, page)
                     .stream()
@@ -55,7 +55,7 @@ public class ActionController {
             @PathVariable("adminSmartspace") String adminSmartspace,
             @PathVariable("adminEmail") String adminEmail,
             @RequestBody ActionBoundary[] actionBoundary) {
-        if (validate(adminSmartspace, adminEmail)) {
+        if (validateAdmin(adminSmartspace, adminEmail)) {
             ActionEntity[] convertedEntities = new ActionEntity[actionBoundary.length];
             for (int i = 0; i <actionBoundary.length ; i++) {
                 convertedEntities[i] = actionBoundary[i].convertToEntity();
@@ -78,13 +78,20 @@ public class ActionController {
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     public ActionBoundary invoke(@RequestBody ActionBoundary actionBoundary) {
-        return new ActionBoundary(this.actionService.invoke(actionBoundary.convertToEntity()));
+        UserKeyType player = actionBoundary.getPlayer();
+        if (validatePlayer(player.getSmartspace(),player.getEmail()))
+            return new ActionBoundary(this.actionService.invoke(actionBoundary.convertToEntity()));
+        else
+            throw new RuntimeException("Unauthorized operation");
     }
 
-    private boolean validate(String adminSmartspace, String adminEmail) {
+    private boolean validateAdmin(String adminSmartspace, String adminEmail) {
         Optional<UserEntity> dbUser = userService.getUserByMailAndSmartSpace(adminEmail, adminSmartspace);
-        if (dbUser.isPresent() && dbUser.get().getRole().equals(UserRole.ADMIN))
-            return true;
-        return false;
+        return dbUser.isPresent() && dbUser.get().getRole().equals(UserRole.ADMIN);
+    }
+
+    private boolean validatePlayer(String playerSmartspace, String playerEmail) {
+        Optional<UserEntity> dbUser = userService.getUserByMailAndSmartSpace(playerEmail, playerSmartspace);
+        return dbUser.isPresent() && dbUser.get().getRole().equals(UserRole.PLAYER);
     }
 }

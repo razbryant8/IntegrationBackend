@@ -55,6 +55,8 @@ public class ActionControllerTest {
 
     private UserEntity adminUser;
 
+    private UserEntity playerUser;
+
     private String mySmartspace;
 
 
@@ -99,6 +101,7 @@ public class ActionControllerTest {
     @Before
     public void setUp() {
         adminUser = enhancedUserDao.create(entityFactory.createNewUser("omri@gmail.com", mySmartspace, "omri", ":D", UserRole.ADMIN, 10));
+        playerUser = enhancedUserDao.create(entityFactory.createNewUser("player@gmail.com", mySmartspace, "Zur", "haha", UserRole.PLAYER, 0));
     }
 
     @After
@@ -313,8 +316,7 @@ public class ActionControllerTest {
         actionBoundary.setCreated(new Date());
         actionBoundary.setElement(new KeyType("1", "2019B.element"));
         actionBoundary.setType("echo");
-        actionBoundary.setPlayer(new UserKeyType("omri@gmail.com", "2019B.other"));
-
+        actionBoundary.setPlayer(new UserKeyType(playerUser.getUserEmail(), playerUser.getUserSmartspace()));
 
         ActionBoundary result = this.restTemplate.postForObject(
                 this.invokeBaseUrl,

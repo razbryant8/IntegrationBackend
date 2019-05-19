@@ -130,7 +130,7 @@ public class ActionServiceImplTest {
         enhancedElementDao.upsert(newElement);
 
         ActionEntity[] actionEntities = new ActionEntity[1];
-        ActionEntity actionEntity = factory.createNewAction("5#anotherTeam", "anotherTeam", "someType", new Date(), "mark@gmail.com", "anotherTeam", new HashMap<>());
+        ActionEntity actionEntity = factory.createNewAction("5", "anotherTeam", "someType", new Date(), "mark@gmail.com", "anotherTeam", new HashMap<>());
         actionEntity.setKey("1#"+"anotherTeam");
         actionEntities[0] = actionEntity;
         // WHEN we store the entity using ActionService Logic
@@ -267,7 +267,7 @@ public class ActionServiceImplTest {
         newElement.setKey("5#" + "anotherTeam");
         enhancedElementDao.upsert(newElement);
 
-        ActionEntity actionEntity = factory.createNewAction("5#anotherTeam", "anotherTeam", "echo", new Date(), "mark@gmail.com", "anotherTeam", new HashMap<>());
+        ActionEntity actionEntity = factory.createNewAction("5", "anotherTeam", "echo", new Date(), "mark@gmail.com", "anotherTeam", new HashMap<>());
 
         // WHEN we invoke the entity using ActionService Logic
         actionService.invoke(actionEntity);
@@ -283,10 +283,10 @@ public class ActionServiceImplTest {
     public void checkIllegalInvoke() {
         // GIVEN Valid Element Entity exists on db
         ElementEntity newElement = factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", "test", false, new HashMap<>());
-        newElement.setKey("5#" + "anotherTeam");
+        newElement.setKey("5#anotherTeam");
         enhancedElementDao.upsert(newElement);
 
-        ActionEntity actionEntity = factory.createNewAction("4#anotherTeam", "anotherTeam", "echo", new Date(), "mark@gmail.com", "anotherTeam", new HashMap<>());
+        ActionEntity actionEntity = factory.createNewAction("4", "anotherTeam", "echo", new Date(), "mark@gmail.com", "anotherTeam", new HashMap<>());
 
         // WHEN we invoke an entity with element id that is not found in db using ActionService Logic
         actionService.invoke(actionEntity);

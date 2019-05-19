@@ -12,7 +12,6 @@ import smartspace.logic.ElementService;
 import smartspace.logic.UserService;
 
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @RestController
 public class ElementController {
@@ -36,8 +35,9 @@ public class ElementController {
             @PathVariable("adminEmail") String adminEmail,
             @RequestParam(name = "size", required = false, defaultValue = "10") int size,
             @RequestParam(name = "page", required = false, defaultValue = "0") int page) {
+        verifyAuthorization(adminSmartspace,adminEmail,UserRole.ADMIN);
         return this.elementService
-                .getAll(size, page, getUserRole(adminSmartspace, adminEmail))
+                .getAll(size, page)
                 .stream()
                 .map(ElementBoundary::new)
                 .collect(Collectors.toList())
@@ -55,12 +55,13 @@ public class ElementController {
             @PathVariable("adminSmartspace") String adminSmartspace,
             @PathVariable("adminEmail") String adminEmail,
             @RequestBody ElementBoundary[] elementBoundary) {
+        verifyAuthorization(adminSmartspace,adminEmail,UserRole.ADMIN);
         ElementEntity[] convertedEntities = new ElementEntity[elementBoundary.length];
         for (int i = 0; i < elementBoundary.length; i++) {
             convertedEntities[i] = elementBoundary[i].convertToEntity();
         }
         ElementEntity[] elementEntities = this.elementService.
-                store(convertedEntities, getUserRole(adminSmartspace, adminEmail));
+                store(convertedEntities);
         ElementBoundary[] elementBoundaries = new ElementBoundary[elementEntities.length];
         for (int i = 0; i < elementEntities.length; i++) {
             elementBoundaries[i] = new ElementBoundary(elementEntities[i]);
@@ -85,8 +86,9 @@ public class ElementController {
             @PathVariable("managerSmartspace") String managerSmartspace,
             @PathVariable("managerEmail") String managerEmail,
             @RequestBody ElementBoundary elementBoundary) {
+        verifyAuthorization(managerSmartspace,managerEmail,UserRole.MANAGER);
         return new ElementBoundary(this.elementService
-                .create(elementBoundary.convertToEntity(), getUserRole(managerSmartspace, managerEmail)));
+                .create(elementBoundary.convertToEntity()));
     }
 
     @RequestMapping(
@@ -163,7 +165,8 @@ public class ElementController {
             @PathVariable("elementSmartspace") String elementSmartspace,
             @PathVariable("elementId") String elementId,
             @RequestBody ElementBoundary elementBoundary) {
-        this.elementService.update(elementBoundary.convertToEntity(), elementId, elementSmartspace, getUserRole(managerSmartspace, managerEmail));
+        verifyAuthorization(managerSmartspace,managerEmail,UserRole.MANAGER);
+        this.elementService.update(elementBoundary.convertToEntity(), elementId, elementSmartspace);
     }
 
 
@@ -182,5 +185,10 @@ public class ElementController {
         //and it shouldn't reach this point
         return userService.getUserByMailAndSmartSpace(email, smartspace).get().getRole();
         //return dbUser.isPresent() && dbUser.get().getRole().equals(userRole);
+    }
+
+    private void verifyAuthorization(String smartspace, String email, UserRole userRole){
+        if (!getUserRole(smartspace, email).equals(userRole))
+            throw new RuntimeException("Unauthorized operation");
     }
 }
