@@ -267,7 +267,7 @@ public class ActionServiceImplTest {
         newElement.setKey("5#" + "anotherTeam");
         enhancedElementDao.upsert(newElement);
 
-        ActionEntity actionEntity = factory.createNewAction("5#anotherTeam", "anotherTeam", "someType", new Date(), "mark@gmail.com", "anotherTeam", new HashMap<>());
+        ActionEntity actionEntity = factory.createNewAction("5#anotherTeam", "anotherTeam", "echo", new Date(), "mark@gmail.com", "anotherTeam", new HashMap<>());
 
         // WHEN we invoke the entity using ActionService Logic
         actionService.invoke(actionEntity);
@@ -286,7 +286,7 @@ public class ActionServiceImplTest {
         newElement.setKey("5#" + "anotherTeam");
         enhancedElementDao.upsert(newElement);
 
-        ActionEntity actionEntity = factory.createNewAction("4#anotherTeam", "anotherTeam", "someType", new Date(), "mark@gmail.com", "anotherTeam", new HashMap<>());
+        ActionEntity actionEntity = factory.createNewAction("4#anotherTeam", "anotherTeam", "echo", new Date(), "mark@gmail.com", "anotherTeam", new HashMap<>());
 
         // WHEN we invoke an entity with element id that is not found in db using ActionService Logic
         actionService.invoke(actionEntity);

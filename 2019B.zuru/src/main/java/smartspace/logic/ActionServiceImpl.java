@@ -33,10 +33,10 @@ public class ActionServiceImpl implements ActionService {
     @Override
     @Transactional
     public ActionEntity[] store(ActionEntity[] actionEntity) {
-        ActionEntity[]actionEntities = new ActionEntity[actionEntity.length];
+        ActionEntity[] actionEntities = new ActionEntity[actionEntity.length];
         for (int i = 0; i < actionEntity.length; i++) {
             if (validate(actionEntity[i])) {
-                actionEntities[i]=(this.enhancedActionDao
+                actionEntities[i] = (this.enhancedActionDao
                         .upsert(actionEntity[i]));
             } else {
                 throw new RuntimeException("Invalid action input");
@@ -48,8 +48,13 @@ public class ActionServiceImpl implements ActionService {
     @Override
     public ActionEntity invoke(ActionEntity actionEntity) {
         if (validateInvocation(actionEntity)) {
-            return this.enhancedActionDao
-                    .create(actionEntity);
+            String actionType = actionEntity.getActionType();
+            if (actionType.equals("echo")) {
+                return this.enhancedActionDao
+                        .create(actionEntity);
+            } else {
+                throw new RuntimeException("Illegal action");
+            }
         } else {
             throw new RuntimeException("Invalid action input");
         }
