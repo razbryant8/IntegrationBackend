@@ -93,9 +93,10 @@ public class ActionBoundary {
         if (this.element != null && this.element.getId() != null
                 && this.element.getSmartspace() != null) {
             entity.setElementSmartspace(this.element.getSmartspace());
-            entity.setElementId(this.element.getId() + "#" + this.element.getSmartspace());
+            entity.setElementId(this.element.getId());
         } else {
             entity.setElementId(null);
+            entity.setElementSmartspace(null);
         }
 
         if (this.player != null) {

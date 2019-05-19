@@ -72,7 +72,8 @@ public class ActionServiceImpl implements ActionService {
                 !actionEntity.getElementSmartspace().trim().isEmpty() &&
                 actionEntity.getElementId() != null &&
                 !actionEntity.getElementId().trim().isEmpty() &&
-                enhancedElementDao.readById(actionEntity.getElementId()).isPresent();
+                enhancedElementDao.readById(actionEntity.getElementId()+"#"+
+                        actionEntity.getElementSmartspace()).isPresent();
     }
 
     private boolean validate(ActionEntity actionEntity) {
@@ -92,7 +93,8 @@ public class ActionServiceImpl implements ActionService {
                 !actionEntity.getElementSmartspace().trim().isEmpty() &&
                 actionEntity.getElementId() != null &&
                 !actionEntity.getElementId().trim().isEmpty() &&
-                enhancedElementDao.readById(actionEntity.getElementId()).isPresent();
+                enhancedElementDao.readById(actionEntity.getElementId()+"#"+
+                        actionEntity.getElementSmartspace()).isPresent();
 
     }
 
