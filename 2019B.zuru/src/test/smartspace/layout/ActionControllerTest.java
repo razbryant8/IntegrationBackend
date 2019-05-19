@@ -312,7 +312,7 @@ public class ActionControllerTest {
         actionBoundary.setProperties(new HashMap<>());
         actionBoundary.setCreated(new Date());
         actionBoundary.setElement(new KeyType("1", "2019B.element"));
-        actionBoundary.setType("actionType");
+        actionBoundary.setType("echo");
         actionBoundary.setPlayer(new UserKeyType("omri@gmail.com", "2019B.other"));
 
 
