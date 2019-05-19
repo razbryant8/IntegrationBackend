@@ -9,6 +9,7 @@ import smartspace.dao.EnhancedElementDao;
 import smartspace.data.ElementEntity;
 import smartspace.data.UserRole;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -55,6 +56,7 @@ public class ElementServiceImpl implements ElementService {
     public ElementEntity create(ElementEntity elementEntity, UserRole userRole) {
         if (userRole.equals(UserRole.MANAGER)) {
             if (validateCreation(elementEntity)) {
+                elementEntity.setCreationTimestamp(new Date());
                 return this.enhancedElementDao.create(elementEntity);
             } else {
                 throw new RuntimeException("Invalid element input");

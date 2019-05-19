@@ -70,7 +70,6 @@ public class ActionServiceImpl implements ActionService {
                 !actionEntity.getPlayerSmartspace().trim().isEmpty() &&
                 actionEntity.getElementSmartspace() != null &&
                 !actionEntity.getElementSmartspace().trim().isEmpty() &&
-                !actionEntity.getElementSmartspace().equals(this.smartspace) &&
                 actionEntity.getElementId() != null &&
                 !actionEntity.getElementId().trim().isEmpty() &&
                 enhancedElementDao.readById(actionEntity.getElementId()).isPresent();
