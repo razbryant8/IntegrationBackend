@@ -33,6 +33,7 @@ public class ActionEntity implements SmartspaceEntity<String> {
         this.playerSmartspace = playerSmartspace;
         this.moreAttributes = moreAttributes;
     }
+
     @Transient
     public String getActionSmartspace() {
         return actionSmartspace;
@@ -119,10 +120,12 @@ public class ActionEntity implements SmartspaceEntity<String> {
 
     @Override
     public void setKey(String key) {
-        String[] tokens = key.split("#");
-        if(tokens.length == 2){
-            setActionId(tokens[0]);
-            setActionSmartspace(tokens[1]);
+        if (key != null) {
+            String[] tokens = key.split("#");
+            if (tokens.length == 2) {
+                setActionId(tokens[0]);
+                setActionSmartspace(tokens[1]);
+            }
         }
     }
 }

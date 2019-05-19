@@ -19,9 +19,6 @@ import smartspace.data.ActionEntity;
 import smartspace.data.UserEntity;
 import smartspace.data.UserRole;
 import smartspace.data.util.EntityFactory;
-import smartspace.logic.ActionService;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 import javax.annotation.PostConstruct;
 
@@ -29,7 +26,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -40,6 +38,8 @@ public class ActionControllerTest {
     private String baseUrl;
 
     private String elementBaseUrl;
+
+    private String invokeBaseUrl;
 
     private int port;
 
@@ -83,7 +83,7 @@ public class ActionControllerTest {
         this.port = port;
     }
 
-    @Value("${spring.application.name}")
+    @Value("${spring.smartspace.name}")
     public void setMySmartspace(String mySmartspace) {
         this.mySmartspace = mySmartspace;
     }
@@ -92,6 +92,7 @@ public class ActionControllerTest {
     public void init() {
         this.baseUrl = "http://localhost:" + port + "/smartspace/admin/actions/";
         this.elementBaseUrl = "http://localhost:" + port + "/smartspace/admin/elements/";
+        this.invokeBaseUrl = "http://localhost:" + port + "/smartspace/actions/";
         this.restTemplate = new RestTemplate();
     }
 
@@ -117,7 +118,7 @@ public class ActionControllerTest {
         ActionBoundary[] actionBoundaries = new ActionBoundary[1];
         actionBoundaries[0] = new ActionBoundary();
         actionBoundaries[0].setActionKey(new KeyType("1", "2019B.othersmartspace"));
-        actionBoundaries[0].setActionProperties(new HashMap<>());
+        actionBoundaries[0].setProperties(new HashMap<>());
         actionBoundaries[0].setCreated(new Date());
         actionBoundaries[0].setElement(new KeyType("1", "2019B.element"));
         actionBoundaries[0].setType("actionType");
@@ -154,7 +155,7 @@ public class ActionControllerTest {
         ActionBoundary[] actionBoundaries = new ActionBoundary[1];
         actionBoundaries[0] = new ActionBoundary();
         actionBoundaries[0].setActionKey(new KeyType("1", "2019B.othersmartspace"));
-        actionBoundaries[0].setActionProperties(new HashMap<>());
+        actionBoundaries[0].setProperties(new HashMap<>());
         actionBoundaries[0].setCreated(new Date());
         actionBoundaries[0].setElement(new KeyType("1", "2019B.element"));
         actionBoundaries[0].setType("actionType");
@@ -196,7 +197,7 @@ public class ActionControllerTest {
         ActionBoundary[] actionBoundaries = new ActionBoundary[1];
         actionBoundaries[0] = new ActionBoundary();
         actionBoundaries[0].setActionKey(new KeyType("1", "2019B.othersmartspace"));
-        actionBoundaries[0].setActionProperties(new HashMap<>());
+        actionBoundaries[0].setProperties(new HashMap<>());
         actionBoundaries[0].setCreated(new Date());
         actionBoundaries[0].setElement(new KeyType("1", "2019B.element"));
         actionBoundaries[0].setType("actionType");
@@ -217,7 +218,6 @@ public class ActionControllerTest {
         assertThat(actionEntities.get(0)).extracting("actionId").containsExactly(result[0].convertToEntity().getActionId());
 
     }
-
 
 
     @Test
@@ -254,7 +254,7 @@ public class ActionControllerTest {
         ActionBoundary[] actionBoundaries = new ActionBoundary[2];
         actionBoundaries[0] = new ActionBoundary();
         actionBoundaries[0].setActionKey(new KeyType("1", "2019B.othersmartspace"));
-        actionBoundaries[0].setActionProperties(new HashMap<>());
+        actionBoundaries[0].setProperties(new HashMap<>());
         actionBoundaries[0].setCreated(new Date());
         actionBoundaries[0].setElement(new KeyType("1", "2019B.element"));
         actionBoundaries[0].setType("actionType");
@@ -262,7 +262,7 @@ public class ActionControllerTest {
 
         actionBoundaries[1] = new ActionBoundary();
         actionBoundaries[1].setActionKey(new KeyType("2", "2019B.othersmartspace"));
-        actionBoundaries[1].setActionProperties(new HashMap<>());
+        actionBoundaries[1].setProperties(new HashMap<>());
         actionBoundaries[1].setCreated(new Date());
         actionBoundaries[1].setElement(new KeyType("2", "2019B.element"));
         actionBoundaries[1].setType("actionType");
@@ -286,6 +286,52 @@ public class ActionControllerTest {
 
     }
 
+
+    @Test
+    public void testInvokeAction() {
+        // GIVEN there is a element that the following action is preformed on
+
+        ElementBoundary[] elementBoundaries = new ElementBoundary[1];
+        elementBoundaries[0] = new ElementBoundary();
+        elementBoundaries[0].setKey(new KeyType("1", "2019B.element"));
+        elementBoundaries[0].setLatlng(new ElementLatLngType(35, 35));
+        elementBoundaries[0].setName("Name");
+        elementBoundaries[0].setElementType("scooter");
+        elementBoundaries[0].setExpired(false);
+        elementBoundaries[0].setElementProperties(new HashMap<>());
+        elementBoundaries[0].setCreator(new UserKeyType("omri@gmail.com", "2019B.asdada"));
+        elementBoundaries[0].setCreated(new Date());
+
+        this.restTemplate.postForObject(
+                this.elementBaseUrl + adminUser.getUserSmartspace() + "/" + adminUser.getUserEmail(),
+                elementBoundaries,
+                ElementBoundary[].class);
+
+        // WHEN a new action is invoked to the server with action id null
+        ActionBoundary actionBoundary = new ActionBoundary();
+        actionBoundary.setProperties(new HashMap<>());
+        actionBoundary.setCreated(new Date());
+        actionBoundary.setElement(new KeyType("1", "2019B.element"));
+        actionBoundary.setType("actionType");
+        actionBoundary.setPlayer(new UserKeyType("omri@gmail.com", "2019B.other"));
+
+
+        ActionBoundary result = this.restTemplate.postForObject(
+                this.invokeBaseUrl,
+                actionBoundary,
+                ActionBoundary.class);
+
+        List<ActionEntity> actionEntities = this.enhancedActionDao.readAll();
+
+        assertEquals("Data base contains more than one action in it", actionEntities.size(), 1);
+
+
+        // THEN the database contains the new action with the generated key
+        assertEquals("1", result.getActionKey().getId());
+
+
+    }
+
     @Test(expected = Throwable.class)
     public void testImportActionFromCurrentSmartSpace() {
         // GIVEN the database contain one Admin user
@@ -294,7 +340,7 @@ public class ActionControllerTest {
         ActionBoundary[] actionBoundaries = new ActionBoundary[1];
         actionBoundaries[0] = new ActionBoundary();
         actionBoundaries[0].setActionKey(new KeyType("1", "2019B.othersmartspace"));
-        actionBoundaries[0].setActionProperties(new HashMap<>());
+        actionBoundaries[0].setProperties(new HashMap<>());
         actionBoundaries[0].setCreated(new Date());
         actionBoundaries[0].setElement(new KeyType("1", mySmartspace));//Same smartspace
         actionBoundaries[0].setType("actionType");
@@ -312,11 +358,11 @@ public class ActionControllerTest {
     @Test
     public void testExportUsingPagination() throws InterruptedException {
         // GIVEN the database contain one Admin user and five actions
-        ActionEntity actionEntity = enhancedActionDao.create(entityFactory.createNewAction("1", "smart", "type", new Date(), "email", "space", new HashMap<>()));
+        enhancedActionDao.create(entityFactory.createNewAction("1", "smart", "type", new Date(), "email", "space", new HashMap<>()));
         Thread.sleep(100);
-        ActionEntity actionEntity1 = enhancedActionDao.create(entityFactory.createNewAction("2", "smart", "type", new Date(), "email", "space", new HashMap<>()));
+        enhancedActionDao.create(entityFactory.createNewAction("2", "smart", "type", new Date(), "email", "space", new HashMap<>()));
         Thread.sleep(100);
-        ActionEntity actionEntity2 = enhancedActionDao.create(entityFactory.createNewAction("3", "smart", "type", new Date(), "email", "space", new HashMap<>()));
+        enhancedActionDao.create(entityFactory.createNewAction("3", "smart", "type", new Date(), "email", "space", new HashMap<>()));
         Thread.sleep(100);
         ActionEntity actionEntity3 = enhancedActionDao.create(entityFactory.createNewAction("4", "smart", "type", new Date(), "email", "space", new HashMap<>()));
         Thread.sleep(100);

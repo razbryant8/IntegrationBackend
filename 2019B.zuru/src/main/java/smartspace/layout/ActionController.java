@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import smartspace.data.ActionEntity;
 import smartspace.data.UserEntity;
 import smartspace.data.UserRole;
 import smartspace.logic.ActionService;
@@ -54,17 +55,35 @@ public class ActionController {
             @PathVariable("adminSmartspace") String adminSmartspace,
             @PathVariable("adminEmail") String adminEmail,
             @RequestBody ActionBoundary[] actionBoundary) {
-        if (validate(adminSmartspace, adminEmail))
-            return Arrays.stream(actionBoundary).map(ActionBoundary::convertToEntity)
-                    .map(this.actionService::store)
-                    .map(ActionBoundary::new).toArray(ActionBoundary[]::new);
-        else
+        if (validate(adminSmartspace, adminEmail)) {
+            ActionEntity[] convertedEntities = new ActionEntity[actionBoundary.length];
+            for (int i = 0; i <actionBoundary.length ; i++) {
+                convertedEntities[i] = actionBoundary[i].convertToEntity();
+            }
+            ActionEntity[] actionEntities = this.actionService.store(convertedEntities);
+            ActionBoundary[] actionBoundaries = new ActionBoundary[actionEntities.length];
+            for (int i = 0; i <actionBoundary.length ; i++) {
+                actionBoundaries[i] =new ActionBoundary(actionEntities[i]);
+            }
+            return actionBoundaries;
+        } else
             throw new RuntimeException("Unauthorized operation");
     }
 
+
+    @Transactional
+    @RequestMapping(
+            method = RequestMethod.POST,
+            path = "/smartspace/actions",
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ActionBoundary invoke(@RequestBody ActionBoundary actionBoundary) {
+        return new ActionBoundary(this.actionService.invoke(actionBoundary.convertToEntity()));
+    }
+
     private boolean validate(String adminSmartspace, String adminEmail) {
-        Optional<UserEntity> dbUser = userService.getUserByMailAndSmartSpace(adminEmail,adminSmartspace);
-        if(dbUser.isPresent() && dbUser.get().getRole().equals(UserRole.ADMIN))
+        Optional<UserEntity> dbUser = userService.getUserByMailAndSmartSpace(adminEmail, adminSmartspace);
+        if (dbUser.isPresent() && dbUser.get().getRole().equals(UserRole.ADMIN))
             return true;
         return false;
     }

@@ -2,10 +2,9 @@ package smartspace.data;
 
 import smartspace.dao.rdb.MapToJsonConverter;
 
+import javax.persistence.*;
 import java.util.Date;
 import java.util.Map;
-
-import javax.persistence.*;
 
 @Entity
 @Table(name = "ELEMENTS")
@@ -132,10 +131,12 @@ public class ElementEntity implements SmartspaceEntity<String> {
 
     @Override
     public void setKey(String key) {
-        String[] args = key.split("#");
-        if (args.length == 2) {
-            this.elementId = args[0];
-            this.elementSmartspace = args[1];
+        if (key != null) {
+            String[] args = key.split("#");
+            if (args.length == 2) {
+                this.elementId = args[0];
+                this.elementSmartspace = args[1];
+            }
         }
     }
 }

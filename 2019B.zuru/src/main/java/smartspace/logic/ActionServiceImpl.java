@@ -7,10 +7,9 @@ import org.springframework.transaction.annotation.Transactional;
 import smartspace.dao.EnhancedActionDao;
 import smartspace.dao.EnhancedElementDao;
 import smartspace.data.ActionEntity;
-import smartspace.data.ElementEntity;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ActionServiceImpl implements ActionService {
@@ -33,13 +32,43 @@ public class ActionServiceImpl implements ActionService {
 
     @Override
     @Transactional
-    public ActionEntity store(ActionEntity actionEntity) {
-        if (validate(actionEntity)) {
+    public ActionEntity[] store(ActionEntity[] actionEntity) {
+        ActionEntity[]actionEntities = new ActionEntity[actionEntity.length];
+        for (int i = 0; i < actionEntity.length; i++) {
+            if (validate(actionEntity[i])) {
+                actionEntities[i]=(this.enhancedActionDao
+                        .upsert(actionEntity[i]));
+            } else {
+                throw new RuntimeException("Invalid action input");
+            }
+        }
+        return actionEntities;
+    }
+
+    @Override
+    public ActionEntity invoke(ActionEntity actionEntity) {
+        if (validateInvocation(actionEntity)) {
             return this.enhancedActionDao
-                    .upsert(actionEntity);
+                    .create(actionEntity);
         } else {
             throw new RuntimeException("Invalid action input");
         }
+    }
+
+    private boolean validateInvocation(ActionEntity actionEntity) {
+        return actionEntity.getMoreAttributes() != null &&
+                actionEntity.getActionType() != null &&
+                !actionEntity.getActionType().trim().isEmpty() &&
+                actionEntity.getPlayerEmail() != null &&
+                !actionEntity.getPlayerEmail().trim().isEmpty() &&
+                actionEntity.getPlayerSmartspace() != null &&
+                !actionEntity.getPlayerSmartspace().trim().isEmpty() &&
+                actionEntity.getElementSmartspace() != null &&
+                !actionEntity.getElementSmartspace().trim().isEmpty() &&
+                !actionEntity.getElementSmartspace().equals(this.smartspace) &&
+                actionEntity.getElementId() != null &&
+                !actionEntity.getElementId().trim().isEmpty() &&
+                enhancedElementDao.readById(actionEntity.getElementId()).isPresent();
     }
 
     private boolean validate(ActionEntity actionEntity) {
@@ -52,18 +81,18 @@ public class ActionServiceImpl implements ActionService {
                 !actionEntity.getPlayerSmartspace().trim().isEmpty() &&
                 actionEntity.getActionSmartspace() != null &&
                 !actionEntity.getActionSmartspace().trim().isEmpty() &&
+                !actionEntity.getActionSmartspace().equals(this.smartspace) &&
                 actionEntity.getActionId() != null &&
                 !actionEntity.getActionId().trim().isEmpty() &&
                 actionEntity.getElementSmartspace() != null &&
                 !actionEntity.getElementSmartspace().trim().isEmpty() &&
-                !actionEntity.getElementSmartspace().equals(this.smartspace) &&
                 actionEntity.getElementId() != null &&
                 !actionEntity.getElementId().trim().isEmpty() &&
                 enhancedElementDao.readById(actionEntity.getElementId()).isPresent();
 
     }
 
-    @Value("${spring.application.name}")
+    @Value("${spring.smartspace.name}")
     public void setSmartspace(String smartspace) {
         this.smartspace = smartspace;
     }

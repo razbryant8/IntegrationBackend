@@ -1,9 +1,9 @@
 package smartspace.dao;
 
+import smartspace.data.UserEntity;
+
 import java.util.List;
 import java.util.Optional;
-
-import smartspace.data.*;
 
 public interface UserDao<String> {
 

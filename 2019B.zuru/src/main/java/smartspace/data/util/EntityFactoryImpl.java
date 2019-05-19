@@ -1,7 +1,7 @@
 package smartspace.data.util;
 
-import smartspace.data.*;
 import org.springframework.stereotype.Component;
+import smartspace.data.*;
 
 import java.util.Date;
 import java.util.Map;

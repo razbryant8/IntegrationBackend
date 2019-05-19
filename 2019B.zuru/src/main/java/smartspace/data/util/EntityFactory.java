@@ -1,9 +1,9 @@
 package smartspace.data.util;
 
-import java.util.Map;
-import java.util.Date;
-
 import smartspace.data.*;
+
+import java.util.Date;
+import java.util.Map;
 
 
 public interface EntityFactory {

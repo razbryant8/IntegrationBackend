@@ -12,9 +12,10 @@ public class ActionBoundary {
     private Date created;
     private KeyType element;
     private UserKeyType player;
-    private Map<String, Object> actionProperties;
+    private Map<String, Object> properties;
 
-    public ActionBoundary() { }
+    public ActionBoundary() {
+    }
 
     public ActionBoundary(ActionEntity actionEntity) {
         this.actionKey = new KeyType(actionEntity.getActionId(), actionEntity.getActionSmartspace());
@@ -22,7 +23,7 @@ public class ActionBoundary {
         this.created = actionEntity.getCreationTimestamp();
         this.element = new KeyType(actionEntity.getElementId(), actionEntity.getElementSmartspace());
         this.player = new UserKeyType(actionEntity.getPlayerEmail(), actionEntity.getPlayerSmartspace());
-        this.actionProperties = actionEntity.getMoreAttributes();
+        this.properties = actionEntity.getMoreAttributes();
     }
 
     public KeyType getActionKey() {
@@ -65,12 +66,12 @@ public class ActionBoundary {
         this.player = player;
     }
 
-    public Map<String, Object> getActionProperties() {
-        return actionProperties;
+    public Map<String, Object> getProperties() {
+        return properties;
     }
 
-    public void setActionProperties(Map<String, Object> actionProperties) {
-        this.actionProperties = actionProperties;
+    public void setProperties(Map<String, Object> properties) {
+        this.properties = properties;
     }
 
     public ActionEntity convertToEntity() {
@@ -102,8 +103,8 @@ public class ActionBoundary {
             entity.setPlayerEmail(this.player.getEmail());
         }
 
-        entity.setMoreAttributes(this.actionProperties);
-        
+        entity.setMoreAttributes(this.properties);
+
         return entity;
     }
 }

@@ -1,13 +1,13 @@
 package smartspace.dao.rdb;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import smartspace.dao.EnhancedActionDao;
-import smartspace.data.ActionEntity;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import smartspace.dao.EnhancedActionDao;
+import smartspace.data.ActionEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +47,7 @@ public class RdbActionDao implements EnhancedActionDao {
         this.actionCrud.deleteAll();
     }
 
-    @Value("${spring.application.name}")
+    @Value("${spring.smartspace.name}")
     public void setSmartspace(String smartspace) {
         this.smartspace = smartspace;
     }

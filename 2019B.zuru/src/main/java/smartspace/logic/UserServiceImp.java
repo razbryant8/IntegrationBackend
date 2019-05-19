@@ -1,16 +1,18 @@
 package smartspace.logic;
 
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
 import smartspace.dao.EnhancedUserDao;
+import smartspace.dao.UserNotFoundException;
 import smartspace.data.UserEntity;
+import smartspace.data.UserRole;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 @Service
@@ -33,14 +35,19 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public UserEntity store(UserEntity user) {
-        if (validate(user)) {
-            return this.userDao
-                    .upsert(user);
-        } else {
-            throw new RuntimeException("Invalid user input");
+    @Transactional
+    public UserEntity[] store(UserEntity[] users) {
+        UserEntity[] usersEntities = new UserEntity[users.length];
+        for(int i=0; i<usersEntities.length;i++) {
+            if (validate(users[i])) {
+                usersEntities[i] =  this.userDao.upsert(users[i]);
+            } else {
+                throw new RuntimeException("Invalid user input");
+            }
         }
+        return usersEntities;
     }
+
 
     @Override
     @Transactional(readOnly = true)
@@ -54,7 +61,14 @@ public class UserServiceImp implements UserService {
         UserEntity user = new UserEntity();
         user.setUserSmartspace(smartSpace);
         user.setUserEmail(email);
-        return this.userDao.readById(user.getKey());
+        if (userDao.readById(user.getKey()) != null) {
+            return this.userDao.readById(user.getKey());
+        } else {
+            throw new UserNotFoundException("No user with this key: "
+                    + user.getKey());
+
+        }
+
 
     }
 
@@ -69,7 +83,7 @@ public class UserServiceImp implements UserService {
 
     }
 
-    @Value("${spring.application.name}")
+    @Value("${spring.smartspace.name}")
     public void setSmartspace(String currentSmartspace) {
         this.currentSmartspace = currentSmartspace;
     }
@@ -77,5 +91,59 @@ public class UserServiceImp implements UserService {
     @Override
     public String getCurrentSmartspace() {
         return currentSmartspace;
+    }
+
+    @Override
+    public UserEntity create(UserEntity user) {
+
+        if (CheckingEmailAndRole(user)) {
+            return this.userDao.create(user);
+
+        }
+        return null;
+    }
+
+
+    @Override
+    // maybe we need to add AOP annotation to this code
+    public void update(String userSmartspace, String userEmail, UserEntity updateDetails) {
+        Optional<UserEntity> ifExcistUser = getUserByMailAndSmartSpace(userEmail, userSmartspace);
+        Optional<UserEntity> userToUpdate = getUserByMailAndSmartSpace(updateDetails.getUserEmail(), updateDetails.getUserSmartspace());
+        if (ifExcistUser.isPresent() && userToUpdate.isPresent()) {
+            UserEntity needToUpdateUserEntity = new UserEntity();
+
+            needToUpdateUserEntity.setKey(updateDetails.getKey());
+            needToUpdateUserEntity.setUsername(updateDetails.getUsername());
+            needToUpdateUserEntity.setAvatar(updateDetails.getAvatar());
+            needToUpdateUserEntity.setRole(updateDetails.getRole());
+            needToUpdateUserEntity.setPoints(userToUpdate.get().getPoints());
+
+            this.userDao.update(needToUpdateUserEntity);
+        } else throw new UserNotFoundException();
+
+    }
+
+
+    private boolean CheckingEmailAndRole(UserEntity user) {
+
+        if ((user.getRole().equals(UserRole.ADMIN) ||
+                user.getRole().equals(UserRole.MANAGER) ||
+                user.getRole().equals(UserRole.PLAYER)) &&
+                (user.getUserSmartspace().equals(this.currentSmartspace))
+                && validateEmailAddress(user.getUserEmail())) {
+            return true;
+        }
+        return false;
+
+
+    }
+
+    //check if emil is validate email with regular expression
+    public static final Pattern VALID_EMAIL_ADDRESS_REGEX =
+            Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
+
+    public static boolean validateEmailAddress(String emailStr) {
+        Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(emailStr);
+        return matcher.find();
     }
 }

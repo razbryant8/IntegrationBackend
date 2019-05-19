@@ -1,12 +1,15 @@
 package smartspace.dao;
+
+import smartspace.data.ActionEntity;
+
 import java.util.List;
 
-import smartspace.data.*;
-
 public interface ActionDao {
-	
-	ActionEntity create(ActionEntity actionEntity);
-	List<ActionEntity> readAll();
-	void deleteAll();
+
+    ActionEntity create(ActionEntity actionEntity);
+
+    List<ActionEntity> readAll();
+
+    void deleteAll();
 
 }
