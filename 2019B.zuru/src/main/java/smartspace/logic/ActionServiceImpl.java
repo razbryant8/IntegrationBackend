@@ -8,7 +8,6 @@ import smartspace.dao.EnhancedActionDao;
 import smartspace.dao.EnhancedElementDao;
 import smartspace.data.ActionEntity;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service

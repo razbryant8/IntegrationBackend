@@ -12,7 +12,6 @@ import smartspace.logic.ElementService;
 import smartspace.logic.UserService;
 
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @RestController
 public class ElementController {
