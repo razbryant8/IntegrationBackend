@@ -93,10 +93,7 @@ public class UserController {
             @PathVariable("userEmail") String userEmail) {
         Optional<UserEntity> rv;
         rv = this.userService.getUserByMailAndSmartSpace(userEmail, userSmartspace);
-        if (rv.isPresent())
-            return new UserBoundary(rv.get());
-        else
-            throw new UserNotFoundException("User not found!");
+        return new UserBoundary(rv.get());
     }
 
 

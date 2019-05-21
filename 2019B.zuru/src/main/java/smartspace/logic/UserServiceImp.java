@@ -29,8 +29,8 @@ public class UserServiceImp implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<UserEntity> getAll(String smartspace,String email, int size, int page) {
-        if(validateAdmin(smartspace, email))
+    public List<UserEntity> getAll(String smartspace, String email, int size, int page) {
+        if (validateAdmin(smartspace, email))
             return this.userDao
                     .readAll(size, page, "Role");
         else
@@ -39,20 +39,19 @@ public class UserServiceImp implements UserService {
 
     @Override
     @Transactional
-    public UserEntity[] store(String smartspace,String email, UserEntity[] users) {
-        if(validateAdmin(smartspace, email)) {
+    public UserEntity[] store(String smartspace, String email, UserEntity[] users) {
+        if (validateAdmin(smartspace, email)) {
             UserEntity[] usersEntities = new UserEntity[users.length];
             for (int i = 0; i < usersEntities.length; i++) {
                 if (validate(users[i])) {
                     usersEntities[i] = this.userDao.upsert(users[i]);
                 } else {
-                    throw new UserNotFoundException("Invalid user input");
+                    throw new RuntimeException("Invalid user input");
                 }
             }
             return usersEntities;
-        }
-        else
-            throw new UserNotFoundException("The user is not admin or in current smartspace");
+        } else
+            throw new RuntimeException("The user is not admin or in current smartspace");
     }
 
 /*
@@ -69,7 +68,7 @@ public class UserServiceImp implements UserService {
         UserEntity user = new UserEntity();
         user.setUserSmartspace(smartSpace);
         user.setUserEmail(email);
-        myUser=userDao.readById(user.getKey());
+        myUser = userDao.readById(user.getKey());
         if (myUser != null) {
             return myUser;
         } else {
