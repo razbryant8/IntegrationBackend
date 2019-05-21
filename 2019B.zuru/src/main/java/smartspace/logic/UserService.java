@@ -7,11 +7,11 @@ import java.util.Optional;
 
 public interface UserService {
 
-    public List<UserEntity> getAll(int size, int page);
+    public List<UserEntity> getAll(String smartspace,String email, int size, int page);
 
-    public UserEntity[] store(UserEntity[] users);
+    public UserEntity[] store(String smartspace,String email, UserEntity[] users);
 
-    public Optional<UserEntity> getUserByKey(String key);
+ //   public Optional<UserEntity> getUserByKey(String key);
 
     public Optional<UserEntity> getUserByMailAndSmartSpace(String email, String smartSpace);
 

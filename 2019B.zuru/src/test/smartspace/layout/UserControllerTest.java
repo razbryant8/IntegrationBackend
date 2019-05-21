@@ -189,7 +189,7 @@ public class UserControllerTest {
     public void testImportUsersFromCurrentSmartSpace() {
         // GIVEN the database contain one Admin user and we create one more user from our project smartspace
         UserEntity importUser = new UserEntity
-                ("crash@mail", "2019b.zuru", "needToCrash", "Q", UserRole.ADMIN, 400);
+                ("crash@mail.com", "2019b.zuru", "needToCrash", "Q", UserRole.ADMIN, 400);
 
 
         // WHEN we try to import a user from the same smartspace of our project.
@@ -328,7 +328,7 @@ public class UserControllerTest {
                 "key", "username", "avatar", "role", "points");
     }
 
-    @Test
+    @Test(expected = Throwable.class)
     public void testGetNotExcistUser() {
         // GIVEN the database with one user (admin user by default)
 
@@ -339,8 +339,7 @@ public class UserControllerTest {
         UserBoundary expectedStoredAdminUser = this.restTemplate
                 .getForObject(this.loginUrlAddition + smartspace + "/" + mail, UserBoundary.class);
 
-        //THEN the returned value is null
-        assertThat(expectedStoredAdminUser).isEqualTo(null);
+        //THEN exception will be thrown
     }
 
     @Test

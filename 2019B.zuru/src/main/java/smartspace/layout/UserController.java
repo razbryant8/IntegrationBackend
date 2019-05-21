@@ -2,16 +2,16 @@ package smartspace.layout;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import smartspace.dao.UserNotFoundException;
 import smartspace.data.UserEntity;
-import smartspace.data.UserRole;
 import smartspace.logic.UserService;
 
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 
 @RestController
@@ -35,39 +35,14 @@ public class UserController {
             @PathVariable("adminEmail") String adminEmail,
             @RequestParam(name = "size", required = false, defaultValue = "10") int size,
             @RequestParam(name = "page", required = false, defaultValue = "0") int page) {
-        if (validate(adminSmartspace, adminEmail))
-            return this.userService.getAll(size, page)
+            return this.userService.getAll(adminSmartspace,adminEmail,size, page)
                     .stream()
                     .map(UserBoundary::new)
                     .collect(Collectors.toList())
                     .toArray(new UserBoundary[0]);
-        else
-            throw new RuntimeException("Unauthorized operation");
 
     }
-/*
-    @Transactional
-    @RequestMapping(
-            method = RequestMethod.POST,
-            path = "/smartspace/admin/users/{adminSmartspace}/{adminEmail}",
-            produces = MediaType.APPLICATION_JSON_VALUE,
-            consumes = MediaType.APPLICATION_JSON_VALUE)
-    public UserBoundary[] store(
-            @PathVariable("adminSmartspace") String adminSmartspace,
-            @PathVariable("adminEmail") String adminEmail,
-            @RequestBody UserBoundary[] users) {
-        if (validate(adminSmartspace, adminEmail))
-            return IntStream.range(0, users.length)
-                    .mapToObj(i -> users[i].convertToEntity())
-                    .map(this.userService::store)
-                    .map(UserBoundary::new)
-                    .collect(Collectors.toList())
-                    .toArray(new UserBoundary[0]);
-        else
-            throw new RuntimeException("Unauthorized operation");
 
-    }
-*/
 
     @Transactional
     @RequestMapping(
@@ -79,20 +54,17 @@ public class UserController {
             @PathVariable("adminSmartspace") String adminSmartspace,
             @PathVariable("adminEmail") String adminEmail,
             @RequestBody UserBoundary[] users) {
-        if (validate(adminSmartspace, adminEmail)) {
             UserEntity[] convertedUserEntities = new UserEntity[users.length];
             for (int i = 0; i < users.length; i++)
                 convertedUserEntities[i] = users[i].convertToEntity();
-            UserEntity[] usersEntities = this.userService.store(convertedUserEntities);
+            UserEntity[] usersEntities = this.userService.store(adminSmartspace, adminEmail, convertedUserEntities);
 
             UserBoundary[] usersBoundary = new UserBoundary[usersEntities.length];
             for (int i = 0; i < usersEntities.length; i++)
                 usersBoundary[i] = new UserBoundary(usersEntities[i]);
 
             return usersBoundary;
-        }
-        else
-            throw new RuntimeException("Unauthorized operation");
+
     }
 
     @Transactional
@@ -124,7 +96,7 @@ public class UserController {
         if (rv.isPresent())
             return new UserBoundary(rv.get());
         else
-            return null;
+            throw new UserNotFoundException("User not found!");
     }
 
 
@@ -140,7 +112,17 @@ public class UserController {
                 .update(userSmartspace, userEmail, updateBoundary.convertToEntity());
     }
 
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorMessage handleException(UserNotFoundException e) {
+        String message = e.getMessage();
+        if (message == null) {
+            message = "message not found";
+        }
+        return new ErrorMessage(message);
+    }
 
+/*
     private boolean validate(String adminSmartspace, String adminEmail) {
         Optional<UserEntity> dbUser = userService.getUserByMailAndSmartSpace(adminEmail, adminSmartspace);
         if (!dbUser.isPresent() || !dbUser.get().getRole().equals(UserRole.ADMIN))
@@ -148,6 +130,6 @@ public class UserController {
             return false;
         return true;
     }
-
+*/
 
 }

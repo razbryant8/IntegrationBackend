@@ -61,20 +61,6 @@ public class UserServiceTests {
     }
 
 
-    @Test()
-    public void checkGetAllUsersInEmptyPage() {
-        // GIVEN empty DB
-
-        // WHEN getAll users from empty page
-        int size = 5;
-        int page = 0;
-        List<UserEntity> usersEntities = userService.getAll(size, page);
-
-        // THEN the List is empty
-        assertEquals(0, usersEntities.size());
-    }
-
-
     @Test
     public void checkGetAllInPageWithOneUser() {
         // GIVEN The database contains one user
@@ -83,7 +69,7 @@ public class UserServiceTests {
         // WHEN getAll elements in an empty page
         int size = 5;
         int page = 0;
-        List<UserEntity> userEntities = userService.getAll(size, page);
+        List<UserEntity> userEntities = userService.getAll(userEntity.getUserSmartspace(), userEntity.getUserEmail(),size, page);
 
         // THEN the List contains exactly one element
         assertEquals(1, userEntities.size());
@@ -110,11 +96,14 @@ public class UserServiceTests {
     }
 
 
-    @Test()
+    @Test
     public void checkUserServiceStore() {
 
         // GIVEN Valid User Entity
-        String mail = "mail1";
+        UserEntity adm = this.enhancedUserDao.create(new UserEntity("abc@dd.cs", "notOur",
+                "user1", "ava1", UserRole.ADMIN, 100));
+
+        String mail = "mail1@dfd.com";
         String smartspace = "smart1";
         UserEntity[] userEntities = new UserEntity[1];
         UserEntity userEntity = entityFactory.createNewUser(mail, smartspace,
@@ -122,7 +111,7 @@ public class UserServiceTests {
         String userEntityId = userEntity.getKey();
         userEntities[0] = userEntity;
         // WHEN we store the user using UserService Logic
-        userService.store(userEntities);
+        userService.store(adm.getUserSmartspace(),adm.getUserEmail(),userEntities);
 
         // THEN the user entity is stored
         Optional<UserEntity> expectedUserEntity = this.enhancedUserDao.readById(userEntityId);
@@ -130,10 +119,12 @@ public class UserServiceTests {
                 "userSmartspace", "userEmail", "username", "avatar", "role", "points");
     }
 
-    @Test()
+    @Test
     public void checkMultipyUsersStoreByAmount() {
 
-        // GIVEN Valid User
+        // GIVEN Valid User with 1 user in DB
+        UserEntity adm = this.enhancedUserDao.create(new UserEntity("abc@dd.cs", "notOur",
+                "user1", "ava1", UserRole.ADMIN, 100));
         UserEntity[] userEntities = new UserEntity[3];
         userEntities[0] = entityFactory.createNewUser("mail1", "smart1",
                 "user1", "ava1", UserRole.ADMIN, 100);
@@ -143,15 +134,15 @@ public class UserServiceTests {
                 "user3", "ava3", UserRole.ADMIN, 300);
 
         // WHEN we store the users using UserService Logic
-        userService.store(userEntities);
+        userService.store(adm.getUserSmartspace(),adm.getUserEmail(),userEntities);
 
         // THEN the amount od user entities is stored
 
         int size = 5;
         int page = 0;
-        List<UserEntity> usersEntities = userService.getAll(size, page);
+        List<UserEntity> usersEntities = userService.getAll(adm.getUserSmartspace(), adm.getUserEmail(),size, page);
 
-        assertEquals(3, usersEntities.size());
+        assertEquals(4, usersEntities.size());
     }
 
 
@@ -163,7 +154,7 @@ public class UserServiceTests {
                 "user1", "ava1", UserRole.ADMIN, 100);
 
         // WHEN we store the user entity using UserService Logic
-        userService.store(userEntities);
+        userService.store(userEntities[0].getUserSmartspace(),userEntities[0].getUserEmail(),userEntities);
 
         // THEN we expect Exception to be thrown because is the same smartspace that in our project
 
@@ -178,7 +169,7 @@ public class UserServiceTests {
                 "user1", "ava1", UserRole.MANAGER, 100);
 
         // WHEN we store the user entity using UserService Logic
-        userService.store(userEntities);
+        userService.store(userEntities[0].getUserSmartspace(),userEntities[0].getUserEmail(),userEntities);
 
         // THEN we expect Exception to be thrown because is the not a admin
 
@@ -192,7 +183,7 @@ public class UserServiceTests {
                 "user1", "ava1", null, 100);
 
         // WHEN we store the user entity using UserService Logic
-        userService.store(userEntities);
+        userService.store(userEntities[0].getUserSmartspace(),userEntities[0].getUserEmail(),userEntities);
 
         // THEN we expect Exception to be thrown because is the not a admin
 
@@ -206,7 +197,7 @@ public class UserServiceTests {
                 "", "ava1", UserRole.ADMIN, 100);
 
         // WHEN we store the user entity using UserService Logic
-        userService.store(userEntities);
+        userService.store(userEntities[0].getUserSmartspace(),userEntities[0].getUserEmail(),userEntities);
 
         // THEN we expect Exception to be thrown because is the not a admin
 
@@ -221,7 +212,7 @@ public class UserServiceTests {
                 "user1", "      ", UserRole.ADMIN, 100);
 
         // WHEN we store the user entity using UserService Logic
-        userService.store(userEntities);
+        userService.store(userEntities[0].getUserSmartspace(),userEntities[0].getUserEmail(),userEntities);
 
         // THEN we expect Exception to be thrown because is the not a admin
 
@@ -236,7 +227,7 @@ public class UserServiceTests {
                 "user1", ":-}", UserRole.ADMIN, -550);
 
         // WHEN we store the user entity using UserService Logic
-        userService.store(userEntities);
+        userService.store(userEntities[0].getUserSmartspace(),userEntities[0].getUserEmail(),userEntities);
 
         // THEN we expect Exception to be thrown because is the not a admin
 

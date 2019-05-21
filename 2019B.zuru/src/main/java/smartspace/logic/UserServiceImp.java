@@ -29,40 +29,49 @@ public class UserServiceImp implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<UserEntity> getAll(int size, int page) {
-        return this.userDao
-                .readAll(size, page, "Role");
+    public List<UserEntity> getAll(String smartspace,String email, int size, int page) {
+        if(validateAdmin(smartspace, email))
+            return this.userDao
+                    .readAll(size, page, "Role");
+        else
+            throw new UserNotFoundException("The user is not admin");
     }
 
     @Override
     @Transactional
-    public UserEntity[] store(UserEntity[] users) {
-        UserEntity[] usersEntities = new UserEntity[users.length];
-        for(int i=0; i<usersEntities.length;i++) {
-            if (validate(users[i])) {
-                usersEntities[i] =  this.userDao.upsert(users[i]);
-            } else {
-                throw new RuntimeException("Invalid user input");
+    public UserEntity[] store(String smartspace,String email, UserEntity[] users) {
+        if(validateAdmin(smartspace, email)) {
+            UserEntity[] usersEntities = new UserEntity[users.length];
+            for (int i = 0; i < usersEntities.length; i++) {
+                if (validate(users[i])) {
+                    usersEntities[i] = this.userDao.upsert(users[i]);
+                } else {
+                    throw new UserNotFoundException("Invalid user input");
+                }
             }
+            return usersEntities;
         }
-        return usersEntities;
+        else
+            throw new UserNotFoundException("The user is not admin or in current smartspace");
     }
 
-
+/*
     @Override
     @Transactional(readOnly = true)
     public Optional<UserEntity> getUserByKey(String key) {
         return this.userDao
                 .readById(key);
-    }
+    }*/
 
     @Transactional(readOnly = true)
     public Optional<UserEntity> getUserByMailAndSmartSpace(String email, String smartSpace) {
+        Optional<UserEntity> myUser;
         UserEntity user = new UserEntity();
         user.setUserSmartspace(smartSpace);
         user.setUserEmail(email);
-        if (userDao.readById(user.getKey()) != null) {
-            return this.userDao.readById(user.getKey());
+        myUser=userDao.readById(user.getKey());
+        if (myUser != null) {
+            return myUser;
         } else {
             throw new UserNotFoundException("No user with this key: "
                     + user.getKey());
@@ -81,6 +90,13 @@ public class UserServiceImp implements UserService {
                 !user.getUserEmail().trim().isEmpty() &&
                 user.getPoints() >= 0.0;
 
+    }
+
+    private boolean validateAdmin(String adminSmartspace, String adminEmail) {
+        Optional<UserEntity> dbUser = getUserByMailAndSmartSpace(adminEmail, adminSmartspace);
+        if (!dbUser.isPresent() || !dbUser.get().getRole().equals(UserRole.ADMIN))
+            return false;
+        return true;
     }
 
     @Value("${spring.smartspace.name}")
