@@ -11,6 +11,7 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
+
 import smartspace.dao.EnhancedActionDao;
 import smartspace.dao.EnhancedElementDao;
 import smartspace.dao.EnhancedUserDao;
@@ -20,6 +21,7 @@ import smartspace.data.UserRole;
 import smartspace.data.util.EntityFactory;
 
 import javax.annotation.PostConstruct;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -315,7 +317,6 @@ public class ActionControllerTest {
         actionBoundary.setElement(new KeyType("1", "2019B.element"));
         actionBoundary.setType("echo");
         actionBoundary.setPlayer(new UserKeyType(playerUser.getUserEmail(), playerUser.getUserSmartspace()));
-
 
         ActionBoundary result = this.restTemplate.postForObject(
                 this.invokeBaseUrl,

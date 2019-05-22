@@ -283,7 +283,7 @@ public class ActionServiceImplTest {
     public void checkIllegalInvoke() {
         // GIVEN Valid Element Entity exists on db
         ElementEntity newElement = factory.createNewElement("name", "type", new Location(5, 4), new Date(), "zur@gmail.com", "test", false, new HashMap<>());
-        newElement.setKey("5#" + "anotherTeam");
+        newElement.setKey("5#anotherTeam");
         enhancedElementDao.upsert(newElement);
 
         ActionEntity actionEntity = factory.createNewAction("4", "anotherTeam", "echo", new Date(), "mark@gmail.com", "anotherTeam", new HashMap<>());

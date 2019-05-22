@@ -26,43 +26,34 @@ public class ElementServiceImpl implements ElementService {
     }
 
     @Override
-    public List<ElementEntity> getAll(int size, int page, UserRole userRole) {
-        if (userRole.equals(UserRole.ADMIN))
-            return this.enhancedElementDao.readAll(size, page, "creationTimestamp");
-        else
-            throw new RuntimeException("Unauthorized action");
+    public List<ElementEntity> getAll(int size, int page) {
+        return this.enhancedElementDao.readAll(size, page, "creationTimestamp");
     }
 
     @Override
     @Transactional
-    public ElementEntity[] store(ElementEntity[] elementEntity, UserRole userRole) {
+    public ElementEntity[] store(ElementEntity[] elementEntity) {
         ElementEntity[] elementEntities = new ElementEntity[elementEntity.length];
-        if (userRole.equals(UserRole.ADMIN)) {
-            for (int i = 0; i < elementEntities.length; i++) {
-                if (validate(elementEntity[i])) {
-                    elementEntities[i] = this.enhancedElementDao
-                            .upsert(elementEntity[i]);
-                } else {
-                    throw new RuntimeException("Invalid element input");
-                }
+        for (int i = 0; i < elementEntities.length; i++) {
+            if (validate(elementEntity[i])) {
+                elementEntities[i] = this.enhancedElementDao
+                        .upsert(elementEntity[i]);
+            } else {
+                throw new RuntimeException("Invalid element input");
             }
-        } else
-            throw new RuntimeException("Unauthorized Operation");
+        }
         return elementEntities;
     }
 
     @Override
     @Transactional
-    public ElementEntity create(ElementEntity elementEntity, UserRole userRole) {
-        if (userRole.equals(UserRole.MANAGER)) {
-            if (validateCreation(elementEntity)) {
-                elementEntity.setCreationTimestamp(new Date());
-                return this.enhancedElementDao.create(elementEntity);
-            } else {
-                throw new RuntimeException("Invalid element input");
-            }
-        } else
-            throw new RuntimeException("Unauthorized operation");
+    public ElementEntity create(ElementEntity elementEntity) {
+        if (validateCreation(elementEntity)) {
+            elementEntity.setCreationTimestamp(new Date());
+            return this.enhancedElementDao.create(elementEntity);
+        } else {
+            throw new RuntimeException("Invalid element input");
+        }
     }
 
     @Override
@@ -137,17 +128,14 @@ public class ElementServiceImpl implements ElementService {
     }
 
     @Override
-    public void update(ElementEntity elementEntity, String elementId, String elementSmartspace, UserRole userRole) {
-        if (userRole.equals(UserRole.MANAGER)) {
-            elementEntity.setElementId(elementId);
-            elementEntity.setElementSmartspace(elementSmartspace);
-            if (validateCreation(elementEntity)) {
-                this.enhancedElementDao.update(elementEntity);
-            } else {
-                throw new RuntimeException("Invalid element input");
-            }
-        } else
-            throw new RuntimeException("Unauthorized operation");
+    public void update(ElementEntity elementEntity, String elementId, String elementSmartspace) {
+        elementEntity.setElementId(elementId);
+        elementEntity.setElementSmartspace(elementSmartspace);
+        if (validateCreation(elementEntity)) {
+            this.enhancedElementDao.update(elementEntity);
+        } else {
+            throw new RuntimeException("Invalid element input");
+        }
     }
 
     @Override

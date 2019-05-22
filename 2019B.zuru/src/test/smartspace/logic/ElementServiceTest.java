@@ -80,7 +80,7 @@ public class ElementServiceTest {
         int size = 5;
         int page = 1;
         List<ElementEntity> elementEntities = elementService
-                .getAll(size, page, UserRole.ADMIN);
+                .getAll(size, page);
 
         // THEN the List is empty
         assertEquals(0, elementEntities.size());
@@ -95,7 +95,7 @@ public class ElementServiceTest {
         int size = 5;
         int page = 0;
         List<ElementEntity> elementEntities = elementService.
-                getAll(size, page, UserRole.ADMIN);
+                getAll(size, page);
 
         // THEN the List contains exactly one element
         assertEquals(1, elementEntities.size());
@@ -113,7 +113,7 @@ public class ElementServiceTest {
         int size = 5;
         int page = 0;
         List<ElementEntity> elementEntities = elementService
-                .getAll(size, page, UserRole.ADMIN);
+                .getAll(size, page);
 
         // THEN the List contains exactly the three created elements
         assertEquals(3, elementEntities.size());
@@ -133,7 +133,7 @@ public class ElementServiceTest {
 
         // WHEN we store the entity using ElementService Logic as admin
         elementService.
-                store(elementEntities, UserRole.ADMIN);
+                store(elementEntities);
 
         // THEN the entity is stored
         List<ElementEntity> entities = this.enhancedDao.readAll();
@@ -153,7 +153,7 @@ public class ElementServiceTest {
 
         // WHEN we store the entity using ElementService Logic As Admin
         elementService.
-                store(elementEntities, UserRole.ADMIN);
+                store(elementEntities);
 
         // THEN we expect Exception to be thrown
     }
@@ -167,7 +167,7 @@ public class ElementServiceTest {
 
         // WHEN we store the entity using ElementService Logic As Admin
         elementService.
-                store(elementEntities, UserRole.ADMIN);
+                store(elementEntities);
 
         // THEN we expect Exception to be thrown
     }
@@ -182,7 +182,7 @@ public class ElementServiceTest {
 
         // WHEN we store the entity using ElementService LogicAs Admin
         elementService.
-                store(elementEntities, UserRole.ADMIN);
+                store(elementEntities);
 
         // THEN we expect Exception to be thrown
     }
@@ -196,7 +196,7 @@ public class ElementServiceTest {
 
 
         // WHEN we store the entity using ElementService Logic as admin
-        elementService.store(elementEntities, UserRole.ADMIN);
+        elementService.store(elementEntities);
 
         // THEN we expect Exception to be thrown
     }
@@ -211,7 +211,7 @@ public class ElementServiceTest {
 
         // WHEN we store the entity using ElementService Logic as admin
         elementService.
-                store(elementEntities, UserRole.ADMIN);
+                store(elementEntities);
 
         // THEN we expect Exception to be thrown
     }
@@ -226,7 +226,7 @@ public class ElementServiceTest {
 
         // WHEN we store the entity using ElementService Logic As Admin
         elementService.
-                store(elementEntities, UserRole.ADMIN);
+                store(elementEntities);
 
         // THEN we expect Exception to be thrown
     }
@@ -241,7 +241,7 @@ public class ElementServiceTest {
 
         // WHEN we store the entity using ElementService Logic AsAdmin
         elementService.
-                store(elementEntities, UserRole.ADMIN);
+                store(elementEntities);
 
         // THEN we expect Exception to be thrown
     }
@@ -410,7 +410,7 @@ public class ElementServiceTest {
 
         // WHEN we get create new element without location as manager
         ElementEntity elmentEntity = factory.createNewElement("name", "type", null, new Date(), "zur@gmail.com", "test", false, new HashMap<>());
-        elementService.create(elmentEntity, UserRole.MANAGER);
+        elementService.create(elmentEntity);
 
         // THEN we expect Exception to be thrown
     }
@@ -421,7 +421,7 @@ public class ElementServiceTest {
 
         // WHEN we get create new element
         ElementEntity elementEntity1 = factory.createNewElement("name", "type", new Location(), new Date(), "zur@gmail.com", "test", false, new HashMap<>());
-        elementService.create(elementEntity1, UserRole.MANAGER);
+        elementService.create(elementEntity1);
 
         // THEN we expect one element to be created
         int size = 5;
@@ -529,11 +529,11 @@ public class ElementServiceTest {
     public void testUpdateElementAsManager() {
         // GIVEN we have an element in db
         ElementEntity elementEntity1 = factory.createNewElement("name", "type", new Location(), new Date(), "zur@gmail.com", "test", false, new HashMap<>());
-        ElementEntity result = elementService.create(elementEntity1, UserRole.MANAGER);
+        ElementEntity result = elementService.create(elementEntity1);
         elementEntity1.setName("Omri");
 
         // WHEN we update that element
-        elementService.update(elementEntity1, result.getElementId(), result.getElementSmartspace(), UserRole.MANAGER);
+        elementService.update(elementEntity1, result.getElementId(), result.getElementSmartspace());
 
         // THEN we expect one element to be updated
         int size = 5;
@@ -544,7 +544,7 @@ public class ElementServiceTest {
     }
 
 
-    @Test(expected = Throwable.class)
+    /*@Test(expected = Throwable.class)
     public void testUpdateElementAsPlayer() {
         // GIVEN we have an element in db
         ElementEntity elementEntity1 = factory.createNewElement("name", "type", new Location(), new Date(), "zur@gmail.com", "test", false, new HashMap<>());
@@ -555,6 +555,6 @@ public class ElementServiceTest {
         elementService.update(elementEntity1, result.getElementId(), result.getElementSmartspace(), UserRole.PLAYER);
 
         // THEN we expect Exception to be thrown
-    }
+    }*/
 
 }
