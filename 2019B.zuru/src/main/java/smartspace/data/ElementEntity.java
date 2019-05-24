@@ -124,6 +124,7 @@ public class ElementEntity implements SmartspaceEntity<String> {
     }
 
     @Id
+    @Column(name = "ID")
     @Override
     public String getKey() {
         return this.elementId + "#" + this.elementSmartspace;

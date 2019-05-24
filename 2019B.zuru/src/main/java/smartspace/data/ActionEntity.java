@@ -113,6 +113,7 @@ public class ActionEntity implements SmartspaceEntity<String> {
 
 
     @Id
+    @Column(name = "ID")
     @Override
     public String getKey() {
         return this.actionId + "#" + this.actionSmartspace;
