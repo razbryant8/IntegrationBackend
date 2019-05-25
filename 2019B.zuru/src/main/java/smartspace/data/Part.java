@@ -5,14 +5,16 @@ import java.util.Objects;
 public class Part {
 
     String partId;
+    String name;
     int amount;
 
     public Part() {
     }
 
-    public Part(String partId, int amount) {
+    public Part(String partId, int amount,String name) {
         this.partId = partId;
         this.amount = amount;
+        this.name = name;
     }
 
     public String getPartId() {
@@ -29,6 +31,14 @@ public class Part {
 
     public void setAmount(int amount) {
         this.amount = amount;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override

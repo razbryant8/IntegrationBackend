@@ -4,6 +4,7 @@ public class BuyPartsInput {
 
     private String partId;
     private int amount;
+    private String name;
 
     public BuyPartsInput() {
     }
@@ -22,5 +23,13 @@ public class BuyPartsInput {
 
     public void setAmount(int amount) {
         this.amount = amount;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

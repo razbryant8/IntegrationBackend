@@ -15,16 +15,13 @@ import org.springframework.web.client.RestTemplate;
 import smartspace.dao.EnhancedActionDao;
 import smartspace.dao.EnhancedElementDao;
 import smartspace.dao.EnhancedUserDao;
-import smartspace.data.ActionEntity;
-import smartspace.data.UserEntity;
-import smartspace.data.UserRole;
+import smartspace.data.*;
 import smartspace.data.util.EntityFactory;
+import smartspace.logic.ElementService;
 
 import javax.annotation.PostConstruct;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
@@ -59,6 +56,12 @@ public class ActionControllerTest {
 
     private String mySmartspace;
 
+    private ElementService elementService;
+
+    @Autowired
+    public void setElementService(ElementService elementService) {
+        this.elementService = elementService;
+    }
 
     @Autowired
     public void setEnhancedElementDao(EnhancedElementDao enhancedElementDao) {
@@ -323,13 +326,120 @@ public class ActionControllerTest {
                 actionBoundary,
                 ActionBoundary.class);
 
-        List<ActionEntity> actionEntities = this.enhancedActionDao.readAll();
 
+        // THEN the database contains the new action with the generated key
+        List<ActionEntity> actionEntities = this.enhancedActionDao.readAll();
         assertEquals("Data base contains more than one action in it", actionEntities.size(), 1);
 
 
-        // THEN the database contains the new action with the generated key
-        assertEquals("1", result.getActionKey().getId());
+    }
+
+    @Test
+    public void testInvokeBuyParts() {
+        // GIVEN there is a element that the following action is preformed on
+
+        ElementBoundary[] elementBoundaries = new ElementBoundary[1];
+        elementBoundaries[0] = new ElementBoundary();
+        elementBoundaries[0].setKey(new KeyType("1", "2019B.element"));
+        elementBoundaries[0].setLatlng(new ElementLatLngType(35, 35));
+        elementBoundaries[0].setName("Name");
+        elementBoundaries[0].setElementType("Shop");
+        elementBoundaries[0].setExpired(false);
+
+        elementBoundaries[0].setCreator(new UserKeyType("omri@gmail.com", "2019B.asdada"));
+        elementBoundaries[0].setCreated(new Date());
+        HashMap<String, Object> moreAttributes = new HashMap<>();
+        List<Part> parts = new ArrayList<>();
+        parts.add(new Part("1", 100, "Battery"));
+        parts.add(new Part("2", 100, "Wheel"));
+        moreAttributes.put("Parts", parts);
+        elementBoundaries[0].setElementProperties(moreAttributes);
+
+        this.restTemplate.postForObject(
+                this.elementBaseUrl + adminUser.getUserSmartspace() + "/" + adminUser.getUserEmail(),
+                elementBoundaries,
+                ElementBoundary[].class);
+
+        // WHEN a new action is invoked on BuyParts Action
+        ActionBoundary actionBoundary = new ActionBoundary();
+        String partID = "1";
+        HashMap<String, Object> newMoreAttributes = new HashMap<>();
+        newMoreAttributes.put("Part", new Part(partID, 40, "battery"));
+        actionBoundary.setProperties(newMoreAttributes);
+        actionBoundary.setCreated(new Date());
+        actionBoundary.setElement(new KeyType("1", "2019B.element"));
+        actionBoundary.setType("BuyParts");
+        actionBoundary.setPlayer(new UserKeyType(playerUser.getUserEmail(), playerUser.getUserSmartspace()));
+
+        ActionBoundary result = this.restTemplate.postForObject(
+                this.invokeBaseUrl,
+                actionBoundary,
+                ActionBoundary.class);
+
+
+        // THEN the database contains the new action with and the element parts have been updated.
+        List<ActionEntity> actionEntities = this.enhancedActionDao.readAll();
+
+        assertEquals("Data base contains more than one action in it", actionEntities.size(), 1);
+        ElementEntity entity = elementService.getById(elementBoundaries[0].convertToEntity().getElementId(), elementBoundaries[0].convertToEntity().getElementSmartspace(), playerUser.getRole());
+        List<Object> curElementParts = (List<Object>) entity.getMoreAttributes().get("Parts");
+        for (int i = 0; i < curElementParts.size(); i++) {
+            LinkedHashMap<?, ?> cur = (LinkedHashMap<?, ?>) curElementParts.get(i);
+            if (cur.get("partId").equals(partID)) {
+                assertEquals(cur.get("amount"), 60);
+            }
+        }
+
+
+    }
+
+    @Test
+    public void testInvokeReportVehicleStatus() {
+        // GIVEN there is a element that the following action is preformed on
+        HashMap<String, Object> moreAttributes = new HashMap<>();
+        moreAttributes.put("VehicleStatus", VehicleStatus.FREE);
+
+        ElementBoundary[] elementBoundaries = new ElementBoundary[1];
+        elementBoundaries[0] = new ElementBoundary();
+        elementBoundaries[0].setKey(new KeyType("1", "2019B.element"));
+        elementBoundaries[0].setLatlng(new ElementLatLngType(35, 35));
+        elementBoundaries[0].setName("Name");
+        elementBoundaries[0].setElementType("Scooter");
+        elementBoundaries[0].setExpired(false);
+
+        elementBoundaries[0].setCreator(new UserKeyType("omri@gmail.com", "2019B.asdada"));
+        elementBoundaries[0].setCreated(new Date());
+        elementBoundaries[0].setElementProperties(moreAttributes);
+
+        this.restTemplate.postForObject(
+                this.elementBaseUrl + adminUser.getUserSmartspace() + "/" + adminUser.getUserEmail(),
+                elementBoundaries,
+                ElementBoundary[].class);
+
+        // WHEN a new action is invoked on Report Vehicle Status Action
+        HashMap<String, Object> newMoreAttributes = new HashMap<>();
+        newMoreAttributes.put("VehicleStatus", VehicleStatus.RENTED);
+
+        ActionBoundary actionBoundary = new ActionBoundary();
+        actionBoundary.setProperties(newMoreAttributes);
+        actionBoundary.setCreated(new Date());
+        actionBoundary.setElement(new KeyType("1", "2019B.element"));
+        actionBoundary.setType("ReportVehicleStatus");
+        actionBoundary.setPlayer(new UserKeyType(playerUser.getUserEmail(), playerUser.getUserSmartspace()));
+
+        ActionBoundary result = this.restTemplate.postForObject(
+                this.invokeBaseUrl,
+                actionBoundary,
+                ActionBoundary.class);
+
+
+        // THEN the database contains the new action with and the element Status as RENTED.
+        List<ActionEntity> actionEntities = this.enhancedActionDao.readAll();
+
+        assertEquals("Data base contains more than one action in it", actionEntities.size(), 1);
+        ElementEntity entity = elementService.getById(elementBoundaries[0].convertToEntity().getElementId(), elementBoundaries[0].convertToEntity().getElementSmartspace(), playerUser.getRole());
+        String status = (String) entity.getMoreAttributes().get("VehicleStatus");
+        assertEquals(VehicleStatus.RENTED.toString(), status);
 
 
     }

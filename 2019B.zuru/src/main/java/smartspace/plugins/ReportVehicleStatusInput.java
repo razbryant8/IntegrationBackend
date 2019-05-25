@@ -4,16 +4,20 @@ import smartspace.data.VehicleStatus;
 
 public class ReportVehicleStatusInput {
 
-    private VehicleStatus vehicleStatus;
+    private String vehicleStatus;
 
     public ReportVehicleStatusInput() {
     }
 
-    public VehicleStatus getVehicleStatus() {
+    public ReportVehicleStatusInput(String vehicleStatus){
+        this.vehicleStatus = vehicleStatus;
+    }
+
+    public String getVehicleStatus() {
         return vehicleStatus;
     }
 
-    public void setVehicleStatus(VehicleStatus vehicleStatus) {
+    public void setVehicleStatus(String vehicleStatus) {
         this.vehicleStatus = vehicleStatus;
     }
 }

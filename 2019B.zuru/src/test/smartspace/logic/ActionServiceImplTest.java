@@ -11,14 +11,10 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import smartspace.dao.EnhancedActionDao;
 import smartspace.dao.EnhancedElementDao;
-import smartspace.data.ActionEntity;
-import smartspace.data.ElementEntity;
-import smartspace.data.Location;
+import smartspace.data.*;
 import smartspace.data.util.EntityFactory;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
@@ -276,6 +272,63 @@ public class ActionServiceImplTest {
         List<ActionEntity> entities = this.enhancedActionDao.readAll();
         assertEquals(1, entities.size());
         assertEquals("1", entities.get(0).getActionId());
+    }
+
+    @Test()
+    public void checkBuyPartsInvoke() {
+        // GIVEN Valid Element Entity exists on db
+        HashMap<String, Object> moreAttributes = new HashMap<>();
+        List<Part> parts = new ArrayList<>();
+        parts.add(new Part("1", 100, "Battery"));
+        parts.add(new Part("2", 100, "Wheel"));
+        moreAttributes.put("Parts", parts);
+        ElementEntity newElement = factory.createNewElement("name", "Shop", new Location(5, 4), new Date(), "zur@gmail.com", "test", false, moreAttributes);
+        newElement.setKey("5#" + "anotherTeam");
+        enhancedElementDao.upsert(newElement);
+
+
+        // WHEN we Update The Entity Parts
+        String partID = "1";
+        HashMap<String, Object> newMoreAttributes = new HashMap<>();
+        newMoreAttributes.put("Part", new Part(partID, 40, "battery"));
+        ActionEntity actionEntity = factory.createNewAction("5", "anotherTeam", "BuyParts", new Date(), "mark@gmail.com", "anotherTeam", newMoreAttributes);
+        actionService.invoke(actionEntity);
+
+        // THEN Action Completed succsessfuly
+        List<ActionEntity> entities = this.enhancedActionDao.readAll();
+        assertEquals(1, entities.size());
+        ElementEntity entity = (ElementEntity) enhancedElementDao.readById(newElement.getKey()).get();
+        List<Object> curElementParts = (List<Object>) entity.getMoreAttributes().get("Parts");
+        for (int i = 0; i < curElementParts.size(); i++) {
+            LinkedHashMap<?, ?> cur = (LinkedHashMap<?, ?>) curElementParts.get(i);
+            if (cur.get("partId").equals(partID)) {
+                assertEquals(cur.get("amount"), 60);
+            }
+        }
+    }
+
+    @Test()
+    public void ChangeScooterStatusInvoke() {
+        // GIVEN Valid Element Entity exists on db
+        HashMap<String, Object> moreAttributes = new HashMap<>();
+        moreAttributes.put("VehicleStatus", VehicleStatus.FREE);
+        ElementEntity newElement = factory.createNewElement("name", "Scooter", new Location(5, 4), new Date(), "zur@gmail.com", "test", false, moreAttributes);
+        newElement.setKey("5#" + "anotherTeam");
+        enhancedElementDao.upsert(newElement);
+
+
+        // WHEN we Update The Entity Status to rented
+        HashMap<String, Object> newMoreAttributes = new HashMap<>();
+        newMoreAttributes.put("VehicleStatus", VehicleStatus.RENTED);
+        ActionEntity actionEntity = factory.createNewAction("5", "anotherTeam", "ReportVehicleStatus", new Date(), "mark@gmail.com", "anotherTeam", newMoreAttributes);
+        actionService.invoke(actionEntity);
+
+        // THEN Action Completed succsessfuly
+        List<ActionEntity> entities = this.enhancedActionDao.readAll();
+        assertEquals(1, entities.size());
+        ElementEntity entity = (ElementEntity) enhancedElementDao.readById(newElement.getKey()).get();
+        String status = (String) entity.getMoreAttributes().get("VehicleStatus");
+        assertEquals(VehicleStatus.RENTED.toString(), status);
     }
 
 
