@@ -418,13 +418,62 @@ public class ActionControllerTest {
 
         // WHEN a new action is invoked on Report Vehicle Status Action
         HashMap<String, Object> newMoreAttributes = new HashMap<>();
-        newMoreAttributes.put("VehicleStatus", VehicleStatus.RENTED);
+        newMoreAttributes.put("VehicleStatus", VehicleStatus.MALFUNCTION);
 
         ActionBoundary actionBoundary = new ActionBoundary();
         actionBoundary.setProperties(newMoreAttributes);
         actionBoundary.setCreated(new Date());
         actionBoundary.setElement(new KeyType("1", "2019B.element"));
         actionBoundary.setType("ReportVehicleStatus");
+        actionBoundary.setPlayer(new UserKeyType(playerUser.getUserEmail(), playerUser.getUserSmartspace()));
+
+        ActionBoundary result = this.restTemplate.postForObject(
+                this.invokeBaseUrl,
+                actionBoundary,
+                ActionBoundary.class);
+
+
+        // THEN the database contains the new action with and the element Status as MALFUNCTION.
+        List<ActionEntity> actionEntities = this.enhancedActionDao.readAll();
+
+        assertEquals("Data base contains more than one action in it", actionEntities.size(), 1);
+        ElementEntity entity = elementService.getById(elementBoundaries[0].convertToEntity().getElementId(), elementBoundaries[0].convertToEntity().getElementSmartspace(), playerUser.getRole());
+        String status = (String) entity.getMoreAttributes().get("VehicleStatus");
+        assertEquals(VehicleStatus.MALFUNCTION.toString(), status);
+    }
+
+    @Test
+    public void testCatchNRelease() {
+        // GIVEN there is a element that the following action is preformed on
+        HashMap<String, Object> moreAttributes = new HashMap<>();
+        moreAttributes.put("VehicleStatus", VehicleStatus.FREE);
+
+        ElementBoundary[] elementBoundaries = new ElementBoundary[1];
+        elementBoundaries[0] = new ElementBoundary();
+        elementBoundaries[0].setKey(new KeyType("1", "2019B.element"));
+        elementBoundaries[0].setLatlng(new ElementLatLngType(35, 35));
+        elementBoundaries[0].setName("Name");
+        elementBoundaries[0].setElementType("Scooter");
+        elementBoundaries[0].setExpired(false);
+
+        elementBoundaries[0].setCreator(new UserKeyType("omri@gmail.com", "2019B.asdada"));
+        elementBoundaries[0].setCreated(new Date());
+        elementBoundaries[0].setElementProperties(moreAttributes);
+
+        this.restTemplate.postForObject(
+                this.elementBaseUrl + adminUser.getUserSmartspace() + "/" + adminUser.getUserEmail(),
+                elementBoundaries,
+                ElementBoundary[].class);
+
+        // WHEN a new action is invoked on CatchNRelease action
+        HashMap<String, Object> newMoreAttributes = new HashMap<>();
+        newMoreAttributes.put("VehicleStatus", VehicleStatus.RENTED);
+
+        ActionBoundary actionBoundary = new ActionBoundary();
+        actionBoundary.setProperties(newMoreAttributes);
+        actionBoundary.setCreated(new Date());
+        actionBoundary.setElement(new KeyType("1", "2019B.element"));
+        actionBoundary.setType("CatchNRelease");
         actionBoundary.setPlayer(new UserKeyType(playerUser.getUserEmail(), playerUser.getUserSmartspace()));
 
         ActionBoundary result = this.restTemplate.postForObject(
@@ -440,8 +489,6 @@ public class ActionControllerTest {
         ElementEntity entity = elementService.getById(elementBoundaries[0].convertToEntity().getElementId(), elementBoundaries[0].convertToEntity().getElementSmartspace(), playerUser.getRole());
         String status = (String) entity.getMoreAttributes().get("VehicleStatus");
         assertEquals(VehicleStatus.RENTED.toString(), status);
-
-
     }
 
     @Test(expected = Throwable.class)
