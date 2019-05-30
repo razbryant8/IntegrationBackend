@@ -317,9 +317,9 @@ public class ActionServiceImplTest {
         enhancedElementDao.upsert(newElement);
 
 
-        // WHEN we Update The Entity Status to rented
+        // WHEN we Update The Entity Status to MALFUNCTION
         HashMap<String, Object> newMoreAttributes = new HashMap<>();
-        newMoreAttributes.put("VehicleStatus", VehicleStatus.RENTED);
+        newMoreAttributes.put("VehicleStatus", VehicleStatus.MALFUNCTION);
         ActionEntity actionEntity = factory.createNewAction("5", "anotherTeam", "ReportVehicleStatus", new Date(), "mark@gmail.com", "anotherTeam", newMoreAttributes);
         actionService.invoke(actionEntity);
 
@@ -328,7 +328,30 @@ public class ActionServiceImplTest {
         assertEquals(1, entities.size());
         ElementEntity entity = (ElementEntity) enhancedElementDao.readById(newElement.getKey()).get();
         String status = (String) entity.getMoreAttributes().get("VehicleStatus");
-        assertEquals(VehicleStatus.RENTED.toString(), status);
+        assertEquals(VehicleStatus.MALFUNCTION.toString(), status);
+    }
+
+    @Test()
+    public void freeARentedScooterTest() {
+        // GIVEN Valid Element Entity exists on db
+        HashMap<String, Object> moreAttributes = new HashMap<>();
+        moreAttributes.put("VehicleStatus", VehicleStatus.RENTED);
+        ElementEntity newElement = factory.createNewElement("name", "Scooter", new Location(5, 4), new Date(), "zur@gmail.com", "test", false, moreAttributes);
+        newElement.setKey("5#" + "anotherTeam");
+        enhancedElementDao.upsert(newElement);
+
+        // WHEN we Update The Entity Status to FREE
+        HashMap<String, Object> newMoreAttributes = new HashMap<>();
+        newMoreAttributes.put("VehicleStatus", VehicleStatus.FREE);
+        ActionEntity actionEntity = factory.createNewAction("5", "anotherTeam", "CatchNRelease", new Date(), "mark@gmail.com", "anotherTeam", newMoreAttributes);
+        actionService.invoke(actionEntity);
+
+        // THEN Action Completed succsessfuly
+        List<ActionEntity> entities = this.enhancedActionDao.readAll();
+        assertEquals(1, entities.size());
+        ElementEntity entity = (ElementEntity) enhancedElementDao.readById(newElement.getKey()).get();
+        String status = (String) entity.getMoreAttributes().get("VehicleStatus");
+        assertEquals(VehicleStatus.FREE.toString(), status);
     }
 
 
