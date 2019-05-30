@@ -15,15 +15,17 @@ import smartspace.dao.EnhancedUserDao;
 import smartspace.data.*;
 import smartspace.data.util.EntityFactory;
 
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
 
+
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(properties = {"spring.profiles.active=default"})
-public class ReportVehicleStatusPluginTest {
+public class CatchNReleasePluginTest {
     private EnhancedUserDao userDao;
 
     private UserEntity playerUser;
@@ -32,7 +34,7 @@ public class ReportVehicleStatusPluginTest {
 
     private String currentSmartspace;
 
-    private ReportVehicleStatusPlugin reportPlugin;
+    private CatchNReleasePlugin catchNReleasePlugin;
 
     private EnhancedElementDao enhancedElementDao;
 
@@ -59,8 +61,8 @@ public class ReportVehicleStatusPluginTest {
     }
 
     @Autowired
-    public void setReportPlugin(ReportVehicleStatusPlugin reportPlugin) {
-        this.reportPlugin = reportPlugin;
+    public void setReportPlugin(CatchNReleasePlugin catchNReleasePlugin) {
+        this.catchNReleasePlugin = catchNReleasePlugin;
     }
 
     @Autowired
@@ -76,7 +78,7 @@ public class ReportVehicleStatusPluginTest {
 
     @Before
     public void setUp() {
-        playerUser = userDao.create(factory.createNewUser("player@gmail.com", currentSmartspace, "Zur", "haha", UserRole.PLAYER, 0));
+        playerUser = userDao.create(factory.createNewUser("player@gmail.com", currentSmartspace, "marky", "haha", UserRole.PLAYER, 0));
     }
 
     @After
@@ -88,84 +90,84 @@ public class ReportVehicleStatusPluginTest {
 
     @Test
     public void SetStatus() {
-        // GIVEN the database contains 3 users, and Scooter  element with with Free Status
+        // GIVEN the database contains 1 user, and a Scooter element with with Free Status
         HashMap<String, Object> moreAttributes = new HashMap<>();
         moreAttributes.put("VehicleStatus", VehicleStatus.FREE);
         ElementEntity elementEntity1 = enhancedElementDao.create(factory.createNewElement("name", "Scooter", new Location(5, 4), new Date(), "blabla@gmail.com", currentSmartspace, false, moreAttributes));
 
-        //WHEN we set status of the element to MALFUNCTION
+        //WHEN we set status of the element to rented
         HashMap<String, Object> requestMoreAttributes = new HashMap<>();
-        requestMoreAttributes.put("VehicleStatus", VehicleStatus.MALFUNCTION);
+        requestMoreAttributes.put("VehicleStatus", VehicleStatus.RENTED);
         ActionEntity ac1 = enhancesActionDao.create(factory.createNewAction(elementEntity1.getElementId(), elementEntity1.getElementSmartspace(), "ReportVehicleStatus", new Date(), this.playerUser.getUserEmail(), this.currentSmartspace, requestMoreAttributes));
-        ActionEntity result = this.reportPlugin.execute(ac1);
+        ActionEntity result = this.catchNReleasePlugin.execute(ac1);
 
-        //THEN the action is done and the status of the element is set to MALFUNCTION
+        //THEN the action is done and the status of the element is set to RENT
         assertThat(enhancesActionDao.readAll(50, 0)).usingElementComparatorOnFields("actionId").contains(result);
         ElementEntity entity = (ElementEntity) enhancedElementDao.readById(elementEntity1.getKey()).get();
         String status = (String) entity.getMoreAttributes().get("VehicleStatus");
-        assertEquals(VehicleStatus.MALFUNCTION.toString(), status);
+        assertEquals(VehicleStatus.RENTED.toString(), status);
     }
 
     @Test(expected = Throwable.class)
     public void SetBadStatus() {
-        // GIVEN the database contains 3 users, and Scooter element with with Free Status
+        // GIVEN the database contains 1 user, and Scooter a element with with Free Status
         HashMap<String, Object> moreAttributes = new HashMap<>();
         moreAttributes.put("VehicleStatus", VehicleStatus.FREE);
         ElementEntity elementEntity1 = enhancedElementDao.create(factory.createNewElement("name", "Scooter", new Location(5, 4), new Date(), "blabla@gmail.com", currentSmartspace, false, moreAttributes));
 
-        //WHEN we set status of the elemeent to BadStatus
+        //WHEN we set status of the element to BadStatus
         HashMap<String, Object> requestMoreAttributes = new HashMap<>();
         requestMoreAttributes.put("VehicleStatus", "BadStatus");
         ActionEntity ac1 = enhancesActionDao.create(factory.createNewAction(elementEntity1.getElementId(), elementEntity1.getElementSmartspace(), "ReportVehicleStatus", new Date(), this.playerUser.getUserEmail(), this.currentSmartspace, requestMoreAttributes));
-        ActionEntity result = this.reportPlugin.execute(ac1);
+        ActionEntity result = this.catchNReleasePlugin.execute(ac1);
 
         //THEN exception is thrown
     }
 
     @Test(expected = Throwable.class)
     public void SetStatusOfElementWithoutPrevStatus() {
-        // GIVEN the database contains 3 users, and Scooter  element with with Free Status
+        // GIVEN the database contains 1 user, and Scooter a element with with Free Status
         HashMap<String, Object> moreAttributes = new HashMap<>();
         //moreAttributes.put("VehicleStatus", VehicleStatus.FREE);
         ElementEntity elementEntity1 = enhancedElementDao.create(factory.createNewElement("name", "Scooter", new Location(5, 4), new Date(), "blabla@gmail.com", currentSmartspace, false, moreAttributes));
 
-        //WHEN we set status of the element to MALFUNCTION
+        //WHEN we set status of the element to RENTED
         HashMap<String, Object> requestMoreAttributes = new HashMap<>();
-        requestMoreAttributes.put("VehicleStatus", VehicleStatus.MALFUNCTION);
+        requestMoreAttributes.put("VehicleStatus", VehicleStatus.RENTED);
         ActionEntity ac1 = enhancesActionDao.create(factory.createNewAction(elementEntity1.getElementId(), elementEntity1.getElementSmartspace(), "ReportVehicleStatus", new Date(), this.playerUser.getUserEmail(), this.currentSmartspace, requestMoreAttributes));
-        ActionEntity result = this.reportPlugin.execute(ac1);
+        ActionEntity result = this.catchNReleasePlugin.execute(ac1);
 
         //THEN exception is thrown
     }
 
     @Test(expected = Throwable.class)
     public void SetStatusOfElementWithoutSendingVehicleStatusParameter() {
-        // GIVEN the database contains 3 users, and Scooter  element with with Free Status
+        // GIVEN the database contains 1 user, and Scooter a element with with Free Status
         HashMap<String, Object> moreAttributes = new HashMap<>();
         //moreAttributes.put("VehicleStatus", VehicleStatus.FREE);
         ElementEntity elementEntity1 = enhancedElementDao.create(factory.createNewElement("name", "Scooter", new Location(5, 4), new Date(), "blabla@gmail.com", currentSmartspace, false, moreAttributes));
 
-        //WHEN we set status of the element to MALFUNCTION but the VehicleStatus Parameter is missing
+        //WHEN we set status of the element to RENTED but the VehicleStatus Parameter is missing
         HashMap<String, Object> requestMoreAttributes = new HashMap<>();
-        requestMoreAttributes.put("BadStatusParam", VehicleStatus.MALFUNCTION);
+        requestMoreAttributes.put("BadStatusParam", VehicleStatus.RENTED);
         ActionEntity ac1 = enhancesActionDao.create(factory.createNewAction(elementEntity1.getElementId(), elementEntity1.getElementSmartspace(), "ReportVehicleStatus", new Date(), this.playerUser.getUserEmail(), this.currentSmartspace, requestMoreAttributes));
-        ActionEntity result = this.reportPlugin.execute(ac1);
+        ActionEntity result = this.catchNReleasePlugin.execute(ac1);
 
         //THEN exception is thrown
     }
 
     @Test(expected = Throwable.class)
-    public void SetShopStatus() {
+    public void verifyIllegalVehicleStatusToShop() {
         // GIVEN the database contains 3 users, and Shop  element
         HashMap<String, Object> moreAttributes = new HashMap<>();
         //moreAttributes.put("VehicleStatus", VehicleStatus.FREE);
         ElementEntity elementEntity1 = enhancedElementDao.create(factory.createNewElement("name", "Shop", new Location(5, 4), new Date(), "blabla@gmail.com", currentSmartspace, false, moreAttributes));
 
-        //WHEN we set status of the element to MALFUNCTION
+        //WHEN we set status of the elemeent to RENTED
         HashMap<String, Object> requestMoreAttributes = new HashMap<>();
-        requestMoreAttributes.put("BadStatusParam", VehicleStatus.MALFUNCTION);
+        requestMoreAttributes.put("BadStatusParam", VehicleStatus.RENTED);
         ActionEntity ac1 = enhancesActionDao.create(factory.createNewAction(elementEntity1.getElementId(), elementEntity1.getElementSmartspace(), "ReportVehicleStatus", new Date(), this.playerUser.getUserEmail(), this.currentSmartspace, requestMoreAttributes));
-        ActionEntity result = this.reportPlugin.execute(ac1);
+        ActionEntity result = this.catchNReleasePlugin.execute(ac1);
 
         //THEN exception is thrown
     }
