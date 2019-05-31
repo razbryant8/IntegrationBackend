@@ -98,7 +98,7 @@ public class CatchNReleasePluginTest {
         //WHEN we set status of the element to rented
         HashMap<String, Object> requestMoreAttributes = new HashMap<>();
         requestMoreAttributes.put("VehicleStatus", VehicleStatus.RENTED);
-        ActionEntity ac1 = enhancesActionDao.create(factory.createNewAction(elementEntity1.getElementId(), elementEntity1.getElementSmartspace(), "ReportVehicleStatus", new Date(), this.playerUser.getUserEmail(), this.currentSmartspace, requestMoreAttributes));
+        ActionEntity ac1 = enhancesActionDao.create(factory.createNewAction(elementEntity1.getElementId(), elementEntity1.getElementSmartspace(), "CatchNRelease", new Date(), this.playerUser.getUserEmail(), this.currentSmartspace, requestMoreAttributes));
         ActionEntity result = this.catchNReleasePlugin.execute(ac1);
 
         //THEN the action is done and the status of the element is set to RENT
@@ -118,7 +118,7 @@ public class CatchNReleasePluginTest {
         //WHEN we set status of the element to BadStatus
         HashMap<String, Object> requestMoreAttributes = new HashMap<>();
         requestMoreAttributes.put("VehicleStatus", "BadStatus");
-        ActionEntity ac1 = enhancesActionDao.create(factory.createNewAction(elementEntity1.getElementId(), elementEntity1.getElementSmartspace(), "ReportVehicleStatus", new Date(), this.playerUser.getUserEmail(), this.currentSmartspace, requestMoreAttributes));
+        ActionEntity ac1 = enhancesActionDao.create(factory.createNewAction(elementEntity1.getElementId(), elementEntity1.getElementSmartspace(), "CatchNRelease", new Date(), this.playerUser.getUserEmail(), this.currentSmartspace, requestMoreAttributes));
         ActionEntity result = this.catchNReleasePlugin.execute(ac1);
 
         //THEN exception is thrown
@@ -134,7 +134,7 @@ public class CatchNReleasePluginTest {
         //WHEN we set status of the element to RENTED
         HashMap<String, Object> requestMoreAttributes = new HashMap<>();
         requestMoreAttributes.put("VehicleStatus", VehicleStatus.RENTED);
-        ActionEntity ac1 = enhancesActionDao.create(factory.createNewAction(elementEntity1.getElementId(), elementEntity1.getElementSmartspace(), "ReportVehicleStatus", new Date(), this.playerUser.getUserEmail(), this.currentSmartspace, requestMoreAttributes));
+        ActionEntity ac1 = enhancesActionDao.create(factory.createNewAction(elementEntity1.getElementId(), elementEntity1.getElementSmartspace(), "CatchNRelease", new Date(), this.playerUser.getUserEmail(), this.currentSmartspace, requestMoreAttributes));
         ActionEntity result = this.catchNReleasePlugin.execute(ac1);
 
         //THEN exception is thrown
@@ -150,7 +150,7 @@ public class CatchNReleasePluginTest {
         //WHEN we set status of the element to RENTED but the VehicleStatus Parameter is missing
         HashMap<String, Object> requestMoreAttributes = new HashMap<>();
         requestMoreAttributes.put("BadStatusParam", VehicleStatus.RENTED);
-        ActionEntity ac1 = enhancesActionDao.create(factory.createNewAction(elementEntity1.getElementId(), elementEntity1.getElementSmartspace(), "ReportVehicleStatus", new Date(), this.playerUser.getUserEmail(), this.currentSmartspace, requestMoreAttributes));
+        ActionEntity ac1 = enhancesActionDao.create(factory.createNewAction(elementEntity1.getElementId(), elementEntity1.getElementSmartspace(), "CatchNRelease", new Date(), this.playerUser.getUserEmail(), this.currentSmartspace, requestMoreAttributes));
         ActionEntity result = this.catchNReleasePlugin.execute(ac1);
 
         //THEN exception is thrown
@@ -166,7 +166,7 @@ public class CatchNReleasePluginTest {
         //WHEN we set status of the elemeent to RENTED
         HashMap<String, Object> requestMoreAttributes = new HashMap<>();
         requestMoreAttributes.put("BadStatusParam", VehicleStatus.RENTED);
-        ActionEntity ac1 = enhancesActionDao.create(factory.createNewAction(elementEntity1.getElementId(), elementEntity1.getElementSmartspace(), "ReportVehicleStatus", new Date(), this.playerUser.getUserEmail(), this.currentSmartspace, requestMoreAttributes));
+        ActionEntity ac1 = enhancesActionDao.create(factory.createNewAction(elementEntity1.getElementId(), elementEntity1.getElementSmartspace(), "CatchNRelease", new Date(), this.playerUser.getUserEmail(), this.currentSmartspace, requestMoreAttributes));
         ActionEntity result = this.catchNReleasePlugin.execute(ac1);
 
         //THEN exception is thrown

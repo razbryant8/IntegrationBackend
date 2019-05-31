@@ -320,7 +320,7 @@ public class ActionServiceImplTest {
         // WHEN we Update The Entity Status to MALFUNCTION
         HashMap<String, Object> newMoreAttributes = new HashMap<>();
         newMoreAttributes.put("VehicleStatus", VehicleStatus.MALFUNCTION);
-        ActionEntity actionEntity = factory.createNewAction("5", "anotherTeam", "ReportVehicleStatus", new Date(), "mark@gmail.com", "anotherTeam", newMoreAttributes);
+        ActionEntity actionEntity = factory.createNewAction("5", "anotherTeam", "reportVehicleMalfunction", new Date(), "mark@gmail.com", "anotherTeam", newMoreAttributes);
         actionService.invoke(actionEntity);
 
         // THEN Action Completed succsessfuly
