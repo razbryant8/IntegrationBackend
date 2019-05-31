@@ -7,18 +7,18 @@ import smartspace.data.ActionEntity;
 import smartspace.logic.ElementService;
 
 @Component
-public class CatchNReleasePlugin extends AbsVehicleStatusPlugin {
+public class ReportVehicleLowBatteryPlugin extends AbsVehicleStatusPlugin {
 
     @Autowired
-    public CatchNReleasePlugin(ElementService elementService) {
+    public ReportVehicleLowBatteryPlugin(ElementService elementService) {
         this.elementService = elementService;
         this.jackson = new ObjectMapper();
     }
 
     @Override
     public ActionEntity execute(ActionEntity actionEntity) {
-        System.out.println("CatchNReleasePlugin - execute called");
-        return super.execute(actionEntity);
+      System.out.println("ReportVehicleLowBatteryPlugin - execute called");
+      return super.execute(actionEntity);
     }
 
 }
