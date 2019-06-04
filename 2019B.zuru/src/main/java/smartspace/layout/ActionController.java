@@ -79,7 +79,7 @@ public class ActionController {
             consumes = MediaType.APPLICATION_JSON_VALUE)
     public ActionBoundary invoke(@RequestBody ActionBoundary actionBoundary) {
         UserKeyType player = actionBoundary.getPlayer();
-        if (validatePlayer(player.getSmartspace(),player.getEmail()))
+        if (validatePlayer(player.getSmartspace(),player.getEmail()) || validateManager(player.getSmartspace(),player.getEmail()))
             return new ActionBoundary(this.actionService.invoke(actionBoundary.convertToEntity()));
         else
             throw new RuntimeException("Unauthorized operation");
@@ -93,5 +93,10 @@ public class ActionController {
     private boolean validatePlayer(String playerSmartspace, String playerEmail) {
         Optional<UserEntity> dbUser = userService.getUserByMailAndSmartSpace(playerEmail, playerSmartspace);
         return dbUser.isPresent() && dbUser.get().getRole().equals(UserRole.PLAYER);
+    }
+
+    private boolean validateManager(String playerSmartspace, String playerEmail) {
+        Optional<UserEntity> dbUser = userService.getUserByMailAndSmartSpace(playerEmail, playerSmartspace);
+        return dbUser.isPresent() && dbUser.get().getRole().equals(UserRole.MANAGER);
     }
 }

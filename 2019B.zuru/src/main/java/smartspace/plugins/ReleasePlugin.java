@@ -6,19 +6,24 @@ import org.springframework.stereotype.Component;
 import smartspace.data.ActionEntity;
 import smartspace.logic.ElementService;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Component
-public class CatchNReleasePlugin extends AbsVehicleStatusPlugin {
+public class ReleasePlugin extends AbsVehicleStatusPlugin {
 
     @Autowired
-    public CatchNReleasePlugin(ElementService elementService) {
+    public ReleasePlugin(ElementService elementService) {
         this.elementService = elementService;
         this.jackson = new ObjectMapper();
     }
 
     @Override
     public ActionEntity execute(ActionEntity actionEntity) {
-        System.out.println("CatchNReleasePlugin - execute called");
+        Map<String, Object> moreAttributes = actionEntity.getMoreAttributes();
+        moreAttributes.put("VehicleStatus","FREE");
+        actionEntity.setMoreAttributes(moreAttributes);
+        System.out.println("ReleasePlugin - execute called");
         return super.execute(actionEntity);
     }
-
 }

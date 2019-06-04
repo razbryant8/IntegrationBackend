@@ -5,6 +5,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "USERS")
 public class UserEntity implements SmartspaceEntity<String> {
+
     private String userSmartspace;
     private String userEmail;
     private String username;
