@@ -106,21 +106,7 @@ public class ReportVehicleMalfunctionPluginTest {
         assertEquals(VehicleStatus.MALFUNCTION.toString(), status);
     }
 
-    @Test(expected = Throwable.class)
-    public void SetBadStatus() {
-        // GIVEN the database contains 3 users, and Scooter element with with Free Status
-        HashMap<String, Object> moreAttributes = new HashMap<>();
-        moreAttributes.put("VehicleStatus", VehicleStatus.FREE);
-        ElementEntity elementEntity1 = enhancedElementDao.create(factory.createNewElement("name", "Scooter", new Location(5, 4), new Date(), "blabla@gmail.com", currentSmartspace, false, moreAttributes));
 
-        //WHEN we set status of the elemeent to BadStatus
-        HashMap<String, Object> requestMoreAttributes = new HashMap<>();
-        requestMoreAttributes.put("VehicleStatus", "BadStatus");
-        ActionEntity ac1 = enhancesActionDao.create(factory.createNewAction(elementEntity1.getElementId(), elementEntity1.getElementSmartspace(), "ReportVehicleMalfunction", new Date(), this.playerUser.getUserEmail(), this.currentSmartspace, requestMoreAttributes));
-        ActionEntity result = this.reportPlugin.execute(ac1);
-
-        //THEN exception is thrown
-    }
 
     @Test(expected = Throwable.class)
     public void SetStatusOfElementWithoutPrevStatus() {

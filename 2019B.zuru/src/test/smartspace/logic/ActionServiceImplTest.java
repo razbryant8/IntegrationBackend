@@ -343,7 +343,7 @@ public class ActionServiceImplTest {
         // WHEN we Update The Entity Status to FREE
         HashMap<String, Object> newMoreAttributes = new HashMap<>();
         newMoreAttributes.put("VehicleStatus", VehicleStatus.FREE);
-        ActionEntity actionEntity = factory.createNewAction("5", "anotherTeam", "CatchNRelease", new Date(), "mark@gmail.com", "anotherTeam", newMoreAttributes);
+        ActionEntity actionEntity = factory.createNewAction("5", "anotherTeam", "Release", new Date(), "mark@gmail.com", "anotherTeam", newMoreAttributes);
         actionService.invoke(actionEntity);
 
         // THEN Action Completed succsessfuly

@@ -108,21 +108,7 @@ public class ReportVehicleLowBatteryPluginTest {
         assertEquals(VehicleStatus.LOW_BATTERY.toString(), status);
     }
 
-    @Test(expected = Throwable.class)
-    public void SetBadStatus() {
-        // GIVEN the database contains 1 user, and Scooter a element with with Free Status
-        HashMap<String, Object> moreAttributes = new HashMap<>();
-        moreAttributes.put("VehicleStatus", VehicleStatus.FREE);
-        ElementEntity elementEntity1 = enhancedElementDao.create(factory.createNewElement("name", "Scooter", new Location(5, 4), new Date(), "blabla@gmail.com", currentSmartspace, false, moreAttributes));
 
-        //WHEN we set status of the element to BadStatus
-        HashMap<String, Object> requestMoreAttributes = new HashMap<>();
-        requestMoreAttributes.put("VehicleStatus", "BadStatus");
-        ActionEntity ac1 = enhancesActionDao.create(factory.createNewAction(elementEntity1.getElementId(), elementEntity1.getElementSmartspace(), "CatchNRelease", new Date(), this.playerUser.getUserEmail(), this.currentSmartspace, requestMoreAttributes));
-        ActionEntity result = this.batteryPlugin.execute(ac1);
-
-        //THEN exception is thrown
-    }
 
     @Test(expected = Throwable.class)
     public void SetStatusOfElementWithoutPrevStatus() {

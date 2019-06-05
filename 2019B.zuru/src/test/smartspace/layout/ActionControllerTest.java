@@ -473,7 +473,7 @@ public class ActionControllerTest {
         actionBoundary.setProperties(newMoreAttributes);
         actionBoundary.setCreated(new Date());
         actionBoundary.setElement(new KeyType("1", "2019B.element"));
-        actionBoundary.setType("CatchNRelease");
+        actionBoundary.setType("Catch");
         actionBoundary.setPlayer(new UserKeyType(playerUser.getUserEmail(), playerUser.getUserSmartspace()));
 
         ActionBoundary result = this.restTemplate.postForObject(
