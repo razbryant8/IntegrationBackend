@@ -134,8 +134,8 @@ public class RdbElementDao implements EnhancedElementDao<String> {
     @Override
     public List<ElementEntity> getAllElementsByLocation(int size, int page, double x, double y, int distance, String sortBy) {
         return this.elementCrud.findAllByLocation_xBetweenAndLocation_yBetween(
-                x - distance, x + distance,
-                y - distance, y + distance,
+                180 + x - distance, 180 + x + distance,
+                180 - y - distance, 180 - y + distance,
                 PageRequest.of(page, size, Sort.Direction.ASC, sortBy));
     }
 
